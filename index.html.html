@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Let's Poke — Trilha de Treinamento</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#111210;--surface:#1c1c1a;--card:#232320;--border:#2d2d29;
+  --accent:#f0c040;--accent2:#e07830;--green:#3db87a;--yellow:#e8b830;
+  --red:#e04848;--blue:#4898e8;--text:#f0ece0;--muted:#888070;
+  --font-h:'Syne',sans-serif;--font-b:'Inter',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 10%,rgba(240,192,64,.07) 0%,transparent 55%),radial-gradient(ellipse at 85% 85%,rgba(224,120,48,.05) 0%,transparent 55%);pointer-events:none;z-index:0}
+.view{display:none}.view.active{display:block}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:16px;height:56px}
+.nav-logo{font-family:var(--font-h);font-weight:800;font-size:16px;color:var(--accent);letter-spacing:-.3px;flex-shrink:0}
+.nav-logo span{color:var(--muted);font-weight:400}
+.nav-sync{font-size:11px;color:var(--muted);margin-left:8px}
+.nav-sync.ok{color:var(--green)}.nav-sync.err{color:var(--red)}.nav-sync.loading{color:var(--yellow)}
+.nav-tabs{display:flex;gap:2px;margin-left:auto}
+.nav-tab{font-family:var(--font-h);font-size:12px;font-weight:600;padding:6px 14px;border-radius:7px;border:none;background:transparent;color:var(--muted);cursor:pointer;letter-spacing:.3px;transition:all .15s}
+.nav-tab:hover{color:var(--text);background:var(--surface)}.nav-tab.active{background:var(--accent);color:#111}
+
+/* WRAP */
+.wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 20px 80px}
+
+/* CONFIG BANNER */
+.config-banner{background:rgba(224,120,48,.12);border:1px solid rgba(224,120,48,.3);border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.config-banner.hidden{display:none}
+.config-banner-icon{font-size:22px;flex-shrink:0}
+.config-banner-text{flex:1;min-width:200px}
+.config-banner-text strong{font-family:var(--font-h);font-size:14px;display:block;margin-bottom:2px;color:var(--accent)}
+.config-banner-text p{font-size:12px;color:var(--muted);line-height:1.5}
+.config-url-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.config-url-input{flex:1;min-width:240px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--font-b);font-size:12px;outline:none;transition:border-color .2s}
+.config-url-input:focus{border-color:var(--accent)}
+
+/* PAINEL */
+.painel-header{margin-bottom:24px}
+.painel-header h2{font-family:var(--font-h);font-size:22px;font-weight:800}
+.painel-header p{font-size:13px;color:var(--muted);margin-top:4px}
+.painel-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:28px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.stat-card .val{font-family:var(--font-h);font-size:28px;font-weight:800}
+.stat-card .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+.colab-grid{display:flex;flex-direction:column;gap:10px}
+.colab-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:all .2s}
+.colab-card:hover{border-color:var(--accent);background:var(--card);transform:translateX(3px)}
+.colab-avatar{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:var(--card);border:1px solid var(--border)}
+.colab-info{flex:1;min-width:0}
+.colab-name{font-family:var(--font-h);font-size:15px;font-weight:700}
+.colab-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.colab-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.colab-pct{font-family:var(--font-h);font-size:18px;font-weight:800;color:var(--accent)}
+.colab-status{font-size:11px;padding:3px 10px;border-radius:99px;font-family:var(--font-h);font-weight:600;white-space:nowrap}
+.status-ok{background:rgba(61,184,122,.15);color:var(--green)}
+.status-em{background:rgba(240,192,64,.12);color:var(--yellow)}
+.status-nao{background:rgba(255,255,255,.06);color:var(--muted)}
+.colab-progbar{width:100px;height:4px;background:var(--border);border-radius:99px;overflow:hidden}
+.colab-progfill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s}
+.add-colab-card{background:transparent;border:2px dashed var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;color:var(--muted);font-size:14px;font-family:var(--font-h);font-weight:600}
+.add-colab-card:hover{border-color:var(--accent);color:var(--accent)}
+.delete-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 9px;color:var(--muted);cursor:pointer;font-size:12px;transition:all .15s;flex-shrink:0}
+.delete-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* TRILHA */
+.trilha-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.trilha-info h2{font-family:var(--font-h);font-size:20px;font-weight:800}
+.trilha-info p{font-size:12px;color:var(--muted);margin-top:3px}
+.trilha-actions{display:flex;gap:8px}
+.btn{font-family:var(--font-h);font-weight:600;font-size:12px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;transition:all .15s;letter-spacing:.3px;white-space:nowrap}
+.btn-primary{background:var(--accent);color:#111}.btn-primary:hover{background:#f5cc55;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-back{background:var(--surface);color:var(--text);border:1px solid var(--border)}.btn-back:hover{border-color:var(--accent)}
+.prog-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:24px}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.prog-row span{font-family:var(--font-h);font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.prog-pct{font-family:var(--font-h);font-size:26px;font-weight:800;color:var(--accent)}
+.prog-bar{background:var(--border);border-radius:99px;height:7px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .5s cubic-bezier(.4,0,.2,1)}
+.prog-pills{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+.pill{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%}
+
+/* BLOCO */
+.bloco{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;transition:border-color .2s}
+.bloco:hover{border-color:#3a3830}
+.bloco-header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--surface);cursor:pointer;user-select:none}
+.bloco-header:hover{background:var(--card)}
+.bloco-fase{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.5px;text-transform:uppercase;flex-shrink:0;font-family:var(--font-h)}
+.fase1{background:rgba(72,152,232,.15);color:var(--blue)}.fase2{background:rgba(61,184,122,.15);color:var(--green)}
+.bloco-title{font-family:var(--font-h);font-size:14px;font-weight:700;flex:1;line-height:1.3}
+.bloco-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.bloco-badge{font-size:11px;padding:3px 9px;border-radius:99px;font-family:var(--font-h);font-weight:600;flex-shrink:0}
+.badge-ok{background:rgba(61,184,122,.15);color:var(--green)}
+.badge-partial{background:rgba(240,192,64,.15);color:var(--yellow)}
+.badge-pend{background:rgba(255,255,255,.06);color:var(--muted)}
+.chevron{color:var(--muted);font-size:11px;transition:transform .2s;flex-shrink:0}
+.bloco.open .chevron{transform:rotate(180deg)}
+.bloco-body{display:none;background:var(--bg);border-top:1px solid var(--border)}
+.bloco.open .bloco-body{display:block}
+
+/* TEMA */
+.tema-row{display:flex;align-items:center;gap:10px;padding:11px 18px;border-bottom:1px solid rgba(45,45,41,.6);transition:background .12s}
+.tema-row:last-of-type{border-bottom:none}.tema-row:hover{background:var(--surface)}
+.tema-num{font-size:10px;color:var(--muted);font-weight:600;min-width:28px;text-align:right;flex-shrink:0}
+.tema-info{flex:1;min-width:0}
+.tema-nome{font-size:13px;font-weight:500;line-height:1.4}
+.tema-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.tema-obs{display:none;margin-top:6px;width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--font-b);font-size:12px;resize:none;outline:none;transition:border-color .2s}
+.tema-obs:focus{border-color:var(--accent)}.tema-obs.show{display:block}
+.abs-btns{display:flex;gap:4px;flex-shrink:0}
+.abs-btn{font-size:11px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .12s;white-space:nowrap}
+.abs-btn:hover{background:var(--surface);color:var(--text)}
+.abs-btn.g{background:rgba(61,184,122,.15);border-color:var(--green);color:var(--green)}
+.abs-btn.y{background:rgba(232,184,48,.15);border-color:var(--yellow);color:var(--yellow)}
+.abs-btn.r{background:rgba(224,72,72,.15);border-color:var(--red);color:var(--red)}
+.obs-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 7px;color:var(--muted);cursor:pointer;font-size:11px;transition:all .12s}
+.obs-btn:hover{border-color:var(--accent);color:var(--accent)}
+.bloco-sig{padding:12px 18px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sig-label{font-size:11px;color:var(--muted);font-style:italic}
+.sig-status{font-size:12px;font-weight:600;padding:4px 12px;border-radius:8px}
+.sig-pend{background:rgba(255,255,255,.06);color:var(--muted)}
+.sig-done{background:rgba(61,184,122,.15);color:var(--green)}
+.sig-warn{background:rgba(224,72,72,.12);color:var(--red)}
+.sig-btn{font-family:var(--font-h);font-size:11px;font-weight:700;padding:5px 12px;border-radius:7px;border:none;cursor:pointer;background:var(--accent);color:#111;transition:all .15s;margin-left:auto}
+.sig-btn:hover{background:#f5cc55}.sig-btn.signed{background:var(--green);color:#fff}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);z-index:200;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:18px;width:100%;max-width:560px;padding:28px;animation:su .25s ease}
+@keyframes su{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.modal h3{font-family:var(--font-h);font-size:18px;font-weight:800;margin-bottom:6px}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:20px}
+.form-row{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.form-row label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.form-row input,.form-row select{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:var(--font-b);font-size:14px;outline:none;transition:border-color .2s}
+.form-row input:focus,.form-row select:focus{border-color:var(--accent)}
+.form-row select option{background:var(--card)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.report-pre{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:18px;font-family:monospace;font-size:12px;line-height:1.8;white-space:pre-wrap;max-height:380px;overflow-y:auto;margin-bottom:18px;color:var(--text)}
+
+/* LOADING */
+.loading-screen{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.loading-screen.hidden{display:none}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{font-family:var(--font-h);font-size:14px;color:var(--muted)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--green);color:#111;font-family:var(--font-h);font-weight:700;font-size:13px;padding:11px 18px;border-radius:10px;transform:translateY(60px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);z-index:300}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{background:var(--red);color:#fff}
+
+
+/* CANVAS ASSINATURA — fullscreen sem rotação CSS */
+.sig-overlay{display:none;position:fixed;inset:0;z-index:1000;background:#111;flex-direction:column}
+.sig-overlay.open{display:flex}
+.sig-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#111;flex-shrink:0;gap:12px}
+.sig-topbar-title{font-family:var(--font-h);font-size:13px;font-weight:700;color:#fff}
+.sig-topbar-sub{font-size:11px;color:#888;margin-top:1px}
+.sig-canvas-area{flex:1;position:relative;background:#fff;overflow:hidden;margin:0 12px}
+#sigCanvas{display:block;touch-action:none;cursor:crosshair;background:#fff}
+.sig-bottombar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#111;gap:10px;flex-shrink:0}
+.sig-hint{font-size:11px;color:#888;flex:1}
+.sig-btn-clear{font-size:12px;padding:8px 14px;border-radius:8px;border:1px solid #444;background:transparent;color:#aaa;cursor:pointer;white-space:nowrap}
+.sig-btn-clear:hover{border-color:#e04848;color:#e04848}
+.sig-btn-cancel{font-size:12px;padding:8px 14px;border-radius:8px;border:1px solid #444;background:transparent;color:#aaa;cursor:pointer;white-space:nowrap}
+.sig-btn-confirm{font-size:13px;font-weight:700;padding:10px 20px;border-radius:8px;border:none;background:var(--accent);color:#111;cursor:pointer;font-family:var(--font-h);white-space:nowrap}
+.sig-rotate-hint{display:none;position:absolute;inset:0;background:#111;z-index:10;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;font-family:var(--font-h);font-size:14px;text-align:center}
+.sig-rotate-hint.show{display:flex}
+.sig-rotate-icon{font-size:40px;animation:rotateHint 1.2s ease-in-out infinite alternate}
+@keyframes rotateHint{from{transform:rotate(-15deg)}to{transform:rotate(15deg)}}
+
+/* BLOCO FOOTER */
+.bloco-footer{padding:14px 18px 18px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:14px}
+.block-aplicador{padding:10px 18px 0;display:flex;flex-direction:column;gap:5px}
+.block-aplicador label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.block-aplicador input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text);font-family:var(--font-b);font-size:13px;outline:none;transition:border-color .2s;width:100%}
+.block-aplicador input:focus{border-color:var(--accent)}
+.block-aplicador input::placeholder{color:var(--muted)}
+.bloco-signature{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bloco-signature-left{display:flex;flex-direction:column;gap:3px}
+.bloco-signature-title{font-size:12px;color:var(--muted);font-style:italic}
+.sig-mini{font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px}
+.sig-mini.done{background:rgba(61,184,122,.15);color:var(--green)}
+.sig-mini.pending{background:rgba(255,255,255,.06);color:var(--muted)}
+.btn-assinar{font-family:var(--font-h);font-size:12px;font-weight:600;padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-assinar:hover{border-color:var(--green);color:var(--green)}
+.btn-assinar.signed{background:rgba(61,184,122,.15);border-color:var(--green);color:var(--green)}
+.btn-concluir{font-family:var(--font-h);font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .15s;align-self:flex-end;margin-top:6px}
+.btn-concluir:hover{border-color:var(--accent);color:var(--accent)}
+.btn-concluir.signed{background:var(--green);border-color:var(--green);color:#fff}
+
+
+
+.abs-label { display: none; font-size: 10px; margin-left: 3px; }
+@media(max-width:640px){ .abs-label { display: inline; } .abs-emoji { font-size: 16px; } .abs-btn { display: flex; align-items: center; justify-content: center; } }
+
+/* ═══════════════════════════════════════
+   MOBILE FIRST — tela pequena (celular)
+   ═══════════════════════════════════════ */
+@media(max-width:640px){
+
+  /* NAV */
+  nav { padding: 0 12px; height: 50px; gap: 8px; }
+  .nav-logo { font-size: 14px; }
+  .nav-sync { font-size: 10px; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nav-tab { font-size: 11px; padding: 5px 10px; }
+
+  /* WRAP */
+  .wrap { padding: 16px 12px 100px; }
+
+  /* PAINEL */
+  .painel-header h2 { font-size: 18px; }
+  .painel-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat-card { padding: 12px 14px; }
+  .stat-card .val { font-size: 24px; }
+  .colab-card { padding: 14px 14px; gap: 10px; }
+  .colab-avatar { width: 36px; height: 36px; font-size: 16px; }
+  .colab-name { font-size: 14px; }
+  .colab-meta { font-size: 11px; }
+  .colab-pct { font-size: 16px; }
+  .colab-progbar { width: 70px; }
+  .delete-btn { padding: 6px 10px; font-size: 14px; }
+  .add-colab-card { padding: 16px; font-size: 13px; }
+
+  /* TRILHA HEADER */
+  .trilha-header { flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .trilha-actions { width: 100%; display: flex; gap: 8px; }
+  .trilha-actions .btn { flex: 1; text-align: center; font-size: 12px; }
+  .trilha-info h2 { font-size: 17px; }
+
+  /* PROGRESS */
+  .prog-block { padding: 14px 16px; margin-bottom: 16px; }
+  .prog-pct { font-size: 22px; }
+  .prog-pills { gap: 10px; }
+  .pill { font-size: 11px; }
+
+  /* BLOCO HEADER */
+  .bloco { margin-bottom: 10px; }
+  .bloco-header { padding: 13px 14px; gap: 8px; }
+  .bloco-fase { font-size: 9px; padding: 2px 6px; }
+  .bloco-title { font-size: 13px; }
+  .bloco-sub { font-size: 10px; }
+  .bloco-badge { font-size: 10px; padding: 2px 7px; }
+
+  /* TEMA ROW — layout vertical no celular */
+  .tema-row {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 14px;
+    gap: 10px;
+  }
+  .tema-num { min-width: auto; text-align: left; font-size: 10px; }
+  .tema-nome { font-size: 14px; line-height: 1.5; }
+  .tema-meta { font-size: 11px; margin-top: 3px; }
+
+  /* BOTÕES DE ABSORÇÃO — grandes para o dedo */
+  .abs-btns {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .abs-btn {
+    font-size: 13px;
+    padding: 10px 4px;
+    border-radius: 8px;
+    text-align: center;
+    justify-content: center;
+  }
+  .obs-btn {
+    display: none; /* no celular, obs abre automaticamente ao tocar no tema */
+  }
+
+  /* BLOCO FOOTER */
+  .bloco-footer { padding: 14px 14px 16px; gap: 12px; }
+  .block-aplicador { padding: 8px 14px 0; }
+  .block-aplicador input { font-size: 15px; padding: 10px 12px; }
+
+  /* ASSINATURA */
+  .bloco-signature { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .btn-assinar {
+    width: 100%;
+    text-align: center;
+    padding: 11px;
+    font-size: 13px;
+  }
+
+  /* CONCLUIR BLOCO — grande e destacado */
+  .btn-concluir {
+    width: 100%;
+    text-align: center;
+    padding: 13px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 0;
+  }
+  .btn-concluir:not(.signed) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* MODAL */
+  .overlay { padding: 16px 12px; align-items: flex-end; }
+  .modal { border-radius: 16px 16px 0 0; padding: 24px 18px; max-height: 90vh; overflow-y: auto; }
+  .modal h3 { font-size: 16px; }
+  .form-row input, .form-row select { font-size: 16px; padding: 11px 12px; } /* 16px evita zoom automático no iOS */
+  .modal-actions { flex-direction: column-reverse; }
+  .modal-actions .btn { width: 100%; text-align: center; padding: 12px; font-size: 14px; }
+
+  /* CANVAS ASSINATURA */
+
+  /* RELATÓRIO */
+  .report-pre { font-size: 11px; padding: 12px; max-height: 300px; }
+
+  /* ESCONDER elementos menos importantes */
+  .nav-tabs .nav-tab:not(.active) { display: none; }
+  .nav-tab.active { display: block; }
+}
+
+/* Tablet (601–900px) — ajustes menores */
+@media(min-width:641px) and (max-width:900px){
+  .wrap { padding: 20px 16px 80px; }
+  .abs-btn { font-size: 12px; padding: 6px 10px; }
+  .tema-row { flex-wrap: wrap; }
+  .abs-btns { gap: 5px; }
+}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-screen.hidden{display:none}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
+.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
+.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px;margin-bottom:12px}
+.login-input:focus{border-color:var(--accent)}
+.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
+.login-btn:hover{background:#f5cc55}
+.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
+</style>
+</head>
+<body>
+
+<!-- TELA DE LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Let's Poke</div>
+    <div class="login-sub">Sistema de Trilha de Treinamento</div>
+    <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
+      onkeydown="if(event.key==='Enter') fazerLogin()" />
+    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+
+<!-- Loading -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="spinner"></div>
+  <div class="loading-txt" id="loadingTxt">Conectando ao Google Sheets…</div>
+</div>
+
+<nav>
+  <div class="nav-logo">Let's Poke <span>/ Trilha</span></div>
+  <div class="nav-sync" id="syncStatus">⏳ Sincronizando…</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goView('painel')">📊 Painel</button>
+    <button class="nav-tab" id="tabTrilha" onclick="goView('trilha')" style="display:none">📋 Trilha</button>
+    <button class="nav-tab" onclick="openModal('modalConfig')">⚙️</button>
+  </div>
+</nav>
+
+<!-- CONFIG BANNER -->
+<div id="configBanner" class="config-banner hidden">
+  <div class="config-banner-icon">⚙️</div>
+  <div class="config-banner-text">
+    <strong>Configure sua conexão com Google Sheets</strong>
+    <p>Cole abaixo a URL do seu Google Apps Script. O app usa essa URL para salvar e ler os dados da trilha.</p>
+    <div class="config-url-row">
+      <input class="config-url-input" id="bannerUrlInput" placeholder="Cole aqui a URL do Apps Script: https://script.google.com/macros/s/.../exec" />
+      <button class="btn btn-primary" onclick="saveUrlFromBanner()">Salvar e Conectar</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAINEL -->
+<div id="viewPainel" class="view active">
+  <div class="wrap">
+    <div class="painel-header">
+      <h2>Painel de Monitoramento</h2>
+      <p>Let's Poke — Implantação de Franquia · Dados sincronizados com Google Sheets</p>
+    </div>
+    <div class="painel-stats" id="painelStats"></div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button></div>
+    <div class="colab-grid" id="colabGrid"></div>
+  </div>
+</div>
+
+<!-- TRILHA -->
+<div id="viewTrilha" class="view">
+  <div class="wrap">
+    <div class="trilha-header">
+      <div class="trilha-info">
+        <h2 id="trilhaNome">—</h2>
+        <p id="trilhaMeta">—</p>
+      </div>
+      <div class="trilha-actions">
+        <button class="btn btn-back" onclick="goView('painel')">← Painel</button>
+        <button class="btn btn-ghost" onclick="openReport()">📋 Relatório</button>
+        <button class="btn btn-primary cert-btn" id="certBtn" onclick="openCertificado()">🏅 Certificado</button>
+      </div>
+    </div>
+    <div class="prog-block">
+      <div class="prog-row"><span>Progresso da Trilha</span><span class="prog-pct" id="trilhaPct">0%</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="trilhaFill" style="width:0%"></div></div>
+      <div class="prog-pills">
+        <div class="pill"><div class="dot" style="background:var(--green)"></div><span id="pGreen">0 absorvidos</span></div>
+        <div class="pill"><div class="dot" style="background:var(--yellow)"></div><span id="pYellow">0 reforço</span></div>
+        <div class="pill"><div class="dot" style="background:var(--red)"></div><span id="pRed">0 a refazer</span></div>
+        <div class="pill"><div class="dot" style="background:var(--border)"></div><span id="pPend">0 pendentes</span></div>
+        <div class="pill"><div class="dot" style="background:var(--accent)"></div><span id="pBlocos">0/0 blocos</span></div>
+      </div>
+    </div>
+    <div id="blocosContainer"></div>
+  </div>
+</div>
+
+<!-- MODAL NOVO COLABORADOR -->
+<div class="overlay" id="modalColab">
+  <div class="modal">
+    <h3>➕ Novo Colaborador</h3>
+    <p>Preencha os dados para criar a trilha de treinamento</p>
+    <div class="form-row"><label>Nome completo</label><input id="fNome" placeholder="Ex: João Costa" /></div>
+    <div class="form-row"><label>Função</label>
+      <select id="fFuncao">
+        <option value="atendimento">🧾 Atendimento | Caixa</option>
+        <option value="cozinha">🍳 Cozinha</option>
+        <option value="asg">🧹 ASG</option>
+        <option value="gerente">👤 Gerente | Sub</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Unidade / Loja</label><input id="fUnidade" placeholder="Ex: LP 01 – Centro" /></div>
+    <div class="form-row"><label>Data de Início</label><input id="fData" type="date" /></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalColab')">Cancelar</button>
+      <button class="btn btn-primary" onclick="criarColab()">Criar Trilha</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIG -->
+<div class="overlay" id="modalConfig">
+  <div class="modal">
+    <h3>⚙️ Configurações</h3>
+    <p>Cole a URL do seu <strong>Google Apps Script</strong></p>
+    <div class="form-row">
+      <label>Apps Script URL</label>
+      <input id="configUrl" placeholder="https://script.google.com/macros/s/.../exec" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalConfig')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveConfig()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RELATÓRIO -->
+<div class="overlay" id="modalReport">
+  <div class="modal" style="max-width:680px">
+    <h3>📋 Relatório de Treinamento</h3>
+    <p id="reportSub">—</p>
+    <div class="report-pre" id="reportContent"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalReport')">Fechar</button>
+      <button class="btn btn-ghost" onclick="copyReport()">📄 Copiar</button>
+      <button class="btn btn-primary" onclick="printReport()">🖨️ Imprimir</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CERTIFICADO -->
+<div class="overlay" id="modalCert">
+  <div class="modal" style="max-width:760px">
+    <h3>🏅 Certificado de Conclusão</h3>
+    <p id="certSub">—</p>
+    <div class="report-pre" id="certContent"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalCert')">Fechar</button>
+      <button class="btn btn-ghost" onclick="copyCertificado()">📄 Copiar</button>
+      <button class="btn btn-primary" onclick="printCertificado()">🖨️ Imprimir</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- MODAL RELATÓRIO GERENCIAL -->
+<div class="overlay" id="modalGerencial">
+  <div class="modal" style="max-width:700px">
+    <h3>📊 Relatório Gerencial</h3>
+    <p id="gerencialSub">Visão consolidada de todos os colaboradores</p>
+    <div class="report-pre" id="gerencialContent"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalGerencial')">Fechar</button>
+      <button class="btn btn-ghost" onclick="copyGerencial()">📄 Copiar</button>
+      <button class="btn btn-primary" onclick="printGerencial()">🖨️ Imprimir</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ASSINATURA CANVAS -->
+<!-- ASSINATURA LANDSCAPE FULLSCREEN -->
+<div class="sig-overlay" id="sigOverlay">
+  <div class="sig-topbar">
+    <div>
+      <div class="sig-topbar-title">✍️ Assinatura</div>
+      <div class="sig-topbar-sub" id="assinaturaSubtitle">Assine no campo abaixo</div>
+    </div>
+    <button class="sig-btn-cancel" onclick="cancelarAssinatura()">✕ Cancelar</button>
+  </div>
+  <div class="sig-canvas-area">
+    <canvas id="sigCanvas"></canvas>
+  </div>
+  <div class="sig-bottombar">
+    <span class="sig-hint">Use o dedo para assinar</span>
+    <button class="sig-btn-clear" onclick="clearCanvas()">↺ Limpar</button>
+    <button class="sig-btn-confirm" onclick="confirmarAssinatura()">✔ Confirmar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// TRILHAS (dados dos blocos por função)
+// ══════════════════════════════════════════════
+const TRILHAS = {
+  atendimento:{label:'🧾 Atendimento | Caixa',diasUteis:20,blocos:[
+    {id:'b1',fase:1,titulo:'ONBOARDING — Cultura e Marca',temas:[
+      {n:'1',nome:'Negócio: missão, visão, valores e cultura',material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'2',nome:'Organograma da empresa',material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'3',nome:"Marcas Let's Poke e Easy Poke",material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'4',nome:'Apresentação do cardápio (categorias)',material:'Cardápio',aplicador:'Gerente LP'},
+      {n:'5',nome:'Degustação (foco no que não conhece)',material:'Pista',aplicador:'Gerente LP'},
+      {n:'6',nome:'Kit Boas-Vindas: Manual de Conduta',material:'Manual',aplicador:'Gerente LP'},
+    ]},
+    {id:'b2',fase:1,titulo:'GESTÃO CAIXA',temas:[
+      {n:'7',nome:'CMV — Noção básica de estoque e recebimento',material:'Orientação',aplicador:'Gerente LP'},
+      {n:'8',nome:'DRU caixa e inventário',material:'Planilha',aplicador:'Gerente LP'},
+      {n:'9',nome:'Checklist abertura e fechamento (Sults)',material:'Checklist',aplicador:'Gerente LP'},
+      {n:'10',nome:'Controle de manutenção (visão básica)',material:'Planilha',aplicador:'Gerente LP'},
+    ]},
+    {id:'b3',fase:1,titulo:'ATENDIMENTO E SISTEMAS DE VENDAS',temas:[
+      {n:'54',nome:'Atendimento ao cliente — Metodologia OIE',material:'Apresentação',aplicador:'Multiplicador LP'},
+      {n:'55',nome:'Gestão de fila em horários de pico',material:'Orientação',aplicador:'Multiplicador LP'},
+      {n:'56',nome:'Eclética — PDV completo',material:'Sistema',aplicador:'Multiplicador LP'},
+      {n:'57',nome:'Olga — Pedidos / Cashback / Totens',material:'Sistema',aplicador:'Multiplicador LP'},
+      {n:'58',nome:'iFood — Portal, avaliações, cancelamentos, chat',material:'Sistema',aplicador:'Multiplicador LP'},
+      {n:'59',nome:'iFood — Frete, Super Restaurante, gestor',material:'Sistema',aplicador:'Multiplicador LP'},
+      {n:'60',nome:'Mottu / Logística — Acompanhamento e chamados',material:'Sistema',aplicador:'Multiplicador LP'},
+    ]},
+    {id:'b4',fase:1,titulo:'EXPEDIÇÃO CAIXA',temas:[
+      {n:'17',nome:'Plano de chão e posto do atendente',material:'Planilha',aplicador:'Multiplicador LP'},
+      {n:'18',nome:'Padrão de montagem (visão para conferência)',material:'Pista',aplicador:'Líder Cozinha LP'},
+      {n:'19',nome:'Leitura de cards e comanda',material:'Cards',aplicador:'Multiplicador LP'},
+      {n:'20',nome:'Fechamento de sacola e tratativas de delivery',material:'Planilha',aplicador:'Multiplicador LP'},
+    ]},
+    {id:'b5',fase:1,titulo:'CONTROLE DE QUALIDADE',temas:[
+      {n:'23',nome:'Controle de temperatura pista (GNs ≤ 2h)',material:'Controle',aplicador:'Líder Qualidade LP'},
+      {n:'24',nome:'Orientações sobre recebimento',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'25',nome:'Controle temperatura dos equipamentos (2x/dia)',material:'Controle',aplicador:'Líder Qualidade LP'},
+      {n:'26',nome:'Coleta de amostras — kani, atum, salmão (18h30)',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'27',nome:'Higiene pessoal e uniforme',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'28',nome:'Armazenamento seco + controle de estoque',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'29',nome:'Armazenamento geladeira e freezer',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'30',nome:'Etiquetagem de alimentos',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'31',nome:'Cuidados sanitários na manipulação',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'32',nome:'Uso correto de EPIs',material:'Orientação',aplicador:'Líder Qualidade LP'},
+    ]},
+    {id:'b6',fase:2,titulo:'INAUGURAÇÃO',temas:[
+      {n:'F2',nome:'Revisão prática dos temas com absorção insuficiente',material:'Pista/Sistema',aplicador:'Equipe Franqueadora'},
+      {n:'F3',nome:'Acompanhamento da operação (Dias 1 e 2)',material:'Observação',aplicador:'Equipe Franqueadora'},
+      {n:'F4',nome:'Validação de autonomia e feedback final',material:'Formulário',aplicador:'Equipe Franqueadora'},
+      {n:'F5',nome:'Assinatura do Termo de Conclusão',material:'Termo',aplicador:'Equipe Franqueadora'},
+    ]},
+  ]},
+  cozinha:{label:'🍳 Cozinha',diasUteis:20,blocos:[
+    {id:'b1',fase:1,titulo:'ONBOARDING — Cultura e Marca',temas:[
+      {n:'1',nome:'Negócio: missão, visão, valores e cultura',material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'2',nome:'Organograma da empresa',material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'3',nome:"Marcas Let's Poke e Easy Poke",material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'4',nome:'Apresentação do cardápio (categorias)',material:'Cardápio',aplicador:'Gerente LP'},
+      {n:'5',nome:'Degustação (foco no que não conhece)',material:'Pista',aplicador:'Gerente LP'},
+      {n:'6',nome:'Kit Boas-Vindas: Manual de Conduta',material:'Manual',aplicador:'Gerente LP'},
+    ]},
+    {id:'b2',fase:1,titulo:'CONTROLE DE QUALIDADE',temas:[
+      {n:'23',nome:'Controle de temperatura pista (GNs ≤ 2h)',material:'Controle',aplicador:'Líder Qualidade LP'},
+      {n:'24',nome:'Orientações sobre recebimento',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'25',nome:'Controle temperatura dos equipamentos (2x/dia)',material:'Controle',aplicador:'Líder Qualidade LP'},
+      {n:'26',nome:'Coleta de amostras — kani, atum, salmão (18h30)',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'27',nome:'Higiene pessoal e uniforme',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'28',nome:'Armazenamento seco + controle de estoque',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'29',nome:'Armazenamento geladeira e freezer',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'30',nome:'Etiquetagem de alimentos',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'31',nome:'Cuidados sanitários na manipulação',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'32',nome:'Uso correto de EPIs',material:'Orientação',aplicador:'Líder Qualidade LP'},
+    ]},
+    {id:'b3',fase:1,titulo:'COZINHA — Organização e Produção',temas:[
+      {n:'7',nome:'Planilha de descartes',material:'Planilha',aplicador:'Líder Cozinha LP'},
+      {n:'8',nome:'Plano de produção',material:'Plano',aplicador:'Líder Cozinha LP'},
+      {n:'9',nome:'Mapa de produção',material:'Mapa',aplicador:'Líder Cozinha LP'},
+      {n:'10',nome:'Montagem da pista e reposições',material:'Pista',aplicador:'Líder Cozinha LP'},
+      {n:'11',nome:'Fechamento de pista',material:'Orientação',aplicador:'Líder Cozinha LP'},
+      {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela',aplicador:'Líder Cozinha LP'},
+      {n:'13',nome:'CORTE — Abacate / Gengibre / Kani / Manga / Mix Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14',nome:'Pimenta / Tomate / Gengibre cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15',nome:'FRITURAS — Camarão / Crispy / Dadinho / Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16',nome:'BEBIDAS — Chás / Suchás / Sucos (todos)',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17',nome:'PREPAROS — Bifum / Abacaxi / Moyashi / Caldo / Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18',nome:'Creme Wasabi / Dadinho Salmão / Edamame / Gohan / Quinoa / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19',nome:'Wakame / Maionese Spicy / Arroz Negro / Cenoura / Tartare / Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20',nome:'MOLHOS — Marinadas / Molho Su / Sessame / Asiático / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21',nome:'PROTEÍNAS — Tilápia / Salmão / Atum / Ceviche / Empanado / Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22',nome:'Camarão / Salmão Spicy / Três Peixes / Shimeji / Atum Selado / Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
+    ]},
+    {id:'b4',fase:1,titulo:'EXPEDIÇÃO COZ',temas:[
+      {n:'C1',nome:'Padrão de montagem — todas as categorias',material:'Pista',aplicador:'Multiplicador LP'},
+      {n:'C2',nome:'Leitura de cards, comanda e itens à parte',material:'Cards',aplicador:'Multiplicador LP'},
+      {n:'C3',nome:'Pré-montagem de bases e porcionamento',material:'Orientação',aplicador:'Multiplicador LP'},
+    ]},
+    {id:'b5',fase:1,titulo:'GESTÃO COZ',temas:[
+      {n:'C4',nome:'CMV — Compras, estoque, recebimento',material:'Orientação',aplicador:'Gerente LP'},
+      {n:'C5',nome:'CMV — Plano de produção vs. descarte',material:'Orientação',aplicador:'Gerente LP'},
+      {n:'C6',nome:'Everest — Pedido e NF (visão básica)',material:'Sistema',aplicador:'Gerente LP'},
+      {n:'C7',nome:'Inventário (noção + participação)',material:'Planilha',aplicador:'Gerente LP'},
+      {n:'C8',nome:'Checklist abertura e fechamento cozinha',material:'Checklist',aplicador:'Gerente LP'},
+    ]},
+    {id:'b6',fase:2,titulo:'INAUGURAÇÃO',temas:[
+      {n:'F2',nome:'Revisão prática dos temas com absorção insuficiente',material:'Pista/Sistema',aplicador:'Equipe Franqueadora'},
+      {n:'F3',nome:'Acompanhamento da operação (Dias 1 e 2)',material:'Observação',aplicador:'Equipe Franqueadora'},
+      {n:'F4',nome:'Validação de autonomia e feedback final',material:'Formulário',aplicador:'Equipe Franqueadora'},
+      {n:'F5',nome:'Assinatura do Termo de Conclusão',material:'Termo',aplicador:'Equipe Franqueadora'},
+    ]},
+  ]},
+  asg:{label:'🧹 ASG',diasUteis:15,blocos:[
+    {id:'b1',fase:1,titulo:'ONBOARDING — Cultura e Marca',temas:[
+      {n:'1',nome:'Negócio: missão, visão, valores e cultura',material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'2',nome:'Organograma da empresa',material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'3',nome:"Marcas Let's Poke e Easy Poke",material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'4',nome:'Apresentação do cardápio (categorias)',material:'Cardápio',aplicador:'Gerente LP'},
+      {n:'5',nome:'Degustação (foco no que não conhece)',material:'Pista',aplicador:'Gerente LP'},
+      {n:'6',nome:'Kit Boas-Vindas: Manual de Conduta',material:'Manual',aplicador:'Gerente LP'},
+    ]},
+    {id:'b2',fase:1,titulo:'SERVIÇOS GERAIS',temas:[
+      {n:'6',nome:'Organização mesas e cadeiras salão',material:'Orientação',aplicador:'Multiplicador LP'},
+      {n:'7',nome:'Recolha de bandejas no horário de pico',material:'Orientação',aplicador:'Multiplicador LP'},
+      {n:'8',nome:'Limpeza de mesas (após cada cliente)',material:'Orientação',aplicador:'Multiplicador LP'},
+      {n:'9',nome:'Limpeza de bandejas de madeira',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'10',nome:'Produtos de limpeza: ficha técnica, dosagem, riscos',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'11',nome:'Uso correto de EPI',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'12',nome:'Checagem diária limpeza (calçadas, vidros, banheiro)',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'13',nome:'Abastecimento (papeleiras, saboneteiras, difusor)',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'14',nome:'Retirada do lixo e organização área de resíduos',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'15',nome:'Higienização e organização da louça',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'16',nome:'Limpeza de banheiro (chão, vaso, pia, odor, lixo)',material:'Orientação',aplicador:'Líder Qualidade LP'},
+    ]},
+    {id:'b3',fase:1,titulo:'CONTROLE DE QUALIDADE',temas:[
+      {n:'23',nome:'Controle de temperatura pista (GNs ≤ 2h)',material:'Controle',aplicador:'Líder Qualidade LP'},
+      {n:'24',nome:'Orientações sobre recebimento',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'25',nome:'Controle temperatura dos equipamentos (2x/dia)',material:'Controle',aplicador:'Líder Qualidade LP'},
+      {n:'26',nome:'Coleta de amostras — kani, atum, salmão (18h30)',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'27',nome:'Higiene pessoal e uniforme',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'28',nome:'Armazenamento seco + controle de estoque',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'29',nome:'Armazenamento geladeira e freezer',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'30',nome:'Etiquetagem de alimentos',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'31',nome:'Cuidados sanitários na manipulação',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'32',nome:'Uso correto de EPIs',material:'Orientação',aplicador:'Líder Qualidade LP'},
+    ]},
+    {id:'b4',fase:1,titulo:'PLANO DE CHÃO — Posto do ASG',temas:[
+      {n:'17',nome:'Plano de chão: entender o próprio posto',material:'Planilha',aplicador:'Gerente LP'},
+      {n:'18',nome:'Apoio à expedição nos horários de pico',material:'Orientação',aplicador:'Multiplicador LP'},
+    ]},
+    {id:'b5',fase:2,titulo:'INAUGURAÇÃO',temas:[
+      {n:'F2',nome:'Revisão prática dos temas com absorção insuficiente',material:'Pista/Sistema',aplicador:'Equipe Franqueadora'},
+      {n:'F3',nome:'Acompanhamento da operação (Dias 1 e 2)',material:'Observação',aplicador:'Equipe Franqueadora'},
+      {n:'F4',nome:'Validação de autonomia e feedback final',material:'Formulário',aplicador:'Equipe Franqueadora'},
+      {n:'F5',nome:'Assinatura do Termo de Conclusão',material:'Termo',aplicador:'Equipe Franqueadora'},
+    ]},
+  ]},
+  gerente:{label:'👤 Gerente | Sub',diasUteis:30,blocos:[
+    {id:'b1',fase:1,titulo:'ONBOARDING — Cultura e Marca',temas:[
+      {n:'1',nome:'Negócio: missão, visão, valores e cultura',material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'2',nome:'Organograma da empresa',material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'3',nome:"Marcas Let's Poke e Easy Poke",material:'Apresentação',aplicador:'Gerente LP'},
+      {n:'4',nome:'Apresentação do cardápio (categorias)',material:'Cardápio',aplicador:'Gerente LP'},
+      {n:'5',nome:'Degustação (foco no que não conhece)',material:'Pista',aplicador:'Gerente LP'},
+      {n:'6',nome:'Kit Boas-Vindas: Manual de Conduta',material:'Manual',aplicador:'Gerente LP'},
+    ]},
+    {id:'b2',fase:1,titulo:'COZINHA — Organização e Produção',temas:[
+      {n:'7',nome:'Planilha de descartes',material:'Planilha',aplicador:'Líder Cozinha LP'},
+      {n:'8',nome:'Plano de produção',material:'Plano',aplicador:'Líder Cozinha LP'},
+      {n:'9',nome:'Mapa de produção',material:'Mapa',aplicador:'Líder Cozinha LP'},
+      {n:'10',nome:'Montagem da pista e reposições',material:'Pista',aplicador:'Líder Cozinha LP'},
+      {n:'11',nome:'Fechamento de pista',material:'Orientação',aplicador:'Líder Cozinha LP'},
+      {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela',aplicador:'Líder Cozinha LP'},
+      {n:'13',nome:'CORTE — Abacate / Gengibre / Kani / Manga / Mix Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14',nome:'Pimenta / Tomate / Gengibre cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15',nome:'FRITURAS — Camarão / Crispy / Dadinho / Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16',nome:'BEBIDAS — Chás / Suchás / Sucos (todos)',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17',nome:'PREPAROS — Bifum / Abacaxi / Moyashi / Caldo / Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18',nome:'Creme Wasabi / Dadinho Salmão / Edamame / Gohan / Quinoa / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19',nome:'Wakame / Maionese Spicy / Arroz Negro / Cenoura / Tartare / Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20',nome:'MOLHOS — Marinadas / Molho Su / Sessame / Asiático / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21',nome:'PROTEÍNAS — Tilápia / Salmão / Atum / Ceviche / Empanado / Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22',nome:'Camarão / Salmão Spicy / Três Peixes / Shimeji / Atum Selado / Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
+    ]},
+    {id:'b3',fase:1,titulo:'CONTROLE DE QUALIDADE',temas:[
+      {n:'23',nome:'Controle de temperatura pista (GNs ≤ 2h)',material:'Controle',aplicador:'Líder Qualidade LP'},
+      {n:'24',nome:'Orientações sobre recebimento',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'25',nome:'Controle temperatura dos equipamentos (2x/dia)',material:'Controle',aplicador:'Líder Qualidade LP'},
+      {n:'26',nome:'Coleta de amostras — kani, atum, salmão (18h30)',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'27',nome:'Higiene pessoal e uniforme',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'28',nome:'Armazenamento seco + controle de estoque',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'29',nome:'Armazenamento geladeira e freezer',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'30',nome:'Etiquetagem de alimentos',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'31',nome:'Cuidados sanitários na manipulação',material:'Orientação',aplicador:'Líder Qualidade LP'},
+      {n:'32',nome:'Uso correto de EPIs',material:'Orientação',aplicador:'Líder Qualidade LP'},
+    ]},
+    {id:'b4',fase:1,titulo:'EXPEDIÇÃO',temas:[
+      {n:'33',nome:'Tratativas de delivery',material:'Planilha',aplicador:'Multiplicador LP'},
+      {n:'34',nome:'Plano de chão (postos e atribuições)',material:'Planilha',aplicador:'Multiplicador LP'},
+      {n:'35',nome:'Padrão de montagem — todas as categorias',material:'Pista',aplicador:'Líder Cozinha LP'},
+      {n:'36',nome:'Fechamento de sacola delivery',material:'Orientação',aplicador:'Multiplicador LP'},
+      {n:'37',nome:'Leitura de cards e lista de pesos MSP',material:'Cards',aplicador:'Multiplicador LP'},
+      {n:'38',nome:'Leitura de comanda e itens à parte',material:'Comanda',aplicador:'Multiplicador LP'},
+      {n:'39',nome:'Pré-montagem de bases',material:'Orientação',aplicador:'Multiplicador LP'},
+      {n:'40',nome:'Porcionamento de itens à parte',material:'Orientação',aplicador:'Multiplicador LP'},
+    ]},
+    {id:'b5',fase:1,titulo:'GESTÃO',temas:[
+      {n:'41',nome:'Inventário (dias 10, 20 e 30)',material:'Planilha',aplicador:'Gerente LP'},
+      {n:'42',nome:'Controle de ponto',material:'Sistema',aplicador:'Gerente LP'},
+      {n:'43',nome:'Gestão de escala + Plano de Chão',material:'Planilha',aplicador:'Gerente LP'},
+      {n:'44',nome:'Gestão de freelas',material:'Planilha',aplicador:'Gerente LP'},
+      {n:'45',nome:'Controle de manutenção',material:'Planilha',aplicador:'Gerente LP'},
+      {n:'46',nome:'DRU caixa',material:'Planilha',aplicador:'Gerente LP'},
+      {n:'47',nome:'Checklists operacionais Sults',material:'Checklist',aplicador:'Gerente LP'},
+      {n:'48',nome:'Entendimento da DRE',material:'DRE',aplicador:'Gerente LP'},
+      {n:'49',nome:'CMV — Compras (mín/máx, fornecedores)',material:'Orientação',aplicador:'Gerente LP'},
+      {n:'50',nome:'CMV — Controle de estoque',material:'Orientação',aplicador:'Gerente LP'},
+      {n:'51',nome:'CMV — Recebimento (pesar, qualidade, NF)',material:'Orientação',aplicador:'Gerente LP'},
+      {n:'52',nome:'CMV — Plano/mapa de produção e descarte',material:'Orientação',aplicador:'Gerente LP'},
+      {n:'53',nome:'Everest — Pedido de compras e NF',material:'Sistema',aplicador:'Gerente LP'},
+    ]},
+    {id:'b6',fase:1,titulo:'ATENDIMENTO E SISTEMAS DE VENDAS',temas:[
+      {n:'54',nome:'Atendimento ao cliente — Metodologia OIE',material:'Apresentação',aplicador:'Multiplicador LP'},
+      {n:'55',nome:'Gestão de fila em horários de pico',material:'Orientação',aplicador:'Multiplicador LP'},
+      {n:'56',nome:'Eclética — PDV completo',material:'Sistema',aplicador:'Multiplicador LP'},
+      {n:'57',nome:'Olga — Pedidos / Cashback / Totens',material:'Sistema',aplicador:'Multiplicador LP'},
+      {n:'58',nome:'iFood — Portal, avaliações, cancelamentos, chat',material:'Sistema',aplicador:'Multiplicador LP'},
+      {n:'59',nome:'iFood — Frete, Super Restaurante, gestor',material:'Sistema',aplicador:'Multiplicador LP'},
+      {n:'60',nome:'Mottu / Logística — Acompanhamento e chamados',material:'Sistema',aplicador:'Multiplicador LP'},
+    ]},
+    {id:'b7',fase:2,titulo:'INAUGURAÇÃO',temas:[
+      {n:'F2',nome:'Revisão prática dos temas com absorção insuficiente',material:'Pista/Sistema',aplicador:'Equipe Franqueadora'},
+      {n:'F3',nome:'Acompanhamento da operação (Dias 1 e 2)',material:'Observação',aplicador:'Equipe Franqueadora'},
+      {n:'F4',nome:'Validação de autonomia e feedback final',material:'Formulário',aplicador:'Equipe Franqueadora'},
+      {n:'F5',nome:'Assinatura do Termo de Conclusão',material:'Termo',aplicador:'Equipe Franqueadora'},
+    ]},
+  ]},
+};
+
+const FUNC_ICONS={atendimento:'🧾',cozinha:'🍳',asg:'🧹',gerente:'👤'};
+
+// ══════════════════════════════════════════════
+// CONFIG & API — Google Apps Script
+// ══════════════════════════════════════════════
+const API_TOKEN = 'LP_8fK29xQa_Train_2026_zP41Lm';
+let API_URL = 'https://script.google.com/macros/s/AKfycbzEpywGjqJ1d2Y_dqscOZokbc_xiRkVUGYUmE73dw4nsyQs_hxJ6lOd6wQaq1wbASUVBw/exec';
+let state = { colabs: [] };
+let activeColabIdx = null;
+let saveTimeout = null;
+
+function setSyncStatus(status, msg) {
+  const el = document.getElementById('syncStatus');
+  el.className = 'nav-sync ' + status;
+  el.textContent = msg;
+}
+
+async function callApi(action, payload = {}) {
+  if (!API_URL) throw new Error('Configure a URL do Apps Script');
+  const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      action,
+      token: API_TOKEN,
+      ...payload
+    })
+  });
+
+  const data = await response.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+
+async function loadFromSheets() {
+  try {
+    setSyncStatus('loading', '⏳ Carregando…');
+    document.getElementById('loadingTxt').textContent = 'Carregando dados…';
+    const res = await fetch(API_URL + '?action=getAll', { redirect: 'follow' });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    state.colabs = data.colabs || [];
+    setSyncStatus('ok', '✅ Sincronizado');
+  } catch(e) {
+    setSyncStatus('err', '❌ Erro de conexão');
+    toast('Erro: ' + e.message, true);
+  } finally {
+    document.getElementById('loadingScreen').classList.add('hidden');
+    renderPainel();
+  }
+}
+
+async function saveColabToSheets(colab) {
+  setSyncStatus('loading', '⏳ Salvando…');
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'save', token: API_TOKEN, colab })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    if (data.id && !colab.id) colab.id = data.id;
+    setSyncStatus('ok', '✅ Salvo');
+  } catch(e) {
+    setSyncStatus('err', '❌ Erro ao salvar');
+    toast('Erro ao salvar: ' + e.message, true);
+  }
+}
+
+async function deleteColabFromSheets(id) {
+  try {
+    await fetch(API_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'delete', token: API_TOKEN, id })
+    });
+  } catch(e) {
+    toast('Erro ao excluir: ' + e.message, true);
+  }
+}
+
+function syncAssinaturaToColab(c) {
+  // Persiste a última assinatura de bloco nos campos top-level do colaborador
+  if (!c || !c.blocos) return;
+  for (let i = c.blocos.length - 1; i >= 0; i--) {
+    const sig = c.blocos[i]?.assinaturaColaborador;
+    if (sig?.assinada) {
+      c.assinaturaTreinado = sig.img || 'assinado';
+      c.nomeAssinante = sig.nome || c.nome;
+      break;
+    }
+  }
+}
+
+function debounceSave() {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(async () => {
+    const c = state.colabs[activeColabIdx];
+    if (!c) return;
+    try {
+      syncAssinaturaToColab(c);
+      await saveColabToSheets(c);
+    } catch (e) {}
+  }, 900);
+}
+
+
+function formatDateShort(value){
+  if(!value) return '—';
+  if(/^\d{4}-\d{2}-\d{2}$/.test(value)){
+    const [y,m,d]=value.split('-');
+    return `${d}/${m}/${y}`;
+  }
+  const dt=new Date(value);
+  if(!Number.isNaN(dt.getTime())) return dt.toLocaleDateString('pt-BR');
+  return String(value);
+}
+
+function ensureBlocoState(c,bi){
+  if(!c.blocos[bi]) c.blocos[bi]={open:false,concluido:false,aplicadoPor:'',assinaturaColaborador:{assinada:false,nome:'',dataHora:'',img:''},temas:[]};
+  if(typeof c.blocos[bi].aplicadoPor!=='string') c.blocos[bi].aplicadoPor='';
+  if(!c.blocos[bi].assinaturaColaborador) c.blocos[bi].assinaturaColaborador={assinada:false,nome:'',dataHora:'',img:''};
+  if(!c.blocos[bi].assinaturaColaborador || typeof c.blocos[bi].assinaturaColaborador!=='object') c.blocos[bi].assinaturaColaborador={assinada:false,nome:'',dataHora:''};
+  if(!Array.isArray(c.blocos[bi].temas)) c.blocos[bi].temas=[];
+  return c.blocos[bi];
+}
+
+function collectAplicadores(c){
+  const set=new Set();
+  (c.blocos||[]).forEach(b=>{ if((b?.aplicadoPor||'').trim()) set.add(b.aplicadoPor.trim()); });
+  return Array.from(set);
+}
+
+function isCertificadoElegivel(c){
+  const trilha=TRILHAS[c.funcao];
+  const formacao=trilha.blocos.filter(b=>b.fase!==2);
+  if(!formacao.length) return false;
+  return formacao.every((_,i)=>ensureBlocoState(c,i).concluido);
+}
+
+// ══════════════════════════════════════════════
+// PAINEL
+// ══════════════════════════════════════════════
+function renderPainel() {
+  const total = state.colabs.length;
+  let prontos=0, em=0, nao=0;
+  state.colabs.forEach(c => {
+    const info = colabInfo(c);
+    if (info.statusKey==='ok') prontos++;
+    else if (info.statusKey==='em') em++;
+    else nao++;
+  });
+  document.getElementById('painelStats').innerHTML = `
+    <div class="stat-card"><div class="val">${total}</div><div class="lbl">Colaboradores</div></div>
+    <div class="stat-card"><div class="val" style="color:var(--green)">${prontos}</div><div class="lbl">✅ Prontos</div></div>
+    <div class="stat-card"><div class="val" style="color:var(--yellow)">${em}</div><div class="lbl">🔄 Em Treino</div></div>
+    <div class="stat-card"><div class="val" style="color:var(--muted)">${nao}</div><div class="lbl">⏳ Não Iniciados</div></div>
+  `;
+  document.getElementById('colabGrid').innerHTML =
+    state.colabs.map((c,i) => {
+      const info = colabInfo(c);
+      return `<div class="colab-card" onclick="openTrilha(${i})">
+        <div class="colab-avatar">${FUNC_ICONS[c.funcao]||'👤'}</div>
+        <div class="colab-info">
+          <div class="colab-name">${c.nome}</div>
+          <div class="colab-meta">${TRILHAS[c.funcao].label} · ${c.unidade} · Início: ${formatDateShort(c.dataInicio)}</div>
+        </div>
+        <div class="colab-right">
+          <div class="colab-pct">${info.pct}%</div>
+          <div class="colab-progbar"><div class="colab-progfill" style="width:${info.pct}%"></div></div>
+          <div class="colab-status ${info.statusClass}">${info.statusLabel}</div>
+        </div>
+        <button class="delete-btn" onclick="event.stopPropagation();deleteColab(${i})">🗑</button>
+      </div>`;
+    }).join('') +
+    `<div class="add-colab-card" onclick="openModal('modalColab')">+ Novo Colaborador</div>`;
+}
+
+function colabInfo(c) {
+  const trilha = TRILHAS[c.funcao];
+  let total=0, green=0, totalBlocos=trilha.blocos.length, blocosConcl=0;
+  trilha.blocos.forEach((bloco,bi) => {
+    bloco.temas.forEach((_,ti) => { total++; if ((c.blocos[bi]?.temas[ti]?.abs||'')==='g') green++; });
+    if (c.blocos[bi]?.concluido) blocosConcl++;
+  });
+  const pct = total>0?Math.round(green/total*100):0;
+  const isInaugurado = blocosConcl===totalBlocos;
+  let statusKey,statusClass,statusLabel;
+  if (green===0){statusKey='nao';statusClass='status-nao';statusLabel='⏳ Não iniciado';}
+  else if (isInaugurado){statusKey='ok';statusClass='status-ok';statusLabel='✅ Pronto para inaugurar';}
+  else{statusKey='em';statusClass='status-em';statusLabel=`🔄 ${blocosConcl}/${totalBlocos} blocos`;}
+  return {pct,statusKey,statusClass,statusLabel};
+}
+
+// ══════════════════════════════════════════════
+// TRILHA
+// ══════════════════════════════════════════════
+function openTrilha(idx) {
+  activeColabIdx = idx;
+  const c = state.colabs[idx];
+  const trilha = TRILHAS[c.funcao];
+  document.getElementById('trilhaNome').textContent = `${FUNC_ICONS[c.funcao]} ${c.nome}`;
+  const aplicadores = collectAplicadores(c);
+  document.getElementById('trilhaMeta').textContent = `${trilha.label} · ${c.unidade} · ${trilha.diasUteis} dias úteis · Aplicadores: ${aplicadores.length?aplicadores.join(', '):'—'} · Início: ${formatDateShort(c.dataInicio)}`;
+  document.getElementById('certBtn').classList.toggle('show', isCertificadoElegivel(c));
+  document.getElementById('tabTrilha').style.display='';
+  goView('trilha');
+  renderTrilha();
+}
+
+function renderTrilha() {
+  const c = state.colabs[activeColabIdx];
+  if (!c) return;
+  const trilha = TRILHAS[c.funcao];
+  let total=0,green=0,yellow=0,red=0,blocosDone=0;
+  trilha.blocos.forEach((bloco,bi) => {
+    const bState=ensureBlocoState(c,bi);
+    bloco.temas.forEach((_,ti) => {
+      total++;
+      const abs=bState.temas?.[ti]?.abs||'';
+      if(abs==='g')green++;else if(abs==='y')yellow++;else if(abs==='r')red++;
+    });
+    if(bState.concluido)blocosDone++;
+  });
+  const pct=total>0?Math.round(green/total*100):0;
+  document.getElementById('trilhaPct').textContent=pct+'%';
+  document.getElementById('trilhaFill').style.width=pct+'%';
+  document.getElementById('pGreen').textContent=`${green} absorvidos`;
+  document.getElementById('pYellow').textContent=`${yellow} reforço`;
+  document.getElementById('pRed').textContent=`${red} a refazer`;
+  document.getElementById('pPend').textContent=`${total-green-yellow-red} pendentes`;
+  document.getElementById('pBlocos').textContent=`${blocosDone}/${trilha.blocos.length} blocos`;
+  document.getElementById('certBtn').classList.toggle('show', isCertificadoElegivel(c));
+
+  document.getElementById('blocosContainer').innerHTML = trilha.blocos.map((bloco,bi) => {
+    const bState=ensureBlocoState(c,bi);
+    const isOpen=bState.open||false;
+    const isConcluido=bState.concluido||false;
+    const faseClass=bloco.fase===2?'fase2':'fase1';
+    const faseTxt=bloco.fase===2?'🏪 FASE 2':'📍 FASE 1';
+    let tdone=0,ttotal=bloco.temas.length,twarn=0;
+    bloco.temas.forEach((_,ti)=>{
+      const abs=bState.temas?.[ti]?.abs||'';
+      if(abs==='g')tdone++; if(abs==='r')twarn++;
+    });
+    let badgeCls='badge-pend',badgeTxt=`0/${ttotal}`;
+    if(isConcluido){badgeCls='badge-ok';badgeTxt='✔ Concluído';}
+    else if(tdone>0){badgeCls='badge-partial';badgeTxt=`${tdone}/${ttotal}`;}
+
+    const temasHtml=bloco.temas.map((tema,ti)=>{
+      const tState=bState.temas?.[ti]||{};
+      const abs=tState.abs||'';
+      const obs=tState.obs||'';
+      return `<div class="tema-row">
+        <div class="tema-num">${tema.n}</div>
+        <div class="tema-info">
+          <div class="tema-nome">${tema.nome}</div>
+          <div class="tema-meta">${tema.material} · ${tema.aplicador}</div>
+          <textarea class="tema-obs ${obs?'show':''}" id="obs-${bi}-${ti}" placeholder="Observação..." oninput="saveObs(${bi},${ti},this.value)">${obs}</textarea>
+        </div>
+        <div class="abs-btns">
+          <button class="abs-btn ${abs==='g'?'g':''}" onclick="setAbs(${bi},${ti},'g')"><span class='abs-emoji'>🟢</span><span class='abs-label'>OK</span></button>
+          <button class="abs-btn ${abs==='y'?'y':''}" onclick="setAbs(${bi},${ti},'y')"><span class='abs-emoji'>🟡</span><span class='abs-label'>Reforço</span></button>
+          <button class="abs-btn ${abs==='r'?'r':''}" onclick="setAbs(${bi},${ti},'r')"><span class='abs-emoji'>🔴</span><span class='abs-label'>Refazer</span></button>
+          <button class="obs-btn" onclick="toggleObs(${bi},${ti})">📝</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    const sig=bState.assinaturaColaborador||{assinada:false,nome:'',dataHora:''};
+    const sigTxt=sig.assinada?`✔ Assinada${sig.nome?` por ${sig.nome}`:''}`:'⬜ Pendente';
+
+    return `<div class="bloco ${isOpen?'open':''}" id="bloco-${bi}">
+      <div class="bloco-header" onclick="toggleBloco(${bi})">
+        <span class="bloco-fase ${faseClass}">${faseTxt}</span>
+        <div style="flex:1;min-width:0">
+          <div class="bloco-title">Bloco ${bi+1} · ${bloco.titulo}</div>
+          <div class="bloco-sub">${ttotal} temas</div>
+        </div>
+        <span class="bloco-badge ${badgeCls}">${badgeTxt}</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="bloco-body">
+        ${temasHtml}
+        <div class="block-aplicador">
+          <label>Quem aplicou este bloco</label>
+          <input type="text" value="${(bState.aplicadoPor||'').replace(/"/g,'&quot;')}" placeholder="Ex: João, Maria — Líder / Gerente" oninput="saveAplicadoPorBloco(${bi}, this.value)">
+        </div>
+        <div class="bloco-footer">
+          <div class="bloco-signature">
+            <div class="bloco-signature-left">
+              <span class="bloco-signature-title">✍️ Assinatura do colaborador</span>
+              <span class="sig-mini ${sig.assinada?'done':'pending'}">${sigTxt}</span>
+            </div>
+            <button class="btn-assinar ${sig.assinada?'signed':''}" onclick="abrirAssinatura(${bi})">${sig.assinada?'✔ Assinado':'Assinatura'}</button>
+          </div>
+          <button class="btn-concluir ${isConcluido?'signed':''}" onclick="toggleConcluido(${bi})">${isConcluido?'✔ Bloco concluído':'Concluir bloco'}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleBloco(bi) {
+  const c=state.colabs[activeColabIdx];
+  const b=ensureBlocoState(c,bi);
+  b.open=!b.open;
+  renderTrilha();
+}
+
+function setAbs(bi,ti,val) {
+  const c=state.colabs[activeColabIdx];
+  const b=ensureBlocoState(c,bi);
+  b.open=true;
+  if(!b.temas[ti])b.temas[ti]={abs:'',obs:''};
+  b.temas[ti].abs=b.temas[ti].abs===val?'':val;
+  renderTrilha();
+  debounceSave(c);
+  const labels={g:'🟢 Absorveu bem',y:'🟡 Precisa de reforço',r:'🔴 Refazer','':"Avaliação removida"};
+  toast(labels[b.temas[ti].abs]||'Avaliação removida');
+}
+
+function saveObs(bi,ti,val) {
+  const c=state.colabs[activeColabIdx];
+  const b=ensureBlocoState(c,bi);
+  b.open=true;
+  if(!b.temas[ti])b.temas[ti]={abs:'',obs:''};
+  b.temas[ti].obs=val;
+  debounceSave(c);
+}
+
+function toggleObs(bi,ti) {
+  const el=document.getElementById(`obs-${bi}-${ti}`);
+  el.classList.toggle('show');
+  if(el.classList.contains('show'))el.focus();
+}
+
+function toggleConcluido(bi) {
+  const c=state.colabs[activeColabIdx];
+  if(!c.blocos[bi])c.blocos[bi]={open:true,concluido:false,temas:[]};
+  c.blocos[bi].concluido=!c.blocos[bi].concluido;
+  renderTrilha();
+  renderPainel();
+  debounceSave(c);
+  toast(c.blocos[bi].concluido?'✔ Bloco concluído!':'Bloco reaberto');
+}
+
+// ══════════════════════════════════════════════
+// CRUD
+// ══════════════════════════════════════════════
+function saveAplicadoPorBloco(bi,val){
+  const c=state.colabs[activeColabIdx];
+  const b=ensureBlocoState(c,bi);
+  b.aplicadoPor=val;
+  debounceSave(c);
+}
+
+// ── CANVAS ASSINATURA ──────────────────────────────────────
+let _sigBlocoIdx = null;
+let _sigDrawing = false;
+let _sigCanvas, _sigCtx;
+
+function abrirAssinatura(bi) {
+  const c = state.colabs[activeColabIdx];
+  const b = ensureBlocoState(c, bi);
+  if (b.assinaturaColaborador?.assinada) {
+    if (!confirm('Remover assinatura existente?')) return;
+    b.assinaturaColaborador = {assinada:false, nome:'', dataHora:'', img:''};
+    renderTrilha(); debounceSave(c); toast('Assinatura removida'); return;
+  }
+  _sigBlocoIdx = bi;
+  document.getElementById('assinaturaSubtitle').textContent =
+    `${c.nome} · Bloco ${bi+1}`;
+  document.getElementById('sigOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Tenta travar em landscape via API nativa (suportado em Android Chrome)
+  if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock('landscape').catch(() => {});
+  }
+
+  // Aguarda o browser estabilizar o layout antes de medir o canvas
+  requestAnimationFrame(() => requestAnimationFrame(() => initCanvas()));
+}
+
+function initCanvas() {
+  _sigCanvas = document.getElementById('sigCanvas');
+  _sigCtx = _sigCanvas.getContext('2d');
+
+  // Tamanho real da área disponível (sem transformação)
+  const area = _sigCanvas.parentElement;
+  const W = area.offsetWidth;
+  const H = area.offsetHeight;
+  const dpr = window.devicePixelRatio || 1;
+
+  // Define dimensões físicas do canvas
+  _sigCanvas.width  = Math.floor(W * dpr);
+  _sigCanvas.height = Math.floor(H * dpr);
+  _sigCanvas.style.width  = W + 'px';
+  _sigCanvas.style.height = H + 'px';
+
+  _sigCtx.setTransform(1, 0, 0, 1, 0, 0); // reset qualquer transformação anterior
+  _sigCtx.scale(dpr, dpr);
+  _sigCtx.strokeStyle = '#1a1a1a';
+  _sigCtx.lineWidth = 2.5;
+  _sigCtx.lineCap = 'round';
+  _sigCtx.lineJoin = 'round';
+  _sigCtx.fillStyle = '#ffffff';
+  _sigCtx.fillRect(0, 0, W, H);
+  _sigDrawing = false;
+
+  // Posição precisa relativa ao canvas — funciona corretamente independente de rotação da tela
+  function getPos(e) {
+    const rect = _sigCanvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    // Ajusta pela escala real caso o canvas seja redimensionado pelo CSS
+    const scaleX = _sigCanvas.width  / dpr / rect.width;
+    const scaleY = _sigCanvas.height / dpr / rect.height;
+    return {
+      x: (src.clientX - rect.left) * scaleX,
+      y: (src.clientY - rect.top)  * scaleY
+    };
+  }
+
+  _sigCanvas.onmousedown = _sigCanvas.ontouchstart = (e) => {
+    e.preventDefault();
+    _sigDrawing = true;
+    const p = getPos(e);
+    _sigCtx.beginPath();
+    _sigCtx.moveTo(p.x, p.y);
+  };
+
+  _sigCanvas.onmousemove = _sigCanvas.ontouchmove = (e) => {
+    e.preventDefault();
+    if (!_sigDrawing) return;
+    const p = getPos(e);
+    _sigCtx.lineTo(p.x, p.y);
+    _sigCtx.stroke();
+    _sigCtx.beginPath(); // evita linhas longas ao levantar e tocar novamente
+    _sigCtx.moveTo(p.x, p.y);
+  };
+
+  _sigCanvas.onmouseup = _sigCanvas.ontouchend = _sigCanvas.onmouseleave = () => {
+    _sigDrawing = false;
+  };
+
+  // Re-init ao girar a tela nativamente
+  window.onresize = () => {
+    if (document.getElementById('sigOverlay').classList.contains('open')) {
+      const hadInk = _sigCanvas ? _sigCanvas.toDataURL() : null;
+      initCanvas();
+    }
+  };
+}
+
+function clearCanvas() {
+  if (!_sigCtx || !_sigCanvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W = _sigCanvas.width / dpr;
+  const H = _sigCanvas.height / dpr;
+  _sigCtx.fillStyle = '#ffffff';
+  _sigCtx.fillRect(0, 0, W, H);
+}
+
+function cancelarAssinatura() {
+  document.getElementById('sigOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+}
+
+function confirmarAssinatura() {
+  if (!_sigCanvas) return;
+  // Verifica se não está em branco
+  const data = _sigCtx.getImageData(0, 0, _sigCanvas.width, _sigCanvas.height).data;
+  const hasInk = Array.from(data).some((v, i) => i % 4 !== 3 && v < 200);
+  if (!hasInk) { toast('Por favor, assine antes de confirmar', true); return; }
+  const img = _sigCanvas.toDataURL('image/png');
+  const c = state.colabs[activeColabIdx];
+  const b = ensureBlocoState(c, _sigBlocoIdx);
+  b.assinaturaColaborador = { assinada: true, nome: c.nome, dataHora: new Date().toISOString(), img };
+  syncAssinaturaToColab(c);
+  document.getElementById('sigOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+  renderTrilha();
+  debounceSave(c);
+  toast('✔ Assinatura registrada!');
+}
+
+function toggleAssinaturaColaborador(bi){ abrirAssinatura(bi); }
+
+function openCertificado(){
+  const c=state.colabs[activeColabIdx];
+  if(!c) return;
+  if(!isCertificadoElegivel(c)){
+    toast('Conclua toda a trilha obrigatória antes de gerar o certificado.', true);
+    return;
+  }
+  const trilha=TRILHAS[c.funcao];
+  const aplicadores=collectAplicadores(c);
+  const dataConclusao=new Date().toLocaleDateString('pt-BR');
+  const conteudo=`LET'S POKE — CERTIFICADO DE CONCLUSÃO
+${'='.repeat(56)}
+
+Certificamos que ${c.nome}
+Função: ${trilha.label}
+Unidade: ${c.unidade}
+Concluiu com êxito a trilha obrigatória de formação da operação.
+
+Data de conclusão: ${dataConclusao}
+Carga da trilha: ${trilha.diasUteis} dias úteis
+Aplicadores envolvidos: ${aplicadores.length?aplicadores.join(', '):'—'}
+Status: Concluído com êxito
+
+Observação: este certificado refere-se à trilha obrigatória de formação,
+anterior à etapa final de inauguração na unidade.
+
+${'='.repeat(56)}
+`;
+  document.getElementById('certSub').textContent=`${c.nome} · ${trilha.label} · ${c.unidade}`;
+  document.getElementById('certContent').textContent=conteudo;
+  openModal('modalCert');
+}
+
+function copyCertificado(){
+  const txt=document.getElementById('certContent').textContent;
+  navigator.clipboard.writeText(txt);
+  toast('📄 Certificado copiado');
+}
+
+function printCertificado(){
+  const txt=document.getElementById('certContent').textContent.replace(/\n/g,'<br>');
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Certificado</title><style>body{font-family:Arial,sans-serif;padding:32px;line-height:1.6}
+/* LOGIN */
+.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-screen.hidden{display:none}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
+.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
+.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px;margin-bottom:12px}
+.login-input:focus{border-color:var(--accent)}
+.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
+.login-btn:hover{background:#f5cc55}
+.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
+</style></head><body>
+
+<!-- TELA DE LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Let's Poke</div>
+    <div class="login-sub">Sistema de Trilha de Treinamento</div>
+    <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
+      onkeydown="if(event.key==='Enter') fazerLogin()" />
+    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+${txt}</body></html>`);
+  w.document.close();
+  w.print();
+}
+
+function initBlocos(funcao) {
+  return TRILHAS[funcao].blocos.map(()=>({
+    open:false,
+    concluido:false,
+    aplicadoPor:'',
+    assinaturaColaborador:{assinada:false,nome:'',dataHora:'',img:''},
+    temas:[]
+  }));
+}
+
+async function criarColab() {
+  const nome=document.getElementById('fNome').value.trim();
+  const funcao=document.getElementById('fFuncao').value;
+  const unidade=document.getElementById('fUnidade').value.trim()||'—';
+  const dataInicio=document.getElementById('fData').value||new Date().toLocaleDateString('pt-BR');
+  if(!nome){alert('Informe o nome do colaborador');return;}
+  const colab={id:'',nome,funcao,unidade,dataInicio,aplicadoPor:'',statusFinal:'',obsFinal:'',dataEncerramento:'',assinaturaTreinado:'',nomeAssinante:'',blocos:initBlocos(funcao)};
+  state.colabs.push(colab);
+  closeModal('modalColab');
+  document.getElementById('fNome').value='';
+  document.getElementById('fUnidade').value='';
+  renderPainel();
+  toast('✓ Trilha criada para '+nome);
+  await saveColabToSheets(colab);
+}
+
+async function deleteColab(idx) {
+  const c=state.colabs[idx];
+  if(!confirm(`Excluir ${c.nome}? Esta ação não pode ser desfeita.`))return;
+  state.colabs.splice(idx,1);
+  renderPainel();
+  toast('🗑 Colaborador removido');
+  if(c.id)await deleteColabFromSheets(c.id);
+}
+
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
+function saveUrlFromBanner() {
+  const url=document.getElementById('bannerUrlInput').value.trim();
+  if(!url){alert('Cole a URL do Apps Script');return;}
+  API_URL=url;
+  localStorage.setItem('lp_api_url',url);
+  document.getElementById('configBanner').classList.add('hidden');
+  document.getElementById('configUrl').value = url;
+  toast('✅ URL salva! Conectando…');
+  document.getElementById('loadingScreen').classList.remove('hidden');
+  loadFromSheets();
+}
+
+function saveConfig() {
+  const url=document.getElementById('configUrl').value.trim();
+  if(!url){alert('Cole a URL do Apps Script');return;}
+  API_URL=url;
+  localStorage.setItem('lp_api_url',url);
+  closeModal('modalConfig');
+  document.getElementById('configBanner').classList.add('hidden');
+  document.getElementById('bannerUrlInput').value = url;
+  toast('✅ URL salva! Conectando…');
+  document.getElementById('loadingScreen').classList.remove('hidden');
+  loadFromSheets();
+}
+
+// ══════════════════════════════════════════════
+// RELATÓRIO
+// ══════════════════════════════════════════════
+function openReport() {
+  const c=state.colabs[activeColabIdx];
+  if(!c)return;
+  const trilha=TRILHAS[c.funcao];
+  const info=colabInfo(c);
+  const aplicadores=collectAplicadores(c);
+  let r=`LET'S POKE — RELATÓRIO DE TREINAMENTO
+${'='.repeat(50)}
+
+`;
+  r+=`Colaborador : ${c.nome}
+Função      : ${trilha.label}
+Unidade     : ${c.unidade}
+Aplicadores : ${aplicadores.length?aplicadores.join(', '):'—'}
+Início      : ${formatDateShort(c.dataInicio)}
+Status      : ${info.statusLabel}
+Conclusão   : ${info.pct}%
+Certificado : ${isCertificadoElegivel(c)?'Elegível':'Ainda não elegível'}
+
+`;
+  trilha.blocos.forEach((bloco,bi)=>{
+    const bState=ensureBlocoState(c,bi);
+    const ass=bState.assinaturaColaborador||{assinada:false,nome:'',dataHora:''};
+    r+=`
+${bloco.fase===2?'🏪 FASE 2':'📍 FASE 1'} — BLOCO ${bi+1}: ${bloco.titulo}
+${'─'.repeat(45)}
+`;
+    r+=`Status: ${bState.concluido?'✔ CONCLUÍDO':'PENDENTE'}
+`;
+    r+=`Aplicado por: ${bState.aplicadoPor||'—'}
+`;
+    r+=`Assinatura do colaborador: ${ass.assinada?`Assinada por ${ass.nome||c.nome} em ${formatDateShort(ass.dataHora)}`:'Pendente'}
+
+`;
+    bloco.temas.forEach((tema,ti)=>{
+      const tState=bState.temas?.[ti]||{};
+      const abs=tState.abs||'';
+      const icon=abs==='g'?'🟢':abs==='y'?'🟡':abs==='r'?'🔴':'⬜';
+      const label=abs==='g'?'Absorveu bem':abs==='y'?'Precisa de reforço':abs==='r'?'Refazer':'Não avaliado';
+      r+=`  [${tema.n}] ${tema.nome}
+       ${icon} ${label} | ${tema.material} | ${tema.aplicador}
+`;
+      if(tState.obs)r+=`       Obs: ${tState.obs}
+`;
+    });
+  });
+  r+=`
+${'='.repeat(50)}
+Gerado em ${new Date().toLocaleString('pt-BR')}
+`;
+  document.getElementById('reportSub').textContent=`${c.nome} · ${trilha.label} · ${c.unidade}`;
+  document.getElementById('reportContent').textContent=r;
+  openModal('modalReport');
+}
+
+
+// ── RELATÓRIO GERENCIAL ────────────────────────────────────────────────────
+function calcDiasNaTrilha(dataInicio) {
+  if (!dataInicio) return null;
+  try {
+    const partes = dataInicio.includes('/') ? dataInicio.split('/').reverse().join('-') : dataInicio;
+    const inicio = new Date(partes);
+    if (isNaN(inicio)) return null;
+    const hoje = new Date();
+    return Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24));
+  } catch(e) { return null; }
+}
+
+function openRelatorioGerencial() {
+  if (state.colabs.length === 0) { toast('Nenhum colaborador cadastrado', true); return; }
+  const now = new Date().toLocaleString('pt-BR');
+  const SEP1 = '='.repeat(56);
+  const SEP2 = '─'.repeat(46);
+  let r = '';
+
+  // ── CABEÇALHO ──────────────────────────────────────────
+  r += `LET'S POKE — RELATÓRIO GERENCIAL DE IMPLANTAÇÃO\n`;
+  r += `${SEP1}\n`;
+  r += `Gerado em  : ${now}\n`;
+  r += `Período    : Acumulado desde o início dos registros\n`;
+  r += `Franquia   : Let's Poke / Easy Poke\n\n`;
+
+  // ── SEÇÃO 1 — VISÃO EXECUTIVA ───────────────────────────
+  let prontos=0, em=0, nao=0, totalTemas=0, totalGreen=0, totalRed=0, totalYellow=0;
+  let somasDias = [], pctList = [];
+
+  state.colabs.forEach(col => {
+    const trilha = TRILHAS[col.funcao];
+    const inf = colabInfo(col);
+    if (inf.statusKey==='ok') prontos++;
+    else if (inf.statusKey==='em') em++;
+    else nao++;
+    pctList.push(inf.pct);
+    const dias = calcDiasNaTrilha(col.dataInicio);
+    if (dias !== null) somasDias.push(dias);
+    trilha.blocos.forEach((bloco, bi) => {
+      bloco.temas.forEach((_, ti) => {
+        totalTemas++;
+        const abs = col.blocos[bi]?.temas[ti]?.abs || '';
+        if (abs==='g') totalGreen++;
+        else if (abs==='r') totalRed++;
+        else if (abs==='y') totalYellow++;
+      });
+    });
+  });
+
+  const pctMedio = pctList.length ? Math.round(pctList.reduce((a,b)=>a+b,0)/pctList.length) : 0;
+  const diasMedio = somasDias.length ? Math.round(somasDias.reduce((a,b)=>a+b,0)/somasDias.length) : 0;
+  const taxaProntidao = state.colabs.length ? Math.round(prontos/state.colabs.length*100) : 0;
+  const taxaAbsorcao = totalTemas ? Math.round(totalGreen/totalTemas*100) : 0;
+
+  r += `1. VISÃO EXECUTIVA\n${SEP2}\n`;
+  r += `Total de colaboradores em trilha : ${state.colabs.length}\n`;
+  r += `Taxa de prontidão para inaugurar : ${taxaProntidao}% (${prontos} de ${state.colabs.length})\n`;
+  r += `Progresso médio da rede          : ${pctMedio}%\n`;
+  r += `Taxa global de absorção          : ${taxaAbsorcao}% dos temas avaliados\n`;
+  r += `Tempo médio na trilha            : ${diasMedio} dias\n`;
+  r += `\n  Status:\n`;
+  r += `  ✅ Prontos para inaugurar : ${prontos}\n`;
+  r += `  🔄 Em treinamento         : ${em}\n`;
+  r += `  ⏳ Não iniciados          : ${nao}\n\n`;
+
+  // ── SEÇÃO 2 — TAXA DE CONCLUSÃO E TEMPO ────────────────
+  r += `\n2. TAXA DE CONCLUSÃO E TEMPO\n${SEP2}\n`;
+
+  const porFuncao = {};
+  state.colabs.forEach(col => {
+    const inf = colabInfo(col);
+    const f = TRILHAS[col.funcao].label;
+    if (!porFuncao[f]) porFuncao[f] = { total:0, pcts:[], dias:[], prontos:0 };
+    porFuncao[f].total++;
+    porFuncao[f].pcts.push(inf.pct);
+    if (inf.statusKey==='ok') porFuncao[f].prontos++;
+    const d = calcDiasNaTrilha(col.dataInicio);
+    if (d !== null) porFuncao[f].dias.push(d);
+  });
+
+  Object.entries(porFuncao).forEach(([funcao, dados]) => {
+    const mediaP = Math.round(dados.pcts.reduce((a,b)=>a+b,0)/dados.pcts.length);
+    const mediaD = dados.dias.length ? Math.round(dados.dias.reduce((a,b)=>a+b,0)/dados.dias.length) : '—';
+    r += `  ${funcao}\n`;
+    r += `    Colaboradores : ${dados.total} | Prontos: ${dados.prontos}\n`;
+    r += `    Progresso médio : ${mediaP}% | Tempo médio na trilha: ${mediaD} dias\n\n`;
+  });
+
+  // benchmark
+  r += `  ⚡ Benchmark interno: meta de conclusão em 20 dias úteis\n`;
+  const atrasados = state.colabs.filter(col => {
+    const d = calcDiasNaTrilha(col.dataInicio);
+    const inf = colabInfo(col);
+    return d !== null && d > 28 && inf.statusKey !== 'ok';
+  });
+  if (atrasados.length > 0) {
+    r += `  ⚠️  ${atrasados.length} colaborador(es) acima de 28 dias sem concluir:\n`;
+    atrasados.forEach(col => {
+      const d = calcDiasNaTrilha(col.dataInicio);
+      r += `     → ${col.nome} (${TRILHAS[col.funcao].label}) — ${d} dias na trilha\n`;
+    });
+  } else {
+    r += `  ✅ Nenhum colaborador acima do prazo\n`;
+  }
+
+  // ── SEÇÃO 3 — TEMAS COM MAIS DIFICULDADE NA REDE ───────
+  r += `\n\n3. TEMAS COM MAIS DIFICULDADE NA REDE\n${SEP2}\n`;
+  r += `  (Temas mais marcados como 🔴 Refazer — sinal de gap de treinamento)\n\n`;
+
+  const temaMap = {};
+  state.colabs.forEach(col => {
+    const trilha = TRILHAS[col.funcao];
+    trilha.blocos.forEach((bloco, bi) => {
+      bloco.temas.forEach((tema, ti) => {
+        const abs = col.blocos[bi]?.temas[ti]?.abs || '';
+        const key = tema.nome;
+        if (!temaMap[key]) temaMap[key] = { red:0, yellow:0, total:0, bloco: bloco.titulo };
+        temaMap[key].total++;
+        if (abs==='r') temaMap[key].red++;
+        if (abs==='y') temaMap[key].yellow++;
+      });
+    });
+  });
+
+  // Top 10 temas com mais vermelho
+  const topRed = Object.entries(temaMap)
+    .filter(([,v]) => v.red > 0)
+    .sort((a,b) => b[1].red - a[1].red)
+    .slice(0, 10);
+
+  if (topRed.length === 0) {
+    r += `  ✅ Nenhum tema marcado como "Refazer" na rede\n`;
+  } else {
+    r += `  ${'#'.padEnd(3)} ${'Tema'.padEnd(45)} ${'🔴'.padEnd(5)} ${'🟡'.padEnd(5)} Freq.\n`;
+    r += `  ${'─'.repeat(65)}\n`;
+    topRed.forEach(([nome, dados], i) => {
+      const freq = Math.round(dados.red/dados.total*100);
+      const nomeShort = nome.length > 43 ? nome.slice(0,40)+'...' : nome;
+      r += `  ${String(i+1).padEnd(3)} ${nomeShort.padEnd(45)} ${String(dados.red).padEnd(5)} ${String(dados.yellow).padEnd(5)} ${freq}%\n`;
+    });
+    r += `\n  💡 Insight: temas com frequência >40% indicam necessidade de\n`;
+    r += `     revisar o material ou metodologia de aplicação.\n`;
+  }
+
+  // Top 5 temas com reforço
+  const topYellow = Object.entries(temaMap)
+    .filter(([,v]) => v.yellow > 0)
+    .sort((a,b) => b[1].yellow - a[1].yellow)
+    .slice(0, 5);
+
+  if (topYellow.length > 0) {
+    r += `\n  Temas que mais precisam de reforço (🟡):\n`;
+    topYellow.forEach(([nome, dados]) => {
+      const nomeShort = nome.length > 50 ? nome.slice(0,47)+'...' : nome;
+      r += `  → ${nomeShort} (${dados.yellow}x)\n`;
+    });
+  }
+
+  // ── SEÇÃO 4 — RANKING E COMPARATIVO POR UNIDADE ────────
+  r += `\n\n4. RANKING DE PRONTIDÃO POR UNIDADE\n${SEP2}\n`;
+
+  const unidades = {};
+  state.colabs.forEach(col => {
+    if (!unidades[col.unidade]) unidades[col.unidade] = [];
+    unidades[col.unidade].push(col);
+  });
+
+  const rankUnidades = Object.entries(unidades).map(([unidade, cols]) => {
+    let totalT=0, totalG=0, totalR=0, prontos=0;
+    cols.forEach(col => {
+      const inf = colabInfo(col);
+      if (inf.statusKey==='ok') prontos++;
+      const trilha = TRILHAS[col.funcao];
+      trilha.blocos.forEach((bloco,bi) => {
+        bloco.temas.forEach((_,ti) => {
+          totalT++;
+          const abs = col.blocos[bi]?.temas[ti]?.abs||'';
+          if(abs==='g') totalG++;
+          if(abs==='r') totalR++;
+        });
+      });
+    });
+    const pctAbsorcao = totalT ? Math.round(totalG/totalT*100) : 0;
+    const pctProntidao = cols.length ? Math.round(prontos/cols.length*100) : 0;
+    return { unidade, cols, prontos, totalT, totalR, pctAbsorcao, pctProntidao };
+  }).sort((a,b) => b.pctProntidao - a.pctProntidao);
+
+  r += `  ${'Unidade'.padEnd(22)} ${'Colab.'.padEnd(8)} ${'Prontos'.padEnd(10)} ${'Absorção'.padEnd(10)} Nota\n`;
+  r += `  ${'─'.repeat(58)}\n`;
+
+  rankUnidades.forEach((u, i) => {
+    const medalha = i===0?'🥇':i===1?'🥈':i===2?'🥉':'  ';
+    const nota = u.pctProntidao >= 80 ? '⭐⭐⭐' : u.pctProntidao >= 50 ? '⭐⭐' : u.pctProntidao > 0 ? '⭐' : '—';
+    const unidShort = u.unidade.length > 20 ? u.unidade.slice(0,18)+'..' : u.unidade;
+    r += `  ${medalha} ${unidShort.padEnd(20)} ${String(u.cols.length).padEnd(8)} ${String(u.prontos+'/'+u.cols.length).padEnd(10)} ${String(u.pctAbsorcao+'%').padEnd(10)} ${nota}\n`;
+  });
+
+  r += `\n  Detalhamento por unidade:\n`;
+  rankUnidades.forEach(u => {
+    r += `\n  📍 ${u.unidade}\n`;
+    u.cols.forEach(col => {
+      const trilha = TRILHAS[col.funcao];
+      const inf = colabInfo(col);
+      const dias = calcDiasNaTrilha(col.dataInicio);
+      let blocosConcl = trilha.blocos.filter((_,bi) => col.blocos[bi]?.concluido).length;
+      let colRed = 0;
+      trilha.blocos.forEach((bloco,bi) => bloco.temas.forEach((_,ti) => {
+        if((col.blocos[bi]?.temas[ti]?.abs||'')==='r') colRed++;
+      }));
+      const alerta = colRed > 3 ? ' ⚠️ ATENÇÃO' : colRed > 0 ? ' ⚠️' : '';
+      r += `     👤 ${col.nome} | ${trilha.label}\n`;
+      r += `        Início: ${col.dataInicio}${dias!==null?' ('+dias+' dias)':''} | Blocos: ${blocosConcl}/${trilha.blocos.length} | ${inf.pct}%${alerta}\n`;
+      if (colRed > 0) r += `        🔴 ${colRed} tema(s) a refazer\n`;
+    });
+  });
+
+  // ── SEÇÃO 5 — ANÁLISE E RECOMENDAÇÕES ──────────────────
+  r += `\n\n5. ANÁLISE E RECOMENDAÇÕES\n${SEP2}\n`;
+
+  // Alerta geral
+  if (taxaProntidao < 50) {
+    r += `  🔴 ATENÇÃO: menos da metade da equipe está pronta para inaugurar.\n`;
+    r += `     Recomendação: intensificar frequência de aplicação e\n`;
+    r += `     priorizar colaboradores em estágio mais avançado.\n\n`;
+  } else if (taxaProntidao < 80) {
+    r += `  🟡 Progresso moderado. Foco nos colaboradores em risco.\n\n`;
+  } else {
+    r += `  ✅ Equipe com alta taxa de prontidão. Manter ritmo.\n\n`;
+  }
+
+  if (topRed.length > 0) {
+    r += `  📌 Temas críticos para revisão na próxima capacitação:\n`;
+    topRed.slice(0,3).forEach(([nome]) => r += `     • ${nome}\n`);
+    r += `\n`;
+  }
+
+  if (atrasados.length > 0) {
+    r += `  ⏰ Colaboradores que exigem atenção imediata:\n`;
+    atrasados.forEach(col => r += `     • ${col.nome} (${col.unidade})\n`);
+    r += `\n`;
+  }
+
+  r += `  📋 Próximos passos sugeridos:\n`;
+  r += `     1. Revisar temas com maior índice de "Refazer" em grupo\n`;
+  r += `     2. Agendar reforço individualizado para colaboradores atrasados\n`;
+  r += `     3. Validar blocos pendentes antes da data de inauguração\n`;
+  r += `     4. Compartilhar este relatório com a franqueadora\n`;
+
+  r += `\n\n${SEP1}\n`;
+  r += `Relatório gerado automaticamente pelo sistema de implantação Let's Poke\n`;
+  r += `Data: ${now}\n`;
+
+  document.getElementById('gerencialSub').textContent =
+    `${state.colabs.length} colaboradores · ${Object.keys(unidades).length} unidade(s) · Prontidão: ${taxaProntidao}%`;
+  document.getElementById('gerencialContent').textContent = r;
+  openModal('modalGerencial');
+}
+
+function copyGerencial() { navigator.clipboard.writeText(document.getElementById('gerencialContent').textContent); toast('📄 Copiado!'); }
+function printGerencial() {
+  const w = window.open('', '_blank');
+  w.document.write(`<html><head><title>Relatório Gerencial</title><style>body{font-family:monospace;font-size:12px;line-height:1.7;padding:28px}pre{white-space:pre-wrap}
+/* LOGIN */
+.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-screen.hidden{display:none}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
+.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
+.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px;margin-bottom:12px}
+.login-input:focus{border-color:var(--accent)}
+.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
+.login-btn:hover{background:#f5cc55}
+.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
+</style></head><body>
+
+<!-- TELA DE LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Let's Poke</div>
+    <div class="login-sub">Sistema de Trilha de Treinamento</div>
+    <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
+      onkeydown="if(event.key==='Enter') fazerLogin()" />
+    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+<pre>${document.getElementById('gerencialContent').textContent}</pre><script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.close();
+}
+
+function copyReport(){navigator.clipboard.writeText(document.getElementById('reportContent').textContent);toast('📄 Copiado!');}
+function printReport(){
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Relatório</title><style>body{font-family:monospace;font-size:12px;line-height:1.7;padding:28px}pre{white-space:pre-wrap}
+/* LOGIN */
+.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-screen.hidden{display:none}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
+.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
+.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px;margin-bottom:12px}
+.login-input:focus{border-color:var(--accent)}
+.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
+.login-btn:hover{background:#f5cc55}
+.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
+</style></head><body>
+
+<!-- TELA DE LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Let's Poke</div>
+    <div class="login-sub">Sistema de Trilha de Treinamento</div>
+    <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
+      onkeydown="if(event.key==='Enter') fazerLogin()" />
+    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+<pre>${document.getElementById('reportContent').textContent}</pre><script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.close();
+}
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+function goView(v) {
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view'+v.charAt(0).toUpperCase()+v.slice(1)).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  if(v==='painel'){document.querySelector('.nav-tab').classList.add('active');document.getElementById('tabTrilha').style.display='none';renderPainel();}
+  else{document.getElementById('tabTrilha').classList.add('active');}
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+let toastT;
+function toast(msg,err=false){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='toast'+(err?' error':'')+' show';
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+// ── INIT ──────────────────────────────────────────────────
+
+// ── LOGIN ──────────────────────────────────────────────────
+const SENHA = 'Letspoke@2026';
+
+function verificarLogin() {
+  const ok = sessionStorage.getItem('lp_auth') === '1';
+  if (!ok) {
+    document.getElementById('loginScreen').classList.remove('hidden');
+  } else {
+    document.getElementById('loginScreen').classList.add('hidden');
+    iniciarApp();
+  }
+}
+
+function fazerLogin() {
+  const val = document.getElementById('loginInput').value;
+  if (val === SENHA) {
+    sessionStorage.setItem('lp_auth', '1');
+    document.getElementById('loginScreen').classList.add('hidden');
+    iniciarApp();
+  } else {
+    document.getElementById('loginError').textContent = 'Senha incorreta. Tente novamente.';
+    document.getElementById('loginInput').value = '';
+    document.getElementById('loginInput').focus();
+  }
+}
+
+function iniciarApp() {
+  document.getElementById('fData').value=new Date().toISOString().split('T')[0];
+  document.getElementById('configBanner').classList.add('hidden');
+  document.getElementById('configUrl').value = API_URL;
+  loadFromSheets();
+}
+
+verificarLogin();
+</script>
+</body>
+</html>
