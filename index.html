@@ -888,6 +888,40 @@ async function callApi(action, payload = {}) {
   return data;
 }
 
+// ── Cache local de comportamento (fallback para reload) ──────
+function saveComportamentoCache(colabId, comportamento) {
+  try {
+    const cache = JSON.parse(localStorage.getItem('lp_comp_cache') || '{}');
+    cache[colabId] = comportamento;
+    localStorage.setItem('lp_comp_cache', JSON.stringify(cache));
+  } catch(e) {}
+}
+
+function loadComportamentoCache() {
+  try {
+    return JSON.parse(localStorage.getItem('lp_comp_cache') || '{}');
+  } catch(e) { return {}; }
+}
+
+function mergeComportamentoFromCache(colabs) {
+  const cache = loadComportamentoCache();
+  colabs.forEach(c => {
+    const key = c.id || c.nome;
+    const cached = cache[key];
+    if (!cached) return;
+    const serverHasData = c.comportamento && Object.values(c.comportamento).some(v => v?.status);
+    if (!serverHasData) {
+      c.comportamento = cached;
+    } else {
+      Object.keys(cached).forEach(k => {
+        if (!c.comportamento[k]?.status && cached[k]?.status) {
+          c.comportamento[k] = cached[k];
+        }
+      });
+    }
+  });
+}
+
 async function loadFromSheets() {
   try {
     setSyncStatus('loading', '⏳ Carregando…');
@@ -896,6 +930,7 @@ async function loadFromSheets() {
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     state.colabs = data.colabs || [];
+    mergeComportamentoFromCache(state.colabs);
     setSyncStatus('ok', '✅ Sincronizado');
   } catch(e) {
     setSyncStatus('err', '❌ Erro de conexão');
@@ -1569,10 +1604,27 @@ ${'─'.repeat(45)}
 `;
     });
   });
-  r+=`
-${'='.repeat(50)}
-Gerado em ${new Date().toLocaleString('pt-BR')}
-`;
+
+  // Avaliação comportamental
+  const comp = c.comportamento || {};
+  const hasComp = Object.values(comp).some(v => v?.status);
+  if (hasComp) {
+    const STATUS_LABEL_TXT = {g:'🟢 Adequado', y:'🟡 Atenção', r:'🔴 Intervenção necessária'};
+    r += `\n📋 AVALIAÇÃO DE DESEMPENHO OBSERVADO\n${'─'.repeat(50)}\nInstrumento pedagógico · Lei de Franquias nº 13.966/2019\n\n`;
+    COMP_CRITERIOS.forEach((crit, i) => {
+      const cv = comp[i] || {};
+      if (!cv.status) return;
+      const desc = cv.status==='g' ? crit.g : cv.status==='y' ? crit.y : crit.r;
+      r += `  ${crit.titulo}\n`;
+      r += `  ${STATUS_LABEL_TXT[cv.status]}\n`;
+      r += `  "${desc}"\n`;
+      if (cv.obs) r += `  Obs: ${cv.obs}\n`;
+      r += `\n`;
+    });
+    r += `⚖️ Aviso Legal: Esta avaliação é de responsabilidade exclusiva do franqueado\nempregador. Nos termos da Lei nº 13.966/2019, a relação de emprego é\ndireta e exclusivamente entre o franqueado e seus colaboradores, não\nhavendo vínculo, responsabilidade ou ingerência da franqueadora Let's\nPoke sobre contratação, demissão ou gestão de pessoal.\n`;
+  }
+
+  r+=`\n${'='.repeat(50)}\nGerado em ${new Date().toLocaleString('pt-BR')}\n`;
   document.getElementById('reportSub').textContent=`${c.nome} · ${trilha.label} · ${c.unidade}`;
   document.getElementById('reportContent').textContent=r;
   openModal('modalReport');
@@ -2114,6 +2166,7 @@ function setComp(idx, status) {
   if (!c.comportamento[idx]) c.comportamento[idx] = {status:'', obs:''};
   c.comportamento[idx].status = c.comportamento[idx].status === status ? '' : status;
   renderComportamento();
+  saveComportamentoCache(c.id || c.nome, c.comportamento);
   debounceSave(c);
   const labels = {g:'🟢 Adequado', y:'🟡 Atenção', r:'🔴 Intervenção necessária'};
   toast(labels[c.comportamento[idx].status] || 'Avaliação removida');
@@ -2124,6 +2177,7 @@ function saveCompObs(idx, val) {
   if (!c.comportamento) c.comportamento = {};
   if (!c.comportamento[idx]) c.comportamento[idx] = {status:'', obs:''};
   c.comportamento[idx].obs = val;
+  saveComportamentoCache(c.id || c.nome, c.comportamento);
   debounceSave(c);
 }
 
