@@ -985,18 +985,26 @@ function syncAssinaturaToColab(c) {
   }
 }
 
+// debounceSave — só salva localmente, sem chamar a API
 function debounceSave() {
-  clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(async () => {
-    const c = state.colabs[activeColabIdx];
-    if (!c) return;
-    try {
-      syncAssinaturaToColab(c);
-      await saveColabToSheets(c);
-    } catch (e) {
-      // silencia erros de rede durante digitacao
-    }
-  }, 1800);
+  const c = state.colabs[activeColabIdx];
+  if (!c) return;
+  c._dirty = true;
+  if (c.comportamento) saveComportamentoCache(c.id || c.nome, c.comportamento);
+}
+
+// exitSave — chamado ao sair da trilha, aí sim envia para o Sheets
+async function exitSave() {
+  const c = state.colabs[activeColabIdx];
+  if (!c || !c._dirty) return;
+  try {
+    setSyncStatus('loading', '⏳ Salvando…');
+    syncAssinaturaToColab(c);
+    await saveColabToSheets(c);
+    c._dirty = false;
+  } catch(e) {
+    setSyncStatus('err', '❌ Erro ao salvar');
+  }
 }
 
 
@@ -2190,12 +2198,19 @@ function toggleCompObs(idx) {
 // UTILS
 // ══════════════════════════════════════════════
 function goView(v) {
+  // Se está saindo da trilha, salva agora
+  const currentView = document.querySelector('.view.active');
+  if (currentView && currentView.id === 'viewTrilha' && v !== 'trilha') {
+    exitSave();
+  }
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.getElementById('view'+v.charAt(0).toUpperCase()+v.slice(1)).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   if(v==='painel'){document.querySelector('.nav-tab').classList.add('active');document.getElementById('tabTrilha').style.display='none';renderPainel();}
   else{document.getElementById('tabTrilha').classList.add('active');}
 }
+// Segurança extra: salva se fechar/recarregar a aba
+window.addEventListener('beforeunload', () => { exitSave(); });
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 let toastT;
