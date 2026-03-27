@@ -108,6 +108,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .5s cubic-bezier(.4,0,.2,1)}
 .prog-pills{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
 .pill{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.pill-filter{padding:3px 10px;border-radius:99px;border:1px solid transparent;transition:all .15s}
+.pill-filter:hover{border-color:var(--border);color:var(--text)}
+.pill-filter.active{background:var(--surface);border-color:var(--accent);color:var(--text)}
 .dot{width:7px;height:7px;border-radius:50%}
 
 /* BLOCO */
@@ -487,25 +490,34 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       <div class="prog-row"><span>Progresso da Trilha</span><span class="prog-pct" id="trilhaPct">0%</span></div>
       <div class="prog-bar"><div class="prog-fill" id="trilhaFill" style="width:0%"></div></div>
       <div class="prog-pills">
-        <div class="pill"><div class="dot" style="background:var(--green)"></div><span id="pGreen">0 absorvidos</span></div>
-        <div class="pill"><div class="dot" style="background:var(--yellow)"></div><span id="pYellow">0 reforço</span></div>
-        <div class="pill"><div class="dot" style="background:var(--red)"></div><span id="pRed">0 a refazer</span></div>
-        <div class="pill"><div class="dot" style="background:var(--border)"></div><span id="pPend">0 pendentes</span></div>
-        <div class="pill"><div class="dot" style="background:var(--accent)"></div><span id="pBlocos">0/0 blocos</span></div>
+        <div class="pill pill-filter" id="pillTodos" onclick="setTemaFiltro('todos')" style="cursor:pointer"><div class="dot" style="background:var(--accent)"></div><span id="pBlocos">0/0 blocos</span></div>
+        <div class="pill pill-filter" id="pillGreen" onclick="setTemaFiltro('g')" style="cursor:pointer"><div class="dot" style="background:var(--green)"></div><span id="pGreen">0 absorvidos</span></div>
+        <div class="pill pill-filter" id="pillYellow" onclick="setTemaFiltro('y')" style="cursor:pointer"><div class="dot" style="background:var(--yellow)"></div><span id="pYellow">0 reforço</span></div>
+        <div class="pill pill-filter" id="pillRed" onclick="setTemaFiltro('r')" style="cursor:pointer"><div class="dot" style="background:var(--red)"></div><span id="pRed">0 a refazer</span></div>
+        <div class="pill pill-filter" id="pillPend" onclick="setTemaFiltro('pend')" style="cursor:pointer"><div class="dot" style="background:var(--border)"></div><span id="pPend">0 pendentes</span></div>
+      </div>
+    </div>
+    <div class="bloco" id="compSection" style="display:none">
+      <div class="bloco-header" onclick="toggleCompBloco()">
+        <span class="bloco-fase fase1">📋 COMPORTAMENTO</span>
+        <div style="flex:1;min-width:0">
+          <div class="bloco-title">Avaliação de Desempenho Observado</div>
+          <div class="bloco-sub">Instrumento pedagógico · Lei nº 13.966/2019</div>
+        </div>
+        <span class="bloco-badge badge-pend" id="compBadge">—</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="bloco-body">
+        <div style="padding:12px 18px 4px;font-size:12px;color:var(--muted)">
+          Selecione o status observado para cada critério durante o treinamento.
+        </div>
+        <div id="compGrid"></div>
+        <div style="padding:10px 18px 14px;font-size:11px;color:var(--muted);line-height:1.5;border-top:1px solid var(--border);margin-top:8px">
+          ⚖️ Esta avaliação é de responsabilidade exclusiva do franqueado empregador, conforme a Lei nº 13.966/2019.
+        </div>
       </div>
     </div>
     <div id="blocosContainer"></div>
-    <div class="comp-section" id="compSection" style="display:none">
-      <div class="comp-section-title">📋 Avaliação de Desempenho Observado</div>
-      <div class="comp-section-sub">
-        Selecione o status observado durante o treinamento para cada critério.<br>
-        <strong>Nota:</strong> Instrumento pedagógico sem caráter decisório sobre vínculo empregatício — Lei nº 13.966/2019.
-      </div>
-      <div id="compGrid"></div>
-      <div class="comp-disclaimer">
-        ⚖️ <strong>Aviso Legal:</strong> Esta avaliação é de responsabilidade exclusiva do franqueado empregador. A franqueadora atua apenas como suporte pedagógico ao treinamento, não tendo ingerência sobre decisões de contratação, demissão ou gestão de pessoal, conforme a Lei nº 13.966/2019 (Lei de Franquias) e jurisprudência trabalhista vigente.
-      </div>
-    </div>
   </div>
 </div>
 
@@ -860,7 +872,7 @@ const FUNC_ICONS={atendimento:'🧾',cozinha:'🍳',asg:'🧹',gerente:'👤'};
 // ══════════════════════════════════════════════
 const API_TOKEN = 'LP_8fK29xQa_Train_2026_zP41Lm';
 let API_URL = 'https://script.google.com/macros/s/AKfycbzEpywGjqJ1d2Y_dqscOZokbc_xiRkVUGYUmE73dw4nsyQs_hxJ6lOd6wQaq1wbASUVBw/exec';
-let state = { colabs: [], lojaFiltro: 'todas' };
+let state = { colabs: [], lojaFiltro: 'todas', statusFiltro: 'todos' };
 let activeColabIdx = null;
 let saveTimeout = null;
 
@@ -930,10 +942,23 @@ async function loadFromSheets() {
     if (data.error) throw new Error(data.error);
     state.colabs = data.colabs || [];
     mergeComportamentoFromCache(state.colabs);
+    localStorage.setItem('lp_colabs_cache', JSON.stringify(state.colabs));
     setSyncStatus('ok', '✅ Sincronizado');
   } catch(e) {
-    setSyncStatus('err', '❌ Erro de conexão');
-    toast('Erro: ' + e.message, true);
+    try {
+      const cached = localStorage.getItem('lp_colabs_cache');
+      if (cached) {
+        state.colabs = JSON.parse(cached);
+        mergeComportamentoFromCache(state.colabs);
+        setSyncStatus('err', '⚠️ Offline — dados locais');
+        toast('Sem conexão com servidor. Usando dados salvos localmente.', true);
+      } else {
+        setSyncStatus('err', '❌ Sem conexão');
+        toast('Erro ao carregar: ' + e.message, true);
+      }
+    } catch(e2) {
+      setSyncStatus('err', '❌ Sem conexão');
+    }
   } finally {
     document.getElementById('loadingScreen').classList.add('hidden');
     renderPainel();
@@ -1056,6 +1081,11 @@ function applyLojaFilter(value) {
   renderPainel();
 }
 
+function applyStatusFilter(value) {
+  state.statusFiltro = value;
+  renderPainel();
+}
+
 function renderPainel() {
   const total = state.colabs.length;
   let prontos=0, em=0, nao=0;
@@ -1071,7 +1101,12 @@ function renderPainel() {
     state.lojaFiltro = 'todas';
   }
 
-  const filtrados = state.colabs.filter(c => state.lojaFiltro === 'todas' || c.unidade === state.lojaFiltro);
+  const filtrados = state.colabs.filter(c => {
+    const lojaOk = state.lojaFiltro === 'todas' || c.unidade === state.lojaFiltro;
+    const info = colabInfo(c);
+    const statusOk = state.statusFiltro === 'todos' || info.statusKey === state.statusFiltro;
+    return lojaOk && statusOk;
+  });
 
   document.getElementById('painelStats').innerHTML = `
     <div class="stat-card"><div class="val">${total}</div><div class="lbl">Colaboradores</div></div>
@@ -1083,10 +1118,19 @@ function renderPainel() {
   const filtroHtml = `
     <div class="filter-row">
       <div class="filter-box">
-        <label for="filtroLoja">Filtrar por loja</label>
+        <label for="filtroLoja">Loja</label>
         <select id="filtroLoja" class="filter-select" onchange="applyLojaFilter(this.value)">
           <option value="todas" ${state.lojaFiltro==='todas'?'selected':''}>Todas as lojas</option>
           ${lojas.map(loja => `<option value="${loja}" ${state.lojaFiltro===loja?'selected':''}>${loja}</option>`).join('')}
+        </select>
+      </div>
+      <div class="filter-box">
+        <label for="filtroStatus">Status</label>
+        <select id="filtroStatus" class="filter-select" onchange="applyStatusFilter(this.value)">
+          <option value="todos" ${state.statusFiltro==='todos'?'selected':''}>Todos os status</option>
+          <option value="ok" ${state.statusFiltro==='ok'?'selected':''}>✅ Prontos</option>
+          <option value="em" ${state.statusFiltro==='em'?'selected':''}>🔄 Em Treino</option>
+          <option value="nao" ${state.statusFiltro==='nao'?'selected':''}>⏳ Não iniciados</option>
         </select>
       </div>
       <button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button>
@@ -1136,6 +1180,7 @@ function colabInfo(c) {
 // ══════════════════════════════════════════════
 function openTrilha(idx) {
   activeColabIdx = idx;
+  temaFiltro = 'todos';
   const c = state.colabs[idx];
   const trilha = TRILHAS[c.funcao];
   document.getElementById('trilhaNome').textContent = `${FUNC_ICONS[c.funcao]} ${c.nome}`;
@@ -1144,6 +1189,19 @@ function openTrilha(idx) {
   document.getElementById('certBtn').classList.toggle('show', isCertificadoElegivel(c));
   document.getElementById('tabTrilha').style.display='';
   goView('trilha');
+  renderTrilha();
+}
+
+let temaFiltro = 'todos';
+
+function setTemaFiltro(filtro) {
+  temaFiltro = filtro;
+  // Atualiza visual das pills
+  ['pillTodos','pillGreen','pillYellow','pillRed','pillPend'].forEach(id => {
+    document.getElementById(id)?.classList.remove('active');
+  });
+  const map = {todos:'pillTodos', g:'pillGreen', y:'pillYellow', r:'pillRed', pend:'pillPend'};
+  document.getElementById(map[filtro])?.classList.add('active');
   renderTrilha();
 }
 
@@ -1171,6 +1229,13 @@ function renderTrilha() {
   document.getElementById('pBlocos').textContent=`${blocosDone}/${trilha.blocos.length} blocos`;
   document.getElementById('certBtn').classList.toggle('show', isCertificadoElegivel(c));
 
+  // Atualiza pill ativa
+  ['pillTodos','pillGreen','pillYellow','pillRed','pillPend'].forEach(id => {
+    document.getElementById(id)?.classList.remove('active');
+  });
+  const pillMap = {todos:'pillTodos', g:'pillGreen', y:'pillYellow', r:'pillRed', pend:'pillPend'};
+  document.getElementById(pillMap[temaFiltro])?.classList.add('active');
+
   renderComportamento();
   document.getElementById('blocosContainer').innerHTML = trilha.blocos.map((bloco,bi) => {
     const bState=ensureBlocoState(c,bi);
@@ -1191,7 +1256,13 @@ function renderTrilha() {
       const tState=bState.temas?.[ti]||{};
       const abs=tState.abs||'';
       const obs=tState.obs||'';
-      return `<div class="tema-row">
+      const isPend = !abs;
+      const matchFiltro = temaFiltro==='todos' ||
+        (temaFiltro==='g' && abs==='g') ||
+        (temaFiltro==='y' && abs==='y') ||
+        (temaFiltro==='r' && abs==='r') ||
+        (temaFiltro==='pend' && isPend);
+      return `<div class="tema-row" style="display:${matchFiltro?'flex':'none'}">
         <div class="tema-num">${tema.n}</div>
         <div class="tema-info">
           <div class="tema-nome">${tema.nome}</div>
@@ -1950,39 +2021,6 @@ function printReport(){
     <tr><td class="lbl">Progresso</td><td>${info.pct}%</td><td class="lbl">Status</td><td>${info.statusLabel}</td></tr>
   </table>`;
 
-  // Blocos
-  trilha.blocos.forEach((bloco, bi) => {
-    const bState = col.blocos[bi] || {};
-    const ass = bState.assinaturaColaborador || {};
-    const fase = bloco.fase === 2 ? '🏪 FASE 2' : '📍 FASE 1';
-    html += `<div class="bloco">
-      <div class="bloco-hdr">
-        <span>${fase} · Bloco ${bi+1} · ${bloco.titulo}</span>
-        <span class="badge ${bState.concluido?'ok':'pend'}">${bState.concluido?'✔ CONCLUÍDO':'PENDENTE'}</span>
-      </div>
-      <div class="bloco-meta">Aplicado por: <b>${bState.aplicadoPor||'—'}</b></div>
-      <table class="temas-tbl">
-        <tr><th style="width:38px">#</th><th>Tema</th><th style="width:85px">Material</th><th style="width:135px">Absorção</th></tr>`;
-    bloco.temas.forEach((tema, ti) => {
-      const abs = bState.temas?.[ti]?.abs || '';
-      const icon = abs==='g'?'🟢 Absorveu bem':abs==='y'?'🟡 Precisa de reforço':abs==='r'?'🔴 Refazer':'⬜ Não avaliado';
-      const obs = bState.temas?.[ti]?.obs || '';
-      html += `<tr>
-        <td class="tc">${tema.n}</td>
-        <td>${tema.nome}${obs?`<br><i style="font-size:10px;color:#888">Obs: ${obs}</i>`:''}</td>
-        <td>${tema.material}</td><td>${icon}</td>
-      </tr>`;
-    });
-    html += `</table>
-      <div class="sig-box">
-        <div class="sig-lbl">✍️ Assinatura do Colaborador</div>
-        ${ass.assinada && ass.img
-          ? `<div class="sig-info">Assinado por <b>${ass.nome||col.nome}</b> em ${new Date(ass.dataHora).toLocaleString('pt-BR')}</div><img class="sig-img" src="${ass.img}" alt="Assinatura">`
-          : `<span class="sig-pend">⬜ Pendente</span>`}
-      </div>
-    </div>`;
-  });
-
   // Avaliação comportamental
   const comp = col.comportamento || {};
   const hasComp = Object.values(comp).some(v => v.status);
@@ -2035,11 +2073,45 @@ function printReport(){
     </div>`;
   }
 
+  // Blocos
+  trilha.blocos.forEach((bloco, bi) => {
+    const bState = col.blocos[bi] || {};
+    const ass = bState.assinaturaColaborador || {};
+    const fase = bloco.fase === 2 ? '🏪 FASE 2' : '📍 FASE 1';
+    html += `<div class="bloco">
+      <div class="bloco-hdr">
+        <span>${fase} · Bloco ${bi+1} · ${bloco.titulo}</span>
+        <span class="badge ${bState.concluido?'ok':'pend'}">${bState.concluido?'✔ CONCLUÍDO':'PENDENTE'}</span>
+      </div>
+      <div class="bloco-meta">Aplicado por: <b>${bState.aplicadoPor||'—'}</b></div>
+      <table class="temas-tbl">
+        <tr><th style="width:38px">#</th><th>Tema</th><th style="width:85px">Material</th><th style="width:135px">Absorção</th></tr>`;
+    bloco.temas.forEach((tema, ti) => {
+      const abs = bState.temas?.[ti]?.abs || '';
+      const icon = abs==='g'?'🟢 Absorveu bem':abs==='y'?'🟡 Precisa de reforço':abs==='r'?'🔴 Refazer':'⬜ Não avaliado';
+      const obs = bState.temas?.[ti]?.obs || '';
+      html += `<tr>
+        <td class="tc">${tema.n}</td>
+        <td>${tema.nome}${obs?`<br><i style="font-size:10px;color:#888">Obs: ${obs}</i>`:''}</td>
+        <td>${tema.material}</td><td>${icon}</td>
+      </tr>`;
+    });
+    html += `</table>
+      <div class="sig-box">
+        <div class="sig-lbl">✍️ Assinatura do Colaborador</div>
+        ${ass.assinada && ass.img
+          ? `<div class="sig-info">Assinado por <b>${ass.nome||col.nome}</b> em ${new Date(ass.dataHora).toLocaleString('pt-BR')}</div><img class="sig-img" src="${ass.img}" alt="Assinatura">`
+          : `<span class="sig-pend">⬜ Pendente</span>`}
+      </div>
+    </div>`;
+  });
+
+
   html += `<div class="footer">Relatório gerado em ${now} · Let's Poke — Trilha de Treinamento Oficial</div>`;
 
   const css = `
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:24px;max-width:800px;margin:0 auto}
+    body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:24px;max-width:800px;margin:0 auto;word-wrap:break-word;overflow-wrap:break-word}
     .hdr{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:3px solid #e8a830;padding-bottom:14px}
     .logo-img{width:42px;height:42px;object-fit:contain;flex-shrink:0}
     .logo-nome{font-size:20px;font-weight:900;color:#e8a830}
@@ -2135,11 +2207,31 @@ const COMP_CRITERIOS = [
   }
 ];
 
+function toggleCompBloco() {
+  document.getElementById('compSection').classList.toggle('open');
+}
+
 function renderComportamento() {
   const c = state.colabs[activeColabIdx];
   if (!c) return;
   document.getElementById('compSection').style.display = 'block';
   if (!c.comportamento) c.comportamento = {};
+
+  // Atualiza badge com resumo do status
+  const comp = c.comportamento;
+  let g=0, y=0, r=0;
+  COMP_CRITERIOS.forEach((_,i) => {
+    const s = comp[i]?.status || '';
+    if (s==='g') g++; else if (s==='y') y++; else if (s==='r') r++;
+  });
+  const total = g+y+r;
+  const badge = document.getElementById('compBadge');
+  if (badge) {
+    if (total === 0) { badge.textContent = '—'; badge.className = 'bloco-badge badge-pend'; }
+    else if (r > 0)  { badge.textContent = `🔴 ${r} interv.`; badge.className = 'bloco-badge badge-partial'; }
+    else if (y > 0)  { badge.textContent = `🟡 ${y} atenção`; badge.className = 'bloco-badge badge-partial'; }
+    else             { badge.textContent = `✔ ${g}/${COMP_CRITERIOS.length}`; badge.className = 'bloco-badge badge-ok'; }
+  }
 
   document.getElementById('compGrid').innerHTML = COMP_CRITERIOS.map((crit, i) => {
     const val = c.comportamento[i]?.status || '';
