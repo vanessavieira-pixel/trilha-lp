@@ -388,14 +388,15 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .comp-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-top:20px}
 .comp-section-title{font-family:var(--font-h);font-size:14px;font-weight:700;margin-bottom:4px}
 .comp-section-sub{font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.5}
-.comp-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
-.comp-item:last-child{margin-bottom:0}
-.comp-item-title{font-size:13px;font-weight:600;margin-bottom:10px}
-.comp-semaforo{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
-.comp-btn{border:2px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;background:transparent;text-align:center;transition:all .15s;display:flex;flex-direction:column;gap:4px;align-items:center}
-.comp-btn:hover{transform:translateY(-1px)}
-.comp-btn .comp-emoji{font-size:20px;line-height:1}
-.comp-btn .comp-desc{font-size:10px;color:var(--muted);line-height:1.3}
+.comp-item{display:flex;align-items:center;gap:10px;padding:11px 18px;border-bottom:1px solid rgba(45,45,41,.6);transition:background .12s}
+.comp-item:last-child{border-bottom:none}
+.comp-item:hover{background:var(--surface)}
+.comp-item-title{flex:1;min-width:0;font-size:13px;font-weight:500;line-height:1.4;color:var(--text)}
+.comp-semaforo{display:flex;gap:6px;flex-shrink:0}
+.comp-btn{border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;background:transparent;transition:all .12s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.comp-btn:hover{background:var(--surface);color:var(--text)}
+.comp-btn .comp-emoji{font-size:14px;line-height:1}
+.comp-btn .comp-desc{font-size:11px;color:var(--muted)}
 .comp-btn.sel-g{background:rgba(61,184,122,.15);border-color:var(--green)}
 .comp-btn.sel-g .comp-desc{color:var(--green)}
 .comp-btn.sel-y{background:rgba(232,184,48,.15);border-color:var(--yellow)}
@@ -409,7 +410,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .comp-obs-toggle:hover{color:var(--accent)}
 .comp-disclaimer{font-size:10px;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;line-height:1.6;margin-top:14px}
 .comp-disclaimer strong{color:var(--yellow)}
-@media(max-width:640px){.comp-semaforo{grid-template-columns:1fr 1fr 1fr}.comp-btn .comp-desc{font-size:9px}}
+@media(max-width:640px){.comp-item{flex-direction:column;align-items:flex-start;gap:8px;padding:14px}.comp-semaforo{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.comp-btn{justify-content:center;padding:8px 4px;width:100%}.comp-btn .comp-desc{font-size:10px}}
 
 </style>
 </head>
@@ -441,7 +442,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   <div class="nav-logo"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div>Let's Poke <span>/ Trilha</span></div></div>
   <div class="nav-sync" id="syncStatus">⏳ Sincronizando…</div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="goView('painel')">📊 Painel</button>
     <button class="nav-tab" id="tabTrilha" onclick="goView('trilha')" style="display:none">📋 Trilha</button>
     <button class="nav-tab" onclick="openModal('modalConfig')">⚙️</button>
   </div>
@@ -1122,15 +1122,6 @@ function renderPainel() {
         <select id="filtroLoja" class="filter-select" onchange="applyLojaFilter(this.value)">
           <option value="todas" ${state.lojaFiltro==='todas'?'selected':''}>Todas as lojas</option>
           ${lojas.map(loja => `<option value="${loja}" ${state.lojaFiltro===loja?'selected':''}>${loja}</option>`).join('')}
-        </select>
-      </div>
-      <div class="filter-box">
-        <label for="filtroStatus">Status</label>
-        <select id="filtroStatus" class="filter-select" onchange="applyStatusFilter(this.value)">
-          <option value="todos" ${state.statusFiltro==='todos'?'selected':''}>Todos os status</option>
-          <option value="ok" ${state.statusFiltro==='ok'?'selected':''}>✅ Prontos</option>
-          <option value="em" ${state.statusFiltro==='em'?'selected':''}>🔄 Em Treino</option>
-          <option value="nao" ${state.statusFiltro==='nao'?'selected':''}>⏳ Não iniciados</option>
         </select>
       </div>
       <button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button>
@@ -2118,7 +2109,7 @@ function printReport(){
     .hdr-title{font-size:14px;font-weight:700;margin-top:2px}
     .hdr-sub{font-size:10px;color:#666}
     .info-tbl{width:100%;border-collapse:collapse;table-layout:fixed;margin-bottom:18px}
-    .info-tbl td{padding:6px 10px;border:1px solid #ddd;font-size:12px;word-break:break-word}
+    .info-tbl td{padding:6px 10px;border:1px solid #ddd;font-size:12px;word-break:break-all;overflow-wrap:anywhere}
     .info-tbl .lbl{width:90px;font-weight:600;background:#f5f5f5;color:#555}
     .bloco{margin-bottom:16px;border:1px solid #ccc;border-radius:6px;overflow:hidden;page-break-inside:avoid}
     .bloco-hdr{background:#f0f0f0;padding:9px 12px;font-weight:700;font-size:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -2128,7 +2119,7 @@ function printReport(){
     .badge.pend{background:#f8f9fa;color:#666;border:1px solid #ddd}
     .temas-tbl{width:100%;border-collapse:collapse;table-layout:fixed}
     .temas-tbl th{background:#f8f8f8;padding:6px 10px;text-align:left;font-size:11px;border-bottom:1px solid #ddd;font-weight:600}
-    .temas-tbl td{padding:6px 10px;border-bottom:1px solid #eee;font-size:11px;vertical-align:top;word-break:break-word}
+    .temas-tbl td{padding:6px 10px;border-bottom:1px solid #eee;font-size:11px;vertical-align:top;word-break:break-all;overflow-wrap:anywhere}
     .temas-tbl tr:last-child td{border-bottom:none}
     .tc{text-align:center;color:#888;width:38px}
     .sig-box{padding:12px 14px;border-top:1px solid #eee;background:#fafafa}
@@ -2237,25 +2228,23 @@ function renderComportamento() {
     const val = c.comportamento[i]?.status || '';
     const obs = c.comportamento[i]?.obs || '';
     return `<div class="comp-item">
-      <div class="comp-item-title">${crit.titulo}</div>
+      <div class="comp-item-title">${crit.titulo}
+        ${obs ? `<div class="tema-obs show" style="margin-top:6px"><i style="font-size:11px;color:var(--muted)">Obs: ${obs}</i></div>` : ''}
+      </div>
       <div class="comp-semaforo">
         <button class="comp-btn ${val==='g'?'sel-g':''}" onclick="setComp(${i},'g')">
-          <span class="comp-emoji">🟢</span>
-          <span class="comp-desc">${crit.g}</span>
+          <span class="comp-emoji">🟢</span><span class="comp-desc">OK</span>
         </button>
         <button class="comp-btn ${val==='y'?'sel-y':''}" onclick="setComp(${i},'y')">
-          <span class="comp-emoji">🟡</span>
-          <span class="comp-desc">${crit.y}</span>
+          <span class="comp-emoji">🟡</span><span class="comp-desc">Atenção</span>
         </button>
         <button class="comp-btn ${val==='r'?'sel-r':''}" onclick="setComp(${i},'r')">
-          <span class="comp-emoji">🔴</span>
-          <span class="comp-desc">${crit.r}</span>
+          <span class="comp-emoji">🔴</span><span class="comp-desc">Interv.</span>
         </button>
+        <button class="obs-btn" onclick="toggleCompObs(${i})">📝</button>
       </div>
-      ${val ? `<button class="comp-obs-toggle" onclick="toggleCompObs(${i})">+ Adicionar observação</button>` : ''}
-      <textarea class="comp-obs-field ${obs?'show':''}" id="compObs-${i}"
-        placeholder="Observação complementar (opcional)..."
-        oninput="saveCompObs(${i},this.value)"
+      <textarea class="tema-obs ${obs?'show':''}" id="compObs-${i}"
+        placeholder="Observação..." oninput="saveCompObs(${i},this.value)"
         rows="2">${obs}</textarea>
     </div>`;
   }).join('');
@@ -2298,8 +2287,8 @@ function goView(v) {
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.getElementById('view'+v.charAt(0).toUpperCase()+v.slice(1)).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  if(v==='painel'){document.querySelector('.nav-tab').classList.add('active');document.getElementById('tabTrilha').style.display='none';renderPainel();}
-  else{document.getElementById('tabTrilha').classList.add('active');}
+  if(v==='painel'){document.getElementById('tabTrilha').style.display='none';renderPainel();}
+  else{document.getElementById('tabTrilha').style.display='';document.getElementById('tabTrilha').classList.add('active');}
 }
 // Segurança extra: salva se fechar/recarregar a aba
 window.addEventListener('beforeunload', () => { exitSave(); });
