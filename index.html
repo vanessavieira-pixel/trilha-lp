@@ -465,7 +465,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       <p>Franqueadora Let's Poke — Trilha de Treinamento Oficial</p>
     </div>
     <div class="painel-stats" id="painelStats"></div>
-    <div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button></div>
     <div class="colab-grid" id="colabGrid"></div>
   </div>
 </div>
@@ -956,7 +955,7 @@ async function saveColabToSheets(colab) {
     setSyncStatus('ok', '✅ Salvo');
   } catch(e) {
     setSyncStatus('err', '❌ Erro ao salvar');
-    toast('Erro ao salvar: ' + e.message, true);
+    // toast suprimido — status na nav já indica o erro
   }
 }
 
@@ -994,8 +993,10 @@ function debounceSave() {
     try {
       syncAssinaturaToColab(c);
       await saveColabToSheets(c);
-    } catch (e) {}
-  }, 900);
+    } catch (e) {
+      // silencia erros de rede durante digitacao
+    }
+  }, 1800);
 }
 
 
