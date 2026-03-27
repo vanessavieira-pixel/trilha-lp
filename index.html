@@ -19,23 +19,30 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* NAV */
 nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:16px;height:56px}
-.nav-logo{font-family:var(--font-h);font-weight:800;font-size:16px;color:var(--accent);letter-spacing:-.3px;flex-shrink:0;display:flex;align-items:center;gap:8px}
-.nav-logo img{width:28px;height:28px;object-fit:contain;display:block;filter:drop-shadow(0 0 6px rgba(240,192,64,.12))}
+.nav-logo{font-family:var(--font-h);font-weight:800;font-size:16px;color:var(--accent);letter-spacing:-.3px;flex-shrink:0}
 .nav-logo span{color:var(--muted);font-weight:400}
-.login-logo-wrap{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
-.login-logo-wrap img{width:34px;height:34px;object-fit:contain;display:block}
-.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:0}
-.painel-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 18px}
-.filter-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.filter-wrap label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
-.filter-select{min-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-family:var(--font-b);font-size:13px;outline:none}
-.filter-select:focus{border-color:var(--accent)}
-.stat-card .val,.colab-pct{white-space:nowrap;line-height:1}
-.abs-btn.n{background:rgba(72,152,232,.12);border-color:var(--blue);color:var(--blue)}
-.abs-btn.na{background:rgba(72,152,232,.12);border-color:var(--blue);color:var(--blue)}
-.report-header-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.report-header-brand img{width:28px;height:28px;object-fit:contain;display:block}
-.report-header-brand span{font-family:var(--font-h);font-weight:800;color:var(--accent);font-size:15px;letter-spacing:-.2px}
+.nav-logo{display:flex;align-items:center;gap:8px}
+.nav-logo img{width:28px;height:28px;object-fit:contain;flex-shrink:0}
+.report-brand{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.report-brand img{width:30px;height:30px;object-fit:contain}
+.report-brand-title{font-family:var(--font-h);font-size:14px;font-weight:800;color:var(--accent);letter-spacing:-.2px}
+.report-brand-sub{font-size:11px;color:var(--muted)}
+.stat-card .val{font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;letter-spacing:-.03em}
+.colab-pct{white-space:nowrap;font-variant-numeric:tabular-nums}
+.filter-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.filter-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.filter-box label{margin:0;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.filter-select{min-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--font-b);font-size:12px;outline:none}
+.empty-state{background:transparent;border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;color:var(--muted);font-size:13px}
+.bloco-footer-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.btn-comentario{font-family:var(--font-h);font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .15s}
+.btn-comentario:hover{border-color:var(--blue);color:var(--blue)}
+.btn-comentario.filled{background:rgba(72,152,232,.12);border-color:var(--blue);color:var(--blue)}
+.bloco-comentario{display:none;margin-top:12px}
+.bloco-comentario.show{display:block}
+.bloco-comentario textarea{width:100%;min-height:74px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--font-b);font-size:13px;outline:none;resize:vertical;transition:border-color .2s}
+.bloco-comentario textarea:focus{border-color:var(--accent)}
+
 .nav-sync{font-size:11px;color:var(--muted);margin-left:8px}
 .nav-sync.ok{color:var(--green)}.nav-sync.err{color:var(--red)}.nav-sync.loading{color:var(--yellow)}
 .nav-tabs{display:flex;gap:2px;margin-left:auto}
@@ -237,19 +244,21 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .painel-header h2 { font-size: 18px; }
   .painel-stats { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
   .stat-card { padding: 12px 12px; min-width:0; }
-  .stat-card .val { font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .stat-card .lbl { font-size: 10px; line-height: 1.35; }
-  .colab-card { padding: 14px 14px; gap: 10px; }
+  .stat-card .val { font-size: clamp(18px, 6vw, 24px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat-card .lbl { font-size: 10px; line-height: 1.3; }
+  .filter-row { align-items: stretch; }
+  .filter-box { width: 100%; }
+  .filter-box label { width: 100%; }
+  .filter-select { width: 100%; min-width: 0; font-size: 14px; padding: 10px 12px; }
+  .colab-card { padding: 14px 14px; gap: 10px; align-items: flex-start; }
   .colab-avatar { width: 36px; height: 36px; font-size: 16px; }
   .colab-name { font-size: 14px; }
   .colab-meta { font-size: 11px; }
-  .colab-pct { font-size: 15px; white-space: nowrap; }
-  .colab-progbar { width: 64px; }
+  .colab-pct { font-size: 16px; white-space: nowrap; }
+  .colab-progbar { width: 70px; }
+  .colab-right { min-width: 78px; }
   .delete-btn { padding: 6px 10px; font-size: 14px; }
   .add-colab-card { padding: 16px; font-size: 13px; }
-  .painel-toolbar{align-items:stretch}
-  .filter-wrap{width:100%}
-  .filter-select{width:100%;min-width:0}
 
   /* TRILHA HEADER */
   .trilha-header { flex-direction: column; gap: 10px; margin-bottom: 16px; }
@@ -286,9 +295,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .abs-btns {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 6px;
-    align-items: center;
   }
   .abs-btn {
     font-size: 13px;
@@ -298,14 +306,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
     justify-content: center;
   }
   .obs-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 42px;
-    height: 42px;
-    border-radius: 8px;
-    font-size: 14px;
-    padding: 0 10px;
+    display: none; /* no celular, obs abre automaticamente ao tocar no tema */
   }
 
   /* BLOCO FOOTER */
@@ -335,6 +336,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
     border-color: var(--accent);
     color: var(--accent);
   }
+  .bloco-footer-actions { width: 100%; flex-direction: column; }
+  .btn-comentario { width: 100%; text-align: center; padding: 12px; font-size: 14px; }
+  .bloco-comentario textarea { font-size: 16px; }
 
   /* MODAL */
   .overlay { padding: 16px 12px; align-items: flex-end; }
@@ -383,7 +387,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 <!-- TELA DE LOGIN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
-    <div class="login-logo-wrap"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div class="login-logo">Let's Poke</div></div>
+    <div class="login-logo" style="display:flex;align-items:center;justify-content:center;gap:10px;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAApCAYAAACyXOB4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAb4SURBVFhH7ZhpTFRXFMfZBpgZmHkzIxhoLEIQW42AIEgQGrBQTWMNi417CwQUUjFqWmphFLAuiUEIfpBoaKqRYEJwi1E0NYg1btFUa8ANUqEpKIoCIuD+7z133rxx4LEpNn7oP7mZedu9v3fOueee+2zwAep/qDf16tUrvHjxQjyy1jtBPX36FA8ePMDdu3dx7949PHnyBK9fvxavDq1bt27J3j8iKIK4evUqiouLsWTJEsycORMhISEICgpCcHAwIiMjkZCQgE2bNuHChQt49uyZ+KS8ampquMX6akgoepM7d+5g+/btfGCVSgVbW1vY2NgM2pydnTF9+nTs3r0bbW1tYm/WOnHiBJqbm8Uji4aE2rNnD/z8/GQHHk6zt7dHREQEjh07JvZoEUGdP39ePLJoUKiCggIolUrLIMxCWrUTIv0E/BDrhl++GYfKZDeUJ3+EksUfIytGh7ipBvh5usBJ4cCesVhUo9EgLy8PPT09Yu9ARUUFDh8+LB5ZNCDUrl27uKvMnepclVgeocPv3xnQsV6Jx+sVrDmiizX6pda5TsGPW4xaVHxrQOJUAS5KJ6kPakuXLpXcuW3bNpSXl/P/b0oW6tSpU3B3d5c6muIl4ECKAZ25DGadAx7mKAZtj3Ic8GS9A9rWqVG2RI9ALy3rx2K1hQsXoqurC+np6dyFfdUPiqZ2QECA1EHkRC3+WC2gJ49ZhgGZf+Vg+rZ2DqdAw49aLA5zg62dvdTvokWL+GylSdRX/aBWr14tPRjkLeDPNVoO0WFUoHaNC35doMOllVruKjkQudZpdMADoworowQoHCxgNJvlZAV15swZyW1jBSWOL9OjO5e9MQP6K0uJiAla9rYK5g4NLmaaYOUg5Bq9VJtRiVVRepZSTGB6vR7V1dXi6BZZQW3dulV8Cztkfc5clu/M44OscjFTYLNPwa8r2Mwq/doFvXnDh6JGYI9yXRA1ySCOY4OoqCg8fPhQJDDJCooSnfnmrwL0aPrJlVuDLPXPWiUSgllcODjhs0/0qPteYIOMDKqbxVdNhgBvNzarbe2ksXbu3CkSmGQFRVN1zpw54s22WBBqQHO2moHZM4sRmAqXVqiYK1UcVG5gudbO4HvyHFGVpoOXYI+gaWHYsGGDlANDQ0PR2dkpUsgE+u3bt3kGNoMtYmD1WVo+xcky5MrhAj1i93UxS7ca1SiKN8BDp4SrRuBpgNbFGTNmiOPYWKWGflCk+vp6xMbG8ptt7ewQPkGH35azPLXeCV0s8E1u6+86siZdozTQleuI1hwVKljG/2KSK+9LEAQeImbt2LFDgsrMzBTPDgBFun//PlJTU2HHoOghV5aZl0caUJUq4O+1LNZynblLKG/RbzdrHSy5Nq7VoHqZKwrm6hDmq4MDW/vo+SlT/HH8+HGxd5MaGxvh4uLCr0+bNk08OwgUiUxcVFQEDw9P6Y00Kmd8/qkG6REa/DzXHcXxOhQmuGHdl2ORFKJG9EQNBLVpllJzc3Pjua+hoUHs1aLHjx8jMDCQ3+ft7Y2WlhZ+flAoEtU7dXV1SElJgcFgmcqmJlfCsEVb0LM6KxT5+fm8kBuowuzt7cWsWbP4c56enrh58yY/L0HR4HTTYLpy5QqfNVTI0VLkNX48xnv7MNOHsHOJWLVqFS8AL1++PGSBR+ru7uZ5iqA8PDxQW1vLz0tQVFJcu3ZNthLsK4KneCALXr9+nRdqVJWOVOQ+f39/DjVu3DjeJ8kK6siRIzzA/ytRbU8xR1CTJ0/mliNZxVRZWRnOnj0rHr1/UdVpikMbHhJmWUHt27cPpaWl4tH718aNGyWokpIS8WwfKArQjIwM7uv3refPnyM8PJwDUbXwZsqwgqKpO3/+fNlqcLRVVVXF63aCSkpKskobVlCkvXv3Yvbs2Xxj+b5Ek2revHkcSKvV4uTJk+IVk/pB0QygBXnz5s3imdEXxa6joyOHIri+Oa0fFOno0aM8me3fv188M3q6ceMGfH19ORDtlvpaiSQLRbvinJwc6HS6UQVramrimwUCokYrgJxkoUhUdNGOg1Zx+jbwrjFGdVp0dLQERCFCyVNOA0KROjo6+OaROgkLC8OBAwcG/C4wkGhJqqystNr60y7GvM7JaVAoElloy5YtUKvV/LsAwdGiTEsS7dkGWvNo/0iuT0xMtNr605caWi8H05BQJIqx06dPIyYmRir6nJyc4OPjw90QHx/PPw2lpaUhOTkZcXFxfC0zzzBqVPZQnLa2toq9DqxhQZlFrjh06BCHoKKMLGceVK6NGTOGQ2dnZ0u10nA0IiizXr58yV1w8OBBFBYWwmg08hp7xYoVyMrK4u6mJHzu3Dm0t7eLTw1fbwUlJ3Kx3KfCt9GoQY2mPkAo4F/FTv+RzqCUlAAAAABJRU5ErkJggg==" alt="Logo Let's Poke" style="width:34px;height:34px;object-fit:contain;"><span>Let's Poke</span></div>
     <div class="login-sub">Sistema de Trilha de Treinamento</div>
     <div class="login-input-wrap">
       <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
@@ -433,15 +437,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       <p>Franqueadora Let's Poke — Trilha de Treinamento Oficial</p>
     </div>
     <div class="painel-stats" id="painelStats"></div>
-    <div class="painel-toolbar">
-      <div class="filter-wrap">
-        <label for="filtroLoja">Filtrar por loja</label>
-        <select id="filtroLoja" class="filter-select" onchange="setFiltroLoja(this.value)">
-          <option value="">Todas as lojas</option>
-        </select>
-      </div>
-      <div style="display:flex;justify-content:flex-end"><button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button></div>
-    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button></div>
     <div class="colab-grid" id="colabGrid"></div>
   </div>
 </div>
@@ -468,7 +464,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
         <div class="pill"><div class="dot" style="background:var(--yellow)"></div><span id="pYellow">0 reforço</span></div>
         <div class="pill"><div class="dot" style="background:var(--red)"></div><span id="pRed">0 a refazer</span></div>
         <div class="pill"><div class="dot" style="background:var(--border)"></div><span id="pPend">0 pendentes</span></div>
-        <div class="pill"><div class="dot" style="background:var(--blue)"></div><span id="pNA">0 N/A</span></div>
         <div class="pill"><div class="dot" style="background:var(--accent)"></div><span id="pBlocos">0/0 blocos</span></div>
       </div>
     </div>
@@ -518,7 +513,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 <!-- MODAL RELATÓRIO -->
 <div class="overlay" id="modalReport">
   <div class="modal" style="max-width:680px">
-    <div class="report-header-brand"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAApCAYAAACyXOB4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAb4SURBVFhH7ZhpTFRXFMfZBpgZmHkzIxhoLEIQW42AIEgQGrBQTWMNi417CwQUUjFqWmphFLAuiUEIfpBoaKqRYEJwi1E0NYg1btFUa8ANUqEpKIoCIuD+7z133rxx4LEpNn7oP7mZedu9v3fOueee+2zwAep/qDf16tUrvHjxQjyy1jtBPX36FA8ePMDdu3dx7949PHnyBK9fvxavDq1bt27J3j8iKIK4evUqiouLsWTJEsycORMhISEICgpCcHAwIiMjkZCQgE2bNuHChQt49uyZ+KS8ampquMX6akgoepM7d+5g+/btfGCVSgVbW1vY2NgM2pydnTF9+nTs3r0bbW1tYm/WOnHiBJqbm8Uji4aE2rNnD/z8/GQHHk6zt7dHREQEjh07JvZoEUGdP39ePLJoUKiCggIolUrLIMxCWrUTIv0E/BDrhl++GYfKZDeUJ3+EksUfIytGh7ipBvh5usBJ4cCesVhUo9EgLy8PPT09Yu9ARUUFDh8+LB5ZNCDUrl27uKvMnepclVgeocPv3xnQsV6Jx+sVrDmiizX6pda5TsGPW4xaVHxrQOJUAS5KJ6kPakuXLpXcuW3bNpSXl/P/b0oW6tSpU3B3d5c6muIl4ECKAZ25DGadAx7mKAZtj3Ic8GS9A9rWqVG2RI9ALy3rx2K1hQsXoqurC+np6dyFfdUPiqZ2QECA1EHkRC3+WC2gJ49ZhgGZf+Vg+rZ2DqdAw49aLA5zg62dvdTvokWL+GylSdRX/aBWr14tPRjkLeDPNVoO0WFUoHaNC35doMOllVruKjkQudZpdMADoworowQoHCxgNJvlZAV15swZyW1jBSWOL9OjO5e9MQP6K0uJiAla9rYK5g4NLmaaYOUg5Bq9VJtRiVVRepZSTGB6vR7V1dXi6BZZQW3dulV8Cztkfc5clu/M44OscjFTYLNPwa8r2Mwq/doFvXnDh6JGYI9yXRA1ySCOY4OoqCg8fPhQJDDJCooSnfnmrwL0aPrJlVuDLPXPWiUSgllcODjhs0/0qPteYIOMDKqbxVdNhgBvNzarbe2ksXbu3CkSmGQFRVN1zpw54s22WBBqQHO2moHZM4sRmAqXVqiYK1UcVG5gudbO4HvyHFGVpoOXYI+gaWHYsGGDlANDQ0PR2dkpUsgE+u3bt3kGNoMtYmD1WVo+xcky5MrhAj1i93UxS7ca1SiKN8BDp4SrRuBpgNbFGTNmiOPYWKWGflCk+vp6xMbG8ptt7ewQPkGH35azPLXeCV0s8E1u6+86siZdozTQleuI1hwVKljG/2KSK+9LEAQeImbt2LFDgsrMzBTPDgBFun//PlJTU2HHoOghV5aZl0caUJUq4O+1LNZynblLKG/RbzdrHSy5Nq7VoHqZKwrm6hDmq4MDW/vo+SlT/HH8+HGxd5MaGxvh4uLCr0+bNk08OwgUiUxcVFQEDw9P6Y00Kmd8/qkG6REa/DzXHcXxOhQmuGHdl2ORFKJG9EQNBLVpllJzc3Pjua+hoUHs1aLHjx8jMDCQ3+ft7Y2WlhZ+flAoEtU7dXV1SElJgcFgmcqmJlfCsEVb0LM6KxT5+fm8kBuowuzt7cWsWbP4c56enrh58yY/L0HR4HTTYLpy5QqfNVTI0VLkNX48xnv7MNOHsHOJWLVqFS8AL1++PGSBR+ru7uZ5iqA8PDxQW1vLz0tQVFJcu3ZNthLsK4KneCALXr9+nRdqVJWOVOQ+f39/DjVu3DjeJ8kK6siRIzzA/ytRbU8xR1CTJ0/mliNZxVRZWRnOnj0rHr1/UdVpikMbHhJmWUHt27cPpaWl4tH718aNGyWokpIS8WwfKArQjIwM7uv3refPnyM8PJwDUbXwZsqwgqKpO3/+fNlqcLRVVVXF63aCSkpKskobVlCkvXv3Yvbs2Xxj+b5Ek2revHkcSKvV4uTJk+IVk/pB0QygBXnz5s3imdEXxa6joyOHIri+Oa0fFOno0aM8me3fv188M3q6ceMGfH19ORDtlvpaiSQLRbvinJwc6HS6UQVramrimwUCokYrgJxkoUhUdNGOg1Zx+jbwrjFGdVp0dLQERCFCyVNOA0KROjo6+OaROgkLC8OBAwcG/C4wkGhJqqystNr60y7GvM7JaVAoElloy5YtUKvV/LsAwdGiTEsS7dkGWvNo/0iuT0xMtNr605caWi8H05BQJIqx06dPIyYmRir6nJyc4OPjw90QHx/PPw2lpaUhOTkZcXFxfC0zzzBqVPZQnLa2toq9DqxhQZlFrjh06BCHoKKMLGceVK6NGTOGQ2dnZ0u10nA0IiizXr58yV1w8OBBFBYWwmg08hp7xYoVyMrK4u6mJHzu3Dm0t7eLTw1fbwUlJ3Kx3KfCt9GoQY2mPkAo4F/FTv+RzqCUlAAAAABJRU5ErkJggg==" alt="Logo"><span>Let's Poke</span></div><h3>📋 Relatório de Treinamento</h3>
+    <div class="report-brand"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div><div class="report-brand-title">Let's Poke</div><div class="report-brand-sub">Relatório de Treinamento</div></div></div><h3>📋 Relatório de Treinamento</h3>
     <p id="reportSub">—</p>
     <div class="report-pre" id="reportContent"></div>
     <div class="modal-actions">
@@ -532,7 +527,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 <!-- MODAL CERTIFICADO -->
 <div class="overlay" id="modalCert">
   <div class="modal" style="max-width:760px">
-    <div class="report-header-brand"><img src="data:image/png;base64,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" alt="Logo"><span>Let's Poke</span></div><h3>🏅 Certificado de Conclusão</h3>
+    <div class="report-brand"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div><div class="report-brand-title">Let's Poke</div><div class="report-brand-sub">Certificado de Conclusão</div></div></div><h3>🏅 Certificado de Conclusão</h3>
     <p id="certSub">—</p>
     <div class="report-pre" id="certContent"></div>
     <div class="modal-actions">
@@ -548,7 +543,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 <!-- MODAL RELATÓRIO GERENCIAL -->
 <div class="overlay" id="modalGerencial">
   <div class="modal" style="max-width:700px">
-    <div class="report-header-brand"><img src="data:image/png;base64,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" alt="Logo"><span>Let's Poke</span></div><h3>📊 Relatório Gerencial</h3>
+    <div class="report-brand"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div><div class="report-brand-title">Let's Poke</div><div class="report-brand-sub">Relatório Gerencial</div></div></div><h3>📊 Relatório Gerencial</h3>
     <p id="gerencialSub">Visão consolidada de todos os colaboradores</p>
     <div class="report-pre" id="gerencialContent"></div>
     <div class="modal-actions">
@@ -827,10 +822,9 @@ const FUNC_ICONS={atendimento:'🧾',cozinha:'🍳',asg:'🧹',gerente:'👤'};
 // ══════════════════════════════════════════════
 const API_TOKEN = 'LP_8fK29xQa_Train_2026_zP41Lm';
 let API_URL = 'https://script.google.com/macros/s/AKfycbzEpywGjqJ1d2Y_dqscOZokbc_xiRkVUGYUmE73dw4nsyQs_hxJ6lOd6wQaq1wbASUVBw/exec';
-let state = { colabs: [] };
+let state = { colabs: [], lojaFiltro: 'todas' };
 let activeColabIdx = null;
 let saveTimeout = null;
-let filtroLojaAtual = '';
 
 function setSyncStatus(status, msg) {
   const el = document.getElementById('syncStatus');
@@ -942,30 +936,12 @@ function formatDateShort(value){
   return String(value);
 }
 
-
-function getLojasAtivas() {
-  return [...new Set(state.colabs.map(c => (c.unidade || '—').trim() || '—'))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
-}
-
-function renderFiltroLojas() {
-  const select = document.getElementById('filtroLoja');
-  if (!select) return;
-  const lojas = getLojasAtivas();
-  select.innerHTML = `<option value="">Todas as lojas</option>` + lojas.map(loja =>
-    `<option value="${escapeHtml(loja)}" ${filtroLojaAtual===loja?'selected':''}>${escapeHtml(loja)}</option>`
-  ).join('');
-}
-
-function setFiltroLoja(loja) {
-  filtroLojaAtual = loja || '';
-  renderPainel();
-}
-
 function ensureBlocoState(c,bi){
-  if(!c.blocos[bi]) c.blocos[bi]={open:false,concluido:false,aplicadoPor:'',assinaturaColaborador:{assinada:false,nome:'',dataHora:'',img:''},temas:[]};
+  if(!c.blocos[bi]) c.blocos[bi]={open:false,concluido:false,aplicadoPor:'',comentario:'',comentarioOpen:false,assinaturaColaborador:{assinada:false,nome:'',dataHora:'',img:''},temas:[]};
   if(typeof c.blocos[bi].aplicadoPor!=='string') c.blocos[bi].aplicadoPor='';
-  if(!c.blocos[bi].assinaturaColaborador) c.blocos[bi].assinaturaColaborador={assinada:false,nome:'',dataHora:'',img:''};
-  if(!c.blocos[bi].assinaturaColaborador || typeof c.blocos[bi].assinaturaColaborador!=='object') c.blocos[bi].assinaturaColaborador={assinada:false,nome:'',dataHora:''};
+  if(typeof c.blocos[bi].comentario!=='string') c.blocos[bi].comentario='';
+  if(typeof c.blocos[bi].comentarioOpen!=='boolean') c.blocos[bi].comentarioOpen=!!c.blocos[bi].comentario;
+  if(!c.blocos[bi].assinaturaColaborador || typeof c.blocos[bi].assinaturaColaborador!=='object') c.blocos[bi].assinaturaColaborador={assinada:false,nome:'',dataHora:'',img:''};
   if(!Array.isArray(c.blocos[bi].temas)) c.blocos[bi].temas=[];
   return c.blocos[bi];
 }
@@ -986,62 +962,87 @@ function isCertificadoElegivel(c){
 // ══════════════════════════════════════════════
 // PAINEL
 // ══════════════════════════════════════════════
+function getLojasAtivas() {
+  const set = new Set();
+  state.colabs.forEach(c => { if (c.unidade && c.unidade !== '—') set.add(c.unidade); });
+  return Array.from(set).sort((a,b) => a.localeCompare(b, 'pt-BR'));
+}
+
+function applyLojaFilter(value) {
+  state.lojaFiltro = value;
+  renderPainel();
+}
+
 function renderPainel() {
-  const visiveis = state.colabs.filter(c => !filtroLojaAtual || (c.unidade || '—') === filtroLojaAtual);
-  const total = visiveis.length;
+  const total = state.colabs.length;
   let prontos=0, em=0, nao=0;
-  visiveis.forEach(c => {
+  state.colabs.forEach(c => {
     const info = colabInfo(c);
     if (info.statusKey==='ok') prontos++;
     else if (info.statusKey==='em') em++;
     else nao++;
   });
 
+  const lojas = getLojasAtivas();
+  if (state.lojaFiltro !== 'todas' && !lojas.includes(state.lojaFiltro)) {
+    state.lojaFiltro = 'todas';
+  }
+
+  const filtrados = state.colabs.filter(c => state.lojaFiltro === 'todas' || c.unidade === state.lojaFiltro);
+
   document.getElementById('painelStats').innerHTML = `
     <div class="stat-card"><div class="val">${total}</div><div class="lbl">Colaboradores</div></div>
     <div class="stat-card"><div class="val" style="color:var(--green)">${prontos}</div><div class="lbl">✅ Prontos</div></div>
-    <div class="stat-card"><div class="val" style="color:var(--yellow)">${em}</div><div class="lbl">🔄 Em treino</div></div>
-    <div class="stat-card"><div class="val" style="color:var(--muted)">${nao}</div><div class="lbl">⏳ Não iniciados</div></div>
+    <div class="stat-card"><div class="val" style="color:var(--yellow)">${em}</div><div class="lbl">🔄 Em Treino</div></div>
+    <div class="stat-card"><div class="val" style="color:var(--muted)">${nao}</div><div class="lbl">⏳ Não Iniciados</div></div>
   `;
 
-  renderFiltroLojas();
+  const filtroHtml = `
+    <div class="filter-row">
+      <div class="filter-box">
+        <label for="filtroLoja">Filtrar por loja</label>
+        <select id="filtroLoja" class="filter-select" onchange="applyLojaFilter(this.value)">
+          <option value="todas" ${state.lojaFiltro==='todas'?'selected':''}>Todas as lojas</option>
+          ${lojas.map(loja => `<option value="${loja}" ${state.lojaFiltro===loja?'selected':''}>${loja}</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button>
+    </div>`;
 
-  document.getElementById('colabGrid').innerHTML =
-    visiveis.map(c => {
-      const realIdx = state.colabs.indexOf(c);
-      const info = colabInfo(c);
-      return `<div class="colab-card" onclick="openTrilha(${realIdx})">
-        <div class="colab-avatar">${FUNC_ICONS[c.funcao]||'👤'}</div>
-        <div class="colab-info">
-          <div class="colab-name">${c.nome}</div>
-          <div class="colab-meta">${TRILHAS[c.funcao].label} · ${c.unidade} · Início: ${formatDateShort(c.dataInicio)}</div>
-        </div>
-        <div class="colab-right">
-          <div class="colab-pct">${info.pct}%</div>
-          <div class="colab-progbar"><div class="colab-progfill" style="width:${info.pct}%"></div></div>
-          <div class="colab-status ${info.statusClass}">${info.statusLabel}</div>
-        </div>
-        <button class="delete-btn" onclick="event.stopPropagation();deleteColab(${realIdx})">🗑</button>
-      </div>`;
-    }).join('') +
-    `<div class="add-colab-card" onclick="openModal('modalColab')">+ Novo Colaborador</div>`;
+  const cardsHtml = filtrados.length
+    ? filtrados.map(c => {
+        const i = state.colabs.indexOf(c);
+        const info = colabInfo(c);
+        return `<div class="colab-card" onclick="openTrilha(${i})">
+          <div class="colab-avatar">${FUNC_ICONS[c.funcao]||'👤'}</div>
+          <div class="colab-info">
+            <div class="colab-name">${c.nome}</div>
+            <div class="colab-meta">${TRILHAS[c.funcao].label} · ${c.unidade} · Início: ${formatDateShort(c.dataInicio)}</div>
+          </div>
+          <div class="colab-right">
+            <div class="colab-pct">${info.pct}%</div>
+            <div class="colab-progbar"><div class="colab-progfill" style="width:${info.pct}%"></div></div>
+            <div class="colab-status ${info.statusClass}">${info.statusLabel}</div>
+          </div>
+          <button class="delete-btn" onclick="event.stopPropagation();deleteColab(${i})">🗑</button>
+        </div>`;
+      }).join('')
+    : `<div class="empty-state">Nenhum colaborador encontrado para a loja selecionada.</div>`;
+
+  document.getElementById('colabGrid').innerHTML = filtroHtml + cardsHtml + `<div class="add-colab-card" onclick="openModal('modalColab')">+ Novo Colaborador</div>`;
 }
 
 function colabInfo(c) {
   const trilha = TRILHAS[c.funcao];
-  let aplicaveis=0, green=0, totalBlocos=trilha.blocos.length, blocosConcl=0;
+  let total=0, green=0, totalBlocos=trilha.blocos.length, blocosConcl=0;
   trilha.blocos.forEach((bloco,bi) => {
-    bloco.temas.forEach((_,ti) => {
-      const abs = c.blocos[bi]?.temas[ti]?.abs || '';
-      if (abs !== 'na') aplicaveis++;
-      if (abs === 'g') green++;
-    });
+    bloco.temas.forEach((_,ti) => { total++; if ((c.blocos[bi]?.temas[ti]?.abs||'')==='g') green++; });
     if (c.blocos[bi]?.concluido) blocosConcl++;
   });
-  const pct = aplicaveis>0 ? Math.round(green/aplicaveis*100) : 0;
-  const isInaugurado = blocosConcl===totalBlocos && totalBlocos>0;
+  const pct = total>0?Math.round(green/total*100):0;
+  const isInaugurado = blocosConcl===totalBlocos;
   let statusKey,statusClass,statusLabel;
-  if (green===0 && blocosConcl===0){statusKey='nao';statusClass='status-nao';statusLabel='⏳ Não iniciado';}
+  if (green===0){statusKey='nao';statusClass='status-nao';statusLabel='⏳ Não iniciado';}
   else if (isInaugurado){statusKey='ok';statusClass='status-ok';statusLabel='✅ Pronto para inaugurar';}
   else{statusKey='em';statusClass='status-em';statusLabel=`🔄 ${blocosConcl}/${totalBlocos} blocos`;}
   return {pct,statusKey,statusClass,statusLabel};
@@ -1067,30 +1068,24 @@ function renderTrilha() {
   const c = state.colabs[activeColabIdx];
   if (!c) return;
   const trilha = TRILHAS[c.funcao];
-  let total=0,aplicaveis=0,green=0,yellow=0,red=0,na=0,blocosDone=0;
+  let total=0,green=0,yellow=0,red=0,blocosDone=0;
   trilha.blocos.forEach((bloco,bi) => {
     const bState=ensureBlocoState(c,bi);
     bloco.temas.forEach((_,ti) => {
       total++;
       const abs=bState.temas?.[ti]?.abs||'';
-      if(abs==='na') na++;
-      else {
-        aplicaveis++;
-        if(abs==='g')green++; else if(abs==='y')yellow++; else if(abs==='r')red++;
-      }
+      if(abs==='g')green++;else if(abs==='y')yellow++;else if(abs==='r')red++;
     });
     if(bState.concluido)blocosDone++;
   });
-  const pct=aplicaveis>0?Math.round(green/aplicaveis*100):0;
+  const pct=total>0?Math.round(green/total*100):0;
   document.getElementById('trilhaPct').textContent=pct+'%';
   document.getElementById('trilhaFill').style.width=pct+'%';
   document.getElementById('pGreen').textContent=`${green} absorvidos`;
   document.getElementById('pYellow').textContent=`${yellow} reforço`;
   document.getElementById('pRed').textContent=`${red} a refazer`;
-  document.getElementById('pPend').textContent=`${Math.max(aplicaveis-green-yellow-red,0)} pendentes`;
+  document.getElementById('pPend').textContent=`${total-green-yellow-red} pendentes`;
   document.getElementById('pBlocos').textContent=`${blocosDone}/${trilha.blocos.length} blocos`;
-  const pNa=document.getElementById('pNA');
-  if (pNa) pNa.textContent=`${na} N/A`;
   document.getElementById('certBtn').classList.toggle('show', isCertificadoElegivel(c));
 
   document.getElementById('blocosContainer').innerHTML = trilha.blocos.map((bloco,bi) => {
@@ -1099,17 +1094,14 @@ function renderTrilha() {
     const isConcluido=bState.concluido||false;
     const faseClass=bloco.fase===2?'fase2':'fase1';
     const faseTxt=bloco.fase===2?'🏪 FASE 2':'📍 FASE 1';
-    let tdone=0,ttotal=bloco.temas.length,twarn=0,tna=0,tavaliados=0;
+    let tdone=0,ttotal=bloco.temas.length,twarn=0;
     bloco.temas.forEach((_,ti)=>{
       const abs=bState.temas?.[ti]?.abs||'';
-      if(abs==='g') tdone++;
-      if(abs==='r') twarn++;
-      if(abs==='na') tna++;
-      if(abs) tavaliados++;
+      if(abs==='g')tdone++; if(abs==='r')twarn++;
     });
     let badgeCls='badge-pend',badgeTxt=`0/${ttotal}`;
     if(isConcluido){badgeCls='badge-ok';badgeTxt='✔ Concluído';}
-    else if(tavaliados>0){badgeCls='badge-partial';badgeTxt=`${tavaliados}/${ttotal}`;}
+    else if(tdone>0){badgeCls='badge-partial';badgeTxt=`${tdone}/${ttotal}`;}
 
     const temasHtml=bloco.temas.map((tema,ti)=>{
       const tState=bState.temas?.[ti]||{};
@@ -1126,7 +1118,6 @@ function renderTrilha() {
           <button class="abs-btn ${abs==='g'?'g':''}" onclick="setAbs(${bi},${ti},'g')"><span class='abs-emoji'>🟢</span><span class='abs-label'>OK</span></button>
           <button class="abs-btn ${abs==='y'?'y':''}" onclick="setAbs(${bi},${ti},'y')"><span class='abs-emoji'>🟡</span><span class='abs-label'>Reforço</span></button>
           <button class="abs-btn ${abs==='r'?'r':''}" onclick="setAbs(${bi},${ti},'r')"><span class='abs-emoji'>🔴</span><span class='abs-label'>Refazer</span></button>
-          <button class="abs-btn na ${abs==='na'?'na':''}" onclick="setAbs(${bi},${ti},'na')"><span class='abs-emoji'>🔵</span><span class='abs-label'>N/A</span></button>
           <button class="obs-btn" onclick="toggleObs(${bi},${ti})">📝</button>
         </div>
       </div>`;
@@ -1159,11 +1150,33 @@ function renderTrilha() {
             </div>
             <button class="btn-assinar ${sig.assinada?'signed':''}" onclick="abrirAssinatura(${bi})">${sig.assinada?'✔ Assinado':'Assinatura'}</button>
           </div>
-          <button class="btn-concluir ${isConcluido?'signed':''}" onclick="toggleConcluido(${bi})">${isConcluido?'✔ Bloco concluído':'Concluir bloco'}</button>
+          <div class="bloco-footer-actions">
+            <button class="btn-comentario ${bState.comentario?'filled':''}" onclick="toggleComentarioBloco(${bi})">💬 Comentário</button>
+            <button class="btn-concluir ${isConcluido?'signed':''}" onclick="toggleConcluido(${bi})">${isConcluido?'✔ Bloco concluído':'Concluir bloco'}</button>
+          </div>
+          <div class="bloco-comentario ${(bState.comentarioOpen || bState.comentario)?'show':''}">
+            <textarea placeholder="Comentário do bloco..." oninput="saveComentarioBloco(${bi}, this.value)">${bState.comentario||''}</textarea>
+          </div>
         </div>
       </div>
     </div>`;
   }).join('');
+}
+
+function toggleComentarioBloco(bi) {
+  const c=state.colabs[activeColabIdx];
+  const b=ensureBlocoState(c,bi);
+  b.comentarioOpen = !b.comentarioOpen;
+  b.open = true;
+  renderTrilha();
+}
+
+function saveComentarioBloco(bi, value) {
+  const c=state.colabs[activeColabIdx];
+  const b=ensureBlocoState(c,bi);
+  b.comentario = value;
+  b.comentarioOpen = true;
+  debounceSave(c);
 }
 
 function toggleBloco(bi) {
@@ -1181,7 +1194,7 @@ function setAbs(bi,ti,val) {
   b.temas[ti].abs=b.temas[ti].abs===val?'':val;
   renderTrilha();
   debounceSave(c);
-  const labels={g:'🟢 Absorveu bem',y:'🟡 Precisa de reforço',r:'🔴 Refazer',na:'🔵 Não se aplica','':"Avaliação removida"};
+  const labels={g:'🟢 Absorveu bem',y:'🟡 Precisa de reforço',r:'🔴 Refazer','':"Avaliação removida"};
   toast(labels[b.temas[ti].abs]||'Avaliação removida');
 }
 
@@ -1394,42 +1407,9 @@ function copyCertificado(){
 }
 
 function printCertificado(){
-  const txt=document.getElementById('certContent').textContent.replace(/\n/g,'<br>');
   const w=window.open('','_blank');
-  w.document.write(`<html><head><title>Certificado</title><style>body{font-family:Arial,sans-serif;padding:32px;line-height:1.6}.brand{display:flex;align-items:center;gap:10px;margin-bottom:18px;font-weight:700}.brand img{width:30px;height:30px;object-fit:contain}
-/* LOGIN */
-.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
-.login-screen.hidden{display:none}
-.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
-.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
-.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
-.login-input-wrap{position:relative;margin-bottom:12px}
-.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 44px 12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px}
-.login-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0;line-height:1}
-.login-eye:hover{color:var(--text)}
-.login-input:focus{border-color:var(--accent)}
-.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
-.login-btn:hover{background:#f5cc55}
-.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
-</style></head><body>
-
-<!-- TELA DE LOGIN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo-wrap"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div class="login-logo">Let's Poke</div></div>
-    <div class="login-sub">Sistema de Trilha de Treinamento</div>
-    <div class="login-input-wrap">
-      <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
-        onkeydown="if(event.key==='Enter') fazerLogin()" />
-      <button class="login-eye" onclick="toggleSenha()" type="button" id="eyeBtn">👁</button>
-    </div>
-    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
-    <div class="login-error" id="loginError"></div>
-  </div>
-</div>
-${txt}</body></html>`);
+  w.document.write(buildPrintWindow('Certificado de Conclusão', document.getElementById('certContent').textContent));
   w.document.close();
-  w.print();
 }
 
 function initBlocos(funcao) {
@@ -1437,6 +1417,8 @@ function initBlocos(funcao) {
     open:false,
     concluido:false,
     aplicadoPor:'',
+    comentario:'',
+    comentarioOpen:false,
     assinaturaColaborador:{assinada:false,nome:'',dataHora:'',img:''},
     temas:[]
   }));
@@ -1530,7 +1512,10 @@ ${'─'.repeat(45)}
     r+=`Aplicado por: ${bState.aplicadoPor||'—'}
 `;
     r+=`Assinatura do colaborador: ${ass.assinada?`Assinada por ${ass.nome||c.nome} em ${formatDateShort(ass.dataHora)}`:'Pendente'}
-
+`;
+    if (bState.comentario) r+=`Comentário do bloco: ${bState.comentario}
+`;
+    r+=`
 `;
     bloco.temas.forEach((tema,ti)=>{
       const tState=bState.temas?.[ti]||{};
@@ -1813,79 +1798,33 @@ function openRelatorioGerencial() {
   openModal('modalGerencial');
 }
 
+function buildPrintWindow(title, preContent) {
+  const safe = preContent.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><style>
+    body{font-family:Arial,sans-serif;padding:28px;color:#111;line-height:1.6}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .brand img{width:38px;height:38px;object-fit:contain}
+    .brand strong{display:block;font-size:18px}
+    .brand span{display:block;font-size:12px;color:#666}
+    pre{white-space:pre-wrap;font-family:Consolas,monospace;font-size:12px;line-height:1.7;margin:0}
+  </style></head><body>
+    <div class="brand"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div><strong>Let's Poke</strong><span>${title}</span></div></div>
+    <pre>${safe}</pre>
+    <script>window.onload=()=>window.print()<\/script>
+  </body></html>`;
+}
+
 function copyGerencial() { navigator.clipboard.writeText(document.getElementById('gerencialContent').textContent); toast('📄 Copiado!'); }
 function printGerencial() {
   const w = window.open('', '_blank');
-  w.document.write(`<html><head><title>Relatório Gerencial</title><style>body{font-family:monospace;font-size:12px;line-height:1.7;padding:28px}pre{white-space:pre-wrap}.brand{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-family:Arial,sans-serif;font-weight:700}.brand img{width:28px;height:28px;object-fit:contain}
-/* LOGIN */
-.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
-.login-screen.hidden{display:none}
-.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
-.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
-.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
-.login-input-wrap{position:relative;margin-bottom:12px}
-.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 44px 12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px}
-.login-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0;line-height:1}
-.login-eye:hover{color:var(--text)}
-.login-input:focus{border-color:var(--accent)}
-.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
-.login-btn:hover{background:#f5cc55}
-.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
-</style></head><body>
-
-<!-- TELA DE LOGIN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo-wrap"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div class="login-logo">Let's Poke</div></div>
-    <div class="login-sub">Sistema de Trilha de Treinamento</div>
-    <div class="login-input-wrap">
-      <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
-        onkeydown="if(event.key==='Enter') fazerLogin()" />
-      <button class="login-eye" onclick="toggleSenha()" type="button" id="eyeBtn">👁</button>
-    </div>
-    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
-    <div class="login-error" id="loginError"></div>
-  </div>
-</div>
-<div class="brand"><img src="data:image/png;base64,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"><span>Let's Poke</span></div><pre>${document.getElementById('gerencialContent').textContent}</pre><script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.write(buildPrintWindow('Relatório Gerencial', document.getElementById('gerencialContent').textContent));
   w.document.close();
 }
 
 function copyReport(){navigator.clipboard.writeText(document.getElementById('reportContent').textContent);toast('📄 Copiado!');}
 function printReport(){
   const w=window.open('','_blank');
-  w.document.write(`<html><head><title>Relatório</title><style>body{font-family:monospace;font-size:12px;line-height:1.7;padding:28px}pre{white-space:pre-wrap}.brand{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-family:Arial,sans-serif;font-weight:700}.brand img{width:28px;height:28px;object-fit:contain}
-/* LOGIN */
-.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
-.login-screen.hidden{display:none}
-.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
-.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
-.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
-.login-input-wrap{position:relative;margin-bottom:12px}
-.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 44px 12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px}
-.login-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0;line-height:1}
-.login-eye:hover{color:var(--text)}
-.login-input:focus{border-color:var(--accent)}
-.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
-.login-btn:hover{background:#f5cc55}
-.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
-</style></head><body>
-
-<!-- TELA DE LOGIN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo-wrap"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAApCAYAAACyXOB4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAb4SURBVFhH7ZhpTFRXFMfZBpgZmHkzIxhoLEIQW42AIEgQGrBQTWMNi417CwQUUjFqWmphFLAuiUEIfpBoaKqRYEJwi1E0NYg1btFUa8ANUqEpKIoCIuD+7z133rxx4LEpNn7oP7mZedu9v3fOueee+2zwAep/qDf16tUrvHjxQjyy1jtBPX36FA8ePMDdu3dx7949PHnyBK9fvxavDq1bt27J3j8iKIK4evUqiouLsWTJEsycORMhISEICgpCcHAwIiMjkZCQgE2bNuHChQt49uyZ+KS8ampquMX6akgoepM7d+5g+/btfGCVSgVbW1vY2NgM2pydnTF9+nTs3r0bbW1tYm/WOnHiBJqbm8Uji4aE2rNnD/z8/GQHHk6zt7dHREQEjh07JvZoEUGdP39ePLJoUKiCggIolUrLIMxCWrUTIv0E/BDrhl++GYfKZDeUJ3+EksUfIytGh7ipBvh5usBJ4cCesVhUo9EgLy8PPT09Yu9ARUUFDh8+LB5ZNCDUrl27uKvMnepclVgeocPv3xnQsV6Jx+sVrDmiizX6pda5TsGPW4xaVHxrQOJUAS5KJ6kPakuXLpXcuW3bNpSXl/P/b0oW6tSpU3B3d5c6muIl4ECKAZ25DGadAx7mKAZtj3Ic8GS9A9rWqVG2RI9ALy3rx2K1hQsXoqurC+np6dyFfdUPiqZ2QECA1EHkRC3+WC2gJ49ZhgGZf+Vg+rZ2DqdAw49aLA5zg62dvdTvokWL+GylSdRX/aBWr14tPRjkLeDPNVoO0WFUoHaNC35doMOllVruKjkQudZpdMADoworowQoHCxgNJvlZAV15swZyW1jBSWOL9OjO5e9MQP6K0uJiAla9rYK5g4NLmaaYOUg5Bq9VJtRiVVRepZSTGB6vR7V1dXi6BZZQW3dulV8Cztkfc5clu/M44OscjFTYLNPwa8r2Mwq/doFvXnDh6JGYI9yXRA1ySCOY4OoqCg8fPhQJDDJCooSnfnmrwL0aPrJlVuDLPXPWiUSgllcODjhs0/0qPteYIOMDKqbxVdNhgBvNzarbe2ksXbu3CkSmGQFRVN1zpw54s22WBBqQHO2moHZM4sRmAqXVqiYK1UcVG5gudbO4HvyHFGVpoOXYI+gaWHYsGGDlANDQ0PR2dkpUsgE+u3bt3kGNoMtYmD1WVo+xcky5MrhAj1i93UxS7ca1SiKN8BDp4SrRuBpgNbFGTNmiOPYWKWGflCk+vp6xMbG8ptt7ewQPkGH35azPLXeCV0s8E1u6+86siZdozTQleuI1hwVKljG/2KSK+9LEAQeImbt2LFDgsrMzBTPDgBFun//PlJTU2HHoOghV5aZl0caUJUq4O+1LNZynblLKG/RbzdrHSy5Nq7VoHqZKwrm6hDmq4MDW/vo+SlT/HH8+HGxd5MaGxvh4uLCr0+bNk08OwgUiUxcVFQEDw9P6Y00Kmd8/qkG6REa/DzXHcXxOhQmuGHdl2ORFKJG9EQNBLVpllJzc3Pjua+hoUHs1aLHjx8jMDCQ3+ft7Y2WlhZ+flAoEtU7dXV1SElJgcFgmcqmJlfCsEVb0LM6KxT5+fm8kBuowuzt7cWsWbP4c56enrh58yY/L0HR4HTTYLpy5QqfNVTI0VLkNX48xnv7MNOHsHOJWLVqFS8AL1++PGSBR+ru7uZ5iqA8PDxQW1vLz0tQVFJcu3ZNthLsK4KneCALXr9+nRdqVJWOVOQ+f39/DjVu3DjeJ8kK6siRIzzA/ytRbU8xR1CTJ0/mliNZxVRZWRnOnj0rHr1/UdVpikMbHhJmWUHt27cPpaWl4tH718aNGyWokpIS8WwfKArQjIwM7uv3refPnyM8PJwDUbXwZsqwgqKpO3/+fNlqcLRVVVXF63aCSkpKskobVlCkvXv3Yvbs2Xxj+b5Ek2revHkcSKvV4uTJk+IVk/pB0QygBXnz5s3imdEXxa6joyOHIri+Oa0fFOno0aM8me3fv188M3q6ceMGfH19ORDtlvpaiSQLRbvinJwc6HS6UQVramrimwUCokYrgJxkoUhUdNGOg1Zx+jbwrjFGdVp0dLQERCFCyVNOA0KROjo6+OaROgkLC8OBAwcG/C4wkGhJqqystNr60y7GvM7JaVAoElloy5YtUKvV/LsAwdGiTEsS7dkGWvNo/0iuT0xMtNr605caWi8H05BQJIqx06dPIyYmRir6nJyc4OPjw90QHx/PPw2lpaUhOTkZcXFxfC0zzzBqVPZQnLa2toq9DqxhQZlFrjh06BCHoKKMLGceVK6NGTOGQ2dnZ0u10nA0IiizXr58yV1w8OBBFBYWwmg08hp7xYoVyMrK4u6mJHzu3Dm0t7eLTw1fbwUlJ3Kx3KfCt9GoQY2mPkAo4F/FTv+RzqCUlAAAAABJRU5ErkJggg==" alt="Logo Let's Poke"><div class="login-logo">Let's Poke</div></div>
-    <div class="login-sub">Sistema de Trilha de Treinamento</div>
-    <div class="login-input-wrap">
-      <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
-        onkeydown="if(event.key==='Enter') fazerLogin()" />
-      <button class="login-eye" onclick="toggleSenha()" type="button" id="eyeBtn">👁</button>
-    </div>
-    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
-    <div class="login-error" id="loginError"></div>
-  </div>
-</div>
-<div class="brand"><img src="data:image/png;base64,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"><span>Let's Poke</span></div><pre>${document.getElementById('reportContent').textContent}</pre><script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.write(buildPrintWindow('Relatório de Treinamento', document.getElementById('reportContent').textContent));
   w.document.close();
 }
 
