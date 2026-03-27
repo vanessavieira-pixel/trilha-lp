@@ -1926,24 +1926,50 @@ function printReport(){
   const comp = col.comportamento || {};
   const hasComp = Object.values(comp).some(v => v.status);
   if (hasComp) {
-    html += `<div class="bloco">
-      <div class="bloco-hdr"><span>📋 Avaliação de Desempenho Observado</span><span class="badge pend">Registro pedagógico</span></div>
-      <div class="bloco-meta" style="font-size:10px">Instrumento pedagógico sem caráter decisório — Lei nº 13.966/2019</div>
-      <table class="temas-tbl">
-        <tr><th>Critério</th><th style="width:160px">Status</th><th>Observação do Aplicador</th></tr>`;
+    const compSummary = {g:0, y:0, r:0, n:0};
+    COMP_CRITERIOS.forEach((_,i) => {
+      const s = comp[i]?.status || '';
+      if (s) compSummary[s]++; else compSummary.n++;
+    });
+
+    html += `<div class="bloco comp-bloco">
+      <div class="bloco-hdr">
+        <span>📋 Avaliação de Desempenho Observado</span>
+        <span class="badge badge-comp">Instrumento Pedagógico</span>
+      </div>
+      <div class="comp-sub-meta">
+        Registro de acompanhamento comportamental durante a trilha de treinamento · Lei de Franquias nº 13.966/2019
+      </div>
+
+      <div class="comp-resumo">
+        <div class="comp-resumo-item comp-resumo-g">🟢 Adequado<span>${compSummary.g}</span></div>
+        <div class="comp-resumo-item comp-resumo-y">🟡 Atenção<span>${compSummary.y}</span></div>
+        <div class="comp-resumo-item comp-resumo-r">🔴 Intervenção<span>${compSummary.r}</span></div>
+        ${compSummary.n > 0 ? `<div class="comp-resumo-item comp-resumo-n">⬜ Não avaliado<span>${compSummary.n}</span></div>` : ''}
+      </div>
+
+      <table class="temas-tbl comp-tbl">
+        <tr><th style="width:38%">Critério Avaliado</th><th style="width:20%">Status</th><th>Descrição</th><th style="width:22%">Obs. do Aplicador</th></tr>`;
+
     COMP_CRITERIOS.forEach((crit, i) => {
       const cv = comp[i] || {};
-      const status = cv.status ? STATUS_LABEL[cv.status] : '— Não avaliado';
-      const desc = cv.status ? (cv.status==='g'?crit.g:cv.status==='y'?crit.y:crit.r) : '';
-      html += `<tr>
-        <td><b>${crit.titulo}</b>${desc?`<br><i style="font-size:10px;color:#666">${desc}</i>`:''}</td>
-        <td>${status}</td>
-        <td style="color:#666;font-style:italic">${cv.obs||'—'}</td>
+      const s = cv.status || '';
+      const statusLabel = s ? STATUS_LABEL[s] : '⬜ Não avaliado';
+      const desc = s ? (s==='g'?crit.g : s==='y'?crit.y : crit.r) : '—';
+      const rowClass = s==='g'?'comp-row-g' : s==='y'?'comp-row-y' : s==='r'?'comp-row-r' : '';
+      html += `<tr class="${rowClass}">
+        <td><b>${crit.titulo}</b></td>
+        <td class="comp-status-cell">${statusLabel}</td>
+        <td style="font-size:10px;color:#555;font-style:italic">${desc}</td>
+        <td style="font-size:10px;color:#666;font-style:italic">${cv.obs || '—'}</td>
       </tr>`;
     });
+
     html += `</table>
-      <div style="padding:10px 12px;font-size:10px;color:#888;background:#fafafa;border-top:1px solid #eee">
-        ⚖️ Esta avaliação é de responsabilidade exclusiva do franqueado empregador. A franqueadora não tem ingerência sobre decisões de gestão de pessoal, conforme Lei nº 13.966/2019.
+
+      <div class="comp-aviso-legal">
+        <div class="comp-aviso-titulo">⚖️ Aviso Legal — Lei de Franquias nº 13.966/2019</div>
+        <p>Esta avaliação constitui exclusivamente um instrumento pedagógico de acompanhamento do treinamento, sendo de responsabilidade integral do <strong>franqueado empregador</strong>. Nos termos da Lei nº 13.966/2019, a relação de emprego é estabelecida direta e exclusivamente entre o franqueado e seus colaboradores, não havendo qualquer vínculo empregatício, responsabilidade ou ingerência da <strong>franqueadora Let's Poke</strong> sobre decisões de contratação, demissão, gestão de pessoal ou quaisquer obrigações trabalhistas. O presente registro não representa manifestação da franqueadora acerca da conduta do colaborador.</p>
       </div>
     </div>`;
   }
@@ -1978,6 +2004,26 @@ function printReport(){
     .sig-img{max-width:220px;max-height:75px;border:1px solid #ddd;border-radius:4px;background:#fff;display:block}
     .sig-pend{font-size:11px;color:#aaa;font-style:italic}
     .footer{margin-top:20px;text-align:center;font-size:10px;color:#999;border-top:1px solid #eee;padding-top:10px}
+    .comp-bloco{border-color:#b0b0b0}
+    .comp-bloco .bloco-hdr{background:#2c2c2c;color:#fff}
+    .badge-comp{background:#e8a830;color:#111;border:none}
+    .comp-sub-meta{padding:6px 12px;font-size:10px;color:#666;background:#f7f7f7;border-bottom:1px solid #e5e5e5;font-style:italic}
+    .comp-resumo{display:flex;gap:10px;padding:10px 12px;background:#fafafa;border-bottom:1px solid #eee;flex-wrap:wrap}
+    .comp-resumo-item{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;border:1px solid transparent}
+    .comp-resumo-item span{font-size:14px;font-weight:800}
+    .comp-resumo-g{background:#d4edda;color:#155724;border-color:#c3e6cb}
+    .comp-resumo-y{background:#fff3cd;color:#856404;border-color:#ffeeba}
+    .comp-resumo-r{background:#f8d7da;color:#721c24;border-color:#f5c6cb}
+    .comp-resumo-n{background:#f8f9fa;color:#666;border-color:#ddd}
+    .comp-tbl th{font-size:10px}
+    .comp-row-g td{background:#f0fff4}
+    .comp-row-y td{background:#fffdf0}
+    .comp-row-r td{background:#fff5f5}
+    .comp-status-cell{font-weight:700;font-size:11px;white-space:nowrap}
+    .comp-aviso-legal{margin:0;padding:12px 14px;background:#f8f8f0;border-top:2px solid #e8a830}
+    .comp-aviso-titulo{font-size:11px;font-weight:800;color:#7a5c00;margin-bottom:6px}
+    .comp-aviso-legal p{font-size:10px;color:#555;line-height:1.65}
+    .comp-aviso-legal strong{color:#333}
     @media print{body{padding:12px}.bloco{page-break-inside:avoid}}
   `;
 
