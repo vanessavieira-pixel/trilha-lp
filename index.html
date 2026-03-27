@@ -380,6 +380,34 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
 .login-btn:hover{background:#f5cc55}
 .login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
+
+/* AVALIAÇÃO COMPORTAMENTAL — SEMÁFORO */
+.comp-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-top:20px}
+.comp-section-title{font-family:var(--font-h);font-size:14px;font-weight:700;margin-bottom:4px}
+.comp-section-sub{font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.comp-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+.comp-item:last-child{margin-bottom:0}
+.comp-item-title{font-size:13px;font-weight:600;margin-bottom:10px}
+.comp-semaforo{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.comp-btn{border:2px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;background:transparent;text-align:center;transition:all .15s;display:flex;flex-direction:column;gap:4px;align-items:center}
+.comp-btn:hover{transform:translateY(-1px)}
+.comp-btn .comp-emoji{font-size:20px;line-height:1}
+.comp-btn .comp-desc{font-size:10px;color:var(--muted);line-height:1.3}
+.comp-btn.sel-g{background:rgba(61,184,122,.15);border-color:var(--green)}
+.comp-btn.sel-g .comp-desc{color:var(--green)}
+.comp-btn.sel-y{background:rgba(232,184,48,.15);border-color:var(--yellow)}
+.comp-btn.sel-y .comp-desc{color:var(--yellow)}
+.comp-btn.sel-r{background:rgba(224,72,72,.15);border-color:var(--red)}
+.comp-btn.sel-r .comp-desc{color:var(--red)}
+.comp-obs-field{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--font-b);font-size:12px;resize:none;outline:none;transition:border-color .2s;display:none;margin-top:6px}
+.comp-obs-field.show{display:block}
+.comp-obs-field:focus{border-color:var(--accent)}
+.comp-obs-toggle{font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;margin-top:4px}
+.comp-obs-toggle:hover{color:var(--accent)}
+.comp-disclaimer{font-size:10px;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;line-height:1.6;margin-top:14px}
+.comp-disclaimer strong{color:var(--yellow)}
+@media(max-width:640px){.comp-semaforo{grid-template-columns:1fr 1fr 1fr}.comp-btn .comp-desc{font-size:9px}}
+
 </style>
 </head>
 <body>
@@ -468,6 +496,17 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       </div>
     </div>
     <div id="blocosContainer"></div>
+    <div class="comp-section" id="compSection" style="display:none">
+      <div class="comp-section-title">📋 Avaliação de Desempenho Observado</div>
+      <div class="comp-section-sub">
+        Selecione o status observado durante o treinamento para cada critério.<br>
+        <strong>Nota:</strong> Instrumento pedagógico sem caráter decisório sobre vínculo empregatício — Lei nº 13.966/2019.
+      </div>
+      <div id="compGrid"></div>
+      <div class="comp-disclaimer">
+        ⚖️ <strong>Aviso Legal:</strong> Esta avaliação é de responsabilidade exclusiva do franqueado empregador. A franqueadora atua apenas como suporte pedagógico ao treinamento, não tendo ingerência sobre decisões de contratação, demissão ou gestão de pessoal, conforme a Lei nº 13.966/2019 (Lei de Franquias) e jurisprudência trabalhista vigente.
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1088,6 +1127,7 @@ function renderTrilha() {
   document.getElementById('pBlocos').textContent=`${blocosDone}/${trilha.blocos.length} blocos`;
   document.getElementById('certBtn').classList.toggle('show', isCertificadoElegivel(c));
 
+  renderComportamento();
   document.getElementById('blocosContainer').innerHTML = trilha.blocos.map((bloco,bi) => {
     const bState=ensureBlocoState(c,bi);
     const isOpen=bState.open||false;
@@ -1823,12 +1863,229 @@ function printGerencial() {
 
 function copyReport(){navigator.clipboard.writeText(document.getElementById('reportContent').textContent);toast('📄 Copiado!');}
 function printReport(){
-  const w=window.open('','_blank');
-  w.document.write(buildPrintWindow('Relatório de Treinamento', document.getElementById('reportContent').textContent));
+  const col = state.colabs[activeColabIdx];
+  if (!col) return;
+  const trilha = TRILHAS[col.funcao];
+  const info = colabInfo(col);
+  const now = new Date().toLocaleString('pt-BR');
+  const STATUS_LABEL = {g:'🟢 Adequado', y:'🟡 Atenção', r:'🔴 Intervenção necessária'};
+
+  let html = '';
+
+  // Cabeçalho
+  html += `<div class="hdr">
+    <img src="data:image/png;base64,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" class="logo-img" alt="Logo">
+    <div>
+      <div class="logo-nome">Let's Poke</div>
+      <div class="hdr-title">Relatório de Treinamento</div>
+      <div class="hdr-sub">Franqueadora Let's Poke — Trilha de Treinamento Oficial</div>
+    </div>
+  </div>`;
+
+  // Dados do colaborador
+  html += `<table class="info-tbl">
+    <tr><td class="lbl">Colaborador</td><td>${col.nome}</td><td class="lbl">Função</td><td>${trilha.label}</td></tr>
+    <tr><td class="lbl">Unidade</td><td>${col.unidade}</td><td class="lbl">Início</td><td>${col.dataInicio}</td></tr>
+    <tr><td class="lbl">Progresso</td><td>${info.pct}%</td><td class="lbl">Status</td><td>${info.statusLabel}</td></tr>
+  </table>`;
+
+  // Blocos
+  trilha.blocos.forEach((bloco, bi) => {
+    const bState = col.blocos[bi] || {};
+    const ass = bState.assinaturaColaborador || {};
+    const fase = bloco.fase === 2 ? '🏪 FASE 2' : '📍 FASE 1';
+    html += `<div class="bloco">
+      <div class="bloco-hdr">
+        <span>${fase} · Bloco ${bi+1} · ${bloco.titulo}</span>
+        <span class="badge ${bState.concluido?'ok':'pend'}">${bState.concluido?'✔ CONCLUÍDO':'PENDENTE'}</span>
+      </div>
+      <div class="bloco-meta">Aplicado por: <b>${bState.aplicadoPor||'—'}</b></div>
+      <table class="temas-tbl">
+        <tr><th style="width:38px">#</th><th>Tema</th><th style="width:85px">Material</th><th style="width:135px">Absorção</th></tr>`;
+    bloco.temas.forEach((tema, ti) => {
+      const abs = bState.temas?.[ti]?.abs || '';
+      const icon = abs==='g'?'🟢 Absorveu bem':abs==='y'?'🟡 Precisa de reforço':abs==='r'?'🔴 Refazer':'⬜ Não avaliado';
+      const obs = bState.temas?.[ti]?.obs || '';
+      html += `<tr>
+        <td class="tc">${tema.n}</td>
+        <td>${tema.nome}${obs?`<br><i style="font-size:10px;color:#888">Obs: ${obs}</i>`:''}</td>
+        <td>${tema.material}</td><td>${icon}</td>
+      </tr>`;
+    });
+    html += `</table>
+      <div class="sig-box">
+        <div class="sig-lbl">✍️ Assinatura do Colaborador</div>
+        ${ass.assinada && ass.img
+          ? `<div class="sig-info">Assinado por <b>${ass.nome||col.nome}</b> em ${new Date(ass.dataHora).toLocaleString('pt-BR')}</div><img class="sig-img" src="${ass.img}" alt="Assinatura">`
+          : `<span class="sig-pend">⬜ Pendente</span>`}
+      </div>
+    </div>`;
+  });
+
+  // Avaliação comportamental
+  const comp = col.comportamento || {};
+  const hasComp = Object.values(comp).some(v => v.status);
+  if (hasComp) {
+    html += `<div class="bloco">
+      <div class="bloco-hdr"><span>📋 Avaliação de Desempenho Observado</span><span class="badge pend">Registro pedagógico</span></div>
+      <div class="bloco-meta" style="font-size:10px">Instrumento pedagógico sem caráter decisório — Lei nº 13.966/2019</div>
+      <table class="temas-tbl">
+        <tr><th>Critério</th><th style="width:160px">Status</th><th>Observação do Aplicador</th></tr>`;
+    COMP_CRITERIOS.forEach((crit, i) => {
+      const cv = comp[i] || {};
+      const status = cv.status ? STATUS_LABEL[cv.status] : '— Não avaliado';
+      const desc = cv.status ? (cv.status==='g'?crit.g:cv.status==='y'?crit.y:crit.r) : '';
+      html += `<tr>
+        <td><b>${crit.titulo}</b>${desc?`<br><i style="font-size:10px;color:#666">${desc}</i>`:''}</td>
+        <td>${status}</td>
+        <td style="color:#666;font-style:italic">${cv.obs||'—'}</td>
+      </tr>`;
+    });
+    html += `</table>
+      <div style="padding:10px 12px;font-size:10px;color:#888;background:#fafafa;border-top:1px solid #eee">
+        ⚖️ Esta avaliação é de responsabilidade exclusiva do franqueado empregador. A franqueadora não tem ingerência sobre decisões de gestão de pessoal, conforme Lei nº 13.966/2019.
+      </div>
+    </div>`;
+  }
+
+  html += `<div class="footer">Relatório gerado em ${now} · Let's Poke — Trilha de Treinamento Oficial</div>`;
+
+  const css = `
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:24px;max-width:800px;margin:0 auto}
+    .hdr{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:3px solid #e8a830;padding-bottom:14px}
+    .logo-img{width:42px;height:42px;object-fit:contain;flex-shrink:0}
+    .logo-nome{font-size:20px;font-weight:900;color:#e8a830}
+    .hdr-title{font-size:14px;font-weight:700;margin-top:2px}
+    .hdr-sub{font-size:10px;color:#666}
+    .info-tbl{width:100%;border-collapse:collapse;table-layout:fixed;margin-bottom:18px}
+    .info-tbl td{padding:6px 10px;border:1px solid #ddd;font-size:12px;word-break:break-word}
+    .info-tbl .lbl{width:90px;font-weight:600;background:#f5f5f5;color:#555}
+    .bloco{margin-bottom:16px;border:1px solid #ccc;border-radius:6px;overflow:hidden;page-break-inside:avoid}
+    .bloco-hdr{background:#f0f0f0;padding:9px 12px;font-weight:700;font-size:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .bloco-meta{padding:5px 12px;font-size:11px;color:#555;background:#fafafa;border-bottom:1px solid #eee}
+    .badge{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:700;white-space:nowrap;flex-shrink:0}
+    .badge.ok{background:#d4edda;color:#155724}
+    .badge.pend{background:#f8f9fa;color:#666;border:1px solid #ddd}
+    .temas-tbl{width:100%;border-collapse:collapse;table-layout:fixed}
+    .temas-tbl th{background:#f8f8f8;padding:6px 10px;text-align:left;font-size:11px;border-bottom:1px solid #ddd;font-weight:600}
+    .temas-tbl td{padding:6px 10px;border-bottom:1px solid #eee;font-size:11px;vertical-align:top;word-break:break-word}
+    .temas-tbl tr:last-child td{border-bottom:none}
+    .tc{text-align:center;color:#888;width:38px}
+    .sig-box{padding:12px 14px;border-top:1px solid #eee;background:#fafafa}
+    .sig-lbl{font-size:11px;font-weight:700;color:#555;margin-bottom:6px}
+    .sig-info{font-size:11px;color:#333;margin-bottom:6px}
+    .sig-img{max-width:220px;max-height:75px;border:1px solid #ddd;border-radius:4px;background:#fff;display:block}
+    .sig-pend{font-size:11px;color:#aaa;font-style:italic}
+    .footer{margin-top:20px;text-align:center;font-size:10px;color:#999;border-top:1px solid #eee;padding-top:10px}
+    @media print{body{padding:12px}.bloco{page-break-inside:avoid}}
+  `;
+
+  const w = window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatorio</title><style>'+css+'</style></head><body>'+html+'<script>window.onload=function(){window.print()}<\/script></body></html>');
   w.document.close();
 }
 
 // ══════════════════════════════════════════════
+
+// ── AVALIAÇÃO COMPORTAMENTAL — SEMÁFORO ────────────────────
+const COMP_CRITERIOS = [
+  {
+    titulo: 'Pontualidade e Presença',
+    g: 'Cumpre horários e comunica ausências com antecedência',
+    y: 'Apresentou atrasos ou ausências sem comunicação prévia',
+    r: 'Reincidência de atrasos ou ausências que impactaram o treinamento'
+  },
+  {
+    titulo: 'Postura e Apresentação Pessoal',
+    g: 'Uniforme correto, higiene adequada e apresentação dentro do padrão',
+    y: 'Apresentou irregularidade pontual de uniforme ou higiene pessoal',
+    r: 'Reincidência de não conformidade com o padrão de apresentação'
+  },
+  {
+    titulo: 'Relacionamento com a Equipe',
+    g: 'Colaborativo, respeitoso e receptivo a orientações',
+    y: 'Demonstrou resistência pontual ou dificuldade de integração',
+    r: 'Comportamento que gerou conflito ou comprometeu o ambiente de trabalho'
+  },
+  {
+    titulo: 'Engajamento no Aprendizado',
+    g: 'Participativo, demonstrou iniciativa e interesse durante o treino',
+    y: 'Participação irregular ou necessitou de estímulo constante',
+    r: 'Desengajamento persistente que prejudicou o aproveitamento do treinamento'
+  },
+  {
+    titulo: 'Execução das Tarefas',
+    g: 'Seguiu procedimentos com qualidade e atenção dentro do esperado',
+    y: 'Cometeu erros pontuais corrigíveis com reorientação',
+    r: 'Dificuldade recorrente em seguir procedimentos após múltiplas orientações'
+  },
+  {
+    titulo: 'Postura no Atendimento ao Cliente',
+    g: 'Cordial, empático e com postura adequada no atendimento',
+    y: 'Demonstrou timidez ou hesitação em situações de atendimento',
+    r: 'Comportamento inadequado registrado durante interação com clientes'
+  }
+];
+
+function renderComportamento() {
+  const c = state.colabs[activeColabIdx];
+  if (!c) return;
+  document.getElementById('compSection').style.display = 'block';
+  if (!c.comportamento) c.comportamento = {};
+
+  document.getElementById('compGrid').innerHTML = COMP_CRITERIOS.map((crit, i) => {
+    const val = c.comportamento[i]?.status || '';
+    const obs = c.comportamento[i]?.obs || '';
+    return `<div class="comp-item">
+      <div class="comp-item-title">${crit.titulo}</div>
+      <div class="comp-semaforo">
+        <button class="comp-btn ${val==='g'?'sel-g':''}" onclick="setComp(${i},'g')">
+          <span class="comp-emoji">🟢</span>
+          <span class="comp-desc">${crit.g}</span>
+        </button>
+        <button class="comp-btn ${val==='y'?'sel-y':''}" onclick="setComp(${i},'y')">
+          <span class="comp-emoji">🟡</span>
+          <span class="comp-desc">${crit.y}</span>
+        </button>
+        <button class="comp-btn ${val==='r'?'sel-r':''}" onclick="setComp(${i},'r')">
+          <span class="comp-emoji">🔴</span>
+          <span class="comp-desc">${crit.r}</span>
+        </button>
+      </div>
+      ${val ? `<button class="comp-obs-toggle" onclick="toggleCompObs(${i})">+ Adicionar observação</button>` : ''}
+      <textarea class="comp-obs-field ${obs?'show':''}" id="compObs-${i}"
+        placeholder="Observação complementar (opcional)..."
+        oninput="saveCompObs(${i},this.value)"
+        rows="2">${obs}</textarea>
+    </div>`;
+  }).join('');
+}
+
+function setComp(idx, status) {
+  const c = state.colabs[activeColabIdx];
+  if (!c.comportamento) c.comportamento = {};
+  if (!c.comportamento[idx]) c.comportamento[idx] = {status:'', obs:''};
+  c.comportamento[idx].status = c.comportamento[idx].status === status ? '' : status;
+  renderComportamento();
+  debounceSave(c);
+  const labels = {g:'🟢 Adequado', y:'🟡 Atenção', r:'🔴 Intervenção necessária'};
+  toast(labels[c.comportamento[idx].status] || 'Avaliação removida');
+}
+
+function saveCompObs(idx, val) {
+  const c = state.colabs[activeColabIdx];
+  if (!c.comportamento) c.comportamento = {};
+  if (!c.comportamento[idx]) c.comportamento[idx] = {status:'', obs:''};
+  c.comportamento[idx].obs = val;
+  debounceSave(c);
+}
+
+function toggleCompObs(idx) {
+  const el = document.getElementById('compObs-' + idx);
+  if (el) { el.classList.toggle('show'); if(el.classList.contains('show')) el.focus(); }
+}
+
 // UTILS
 // ══════════════════════════════════════════════
 function goView(v) {
