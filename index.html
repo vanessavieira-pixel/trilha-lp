@@ -113,6 +113,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .pill-filter.active{background:var(--surface);border-color:var(--accent);color:var(--text)}
 .dot{width:7px;height:7px;border-radius:50%}
 
+/* TOOLTIP */
+.tip{position:relative}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1a18;color:var(--text);font-size:11px;font-family:var(--font-b);white-space:nowrap;padding:4px 9px;border-radius:6px;border:1px solid var(--border);pointer-events:none;opacity:0;transition:opacity .15s;z-index:99}
+.tip::before{content:'';position:absolute;bottom:calc(100% + 1px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1a1a18;pointer-events:none;opacity:0;transition:opacity .15s;z-index:99}
+.tip:hover::after,.tip:hover::before{opacity:1}
+
 /* BLOCO */
 .bloco{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;transition:border-color .2s}
 .bloco:hover{border-color:#3a3830}
@@ -384,6 +390,17 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .login-btn:hover{background:#f5cc55}
 .login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
 
+/* HISTÓRICO */
+.hist-btn{font-family:var(--font-h);font-size:11px;font-weight:600;padding:5px 12px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+.hist-btn:hover{border-color:var(--accent);color:var(--accent)}
+.hist-list{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;padding:2px 0}
+.hist-item{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px}
+.hist-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.hist-info{flex:1;min-width:0}
+.hist-msg{color:var(--text);line-height:1.4}
+.hist-time{font-size:10px;color:var(--muted);margin-top:2px}
+.hist-empty{text-align:center;color:var(--muted);font-size:13px;padding:20px}
+
 /* AVALIAÇÃO COMPORTAMENTAL — SEMÁFORO */
 .comp-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-top:20px}
 .comp-section-title{font-family:var(--font-h);font-size:14px;font-weight:700;margin-bottom:4px}
@@ -483,6 +500,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       <div class="trilha-actions">
         <button class="btn btn-back" onclick="goView('painel')">← Painel</button>
         <button class="btn btn-ghost" onclick="openReport()">📋 Relatório</button>
+        <button class="btn btn-ghost tip" data-tip="Ver histórico de edições" onclick="openHistorico()">🕓 Histórico</button>
         <button class="btn btn-primary cert-btn" id="certBtn" onclick="openCertificado()">🏅 Certificado</button>
       </div>
     </div>
@@ -556,6 +574,21 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modalConfig')">Cancelar</button>
       <button class="btn btn-primary" onclick="saveConfig()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL HISTÓRICO -->
+<div class="overlay" id="modalHistorico">
+  <div class="modal" style="max-width:560px">
+    <div class="report-brand"><div><div class="report-brand-title">Histórico de Edições</div><div class="report-brand-sub" id="histSub">—</div></div></div>
+    <h3>🕓 Histórico</h3>
+    <p>Registro de alterações realizadas nesta trilha.</p>
+    <div style="max-height:360px;overflow-y:auto;margin-bottom:18px">
+      <div class="hist-list" id="histList"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalHistorico')">Fechar</button>
     </div>
   </div>
 </div>
@@ -1010,6 +1043,36 @@ function syncAssinaturaToColab(c) {
   }
 }
 
+// ── HISTÓRICO DE EDIÇÕES ──────────────────────────────────
+function addLog(c, icon, msg) {
+  if (!c) return;
+  if (!c.historico) c.historico = [];
+  c.historico.unshift({ icon, msg, time: new Date().toLocaleString('pt-BR') });
+  if (c.historico.length > 100) c.historico.length = 100;
+}
+
+function openHistorico() {
+  const c = state.colabs[activeColabIdx];
+  if (!c) return;
+  const trilha = TRILHAS[c.funcao];
+  document.getElementById('histSub').textContent = `${c.nome} · ${trilha.label}`;
+  const list = document.getElementById('histList');
+  const hist = c.historico || [];
+  if (hist.length === 0) {
+    list.innerHTML = '<div class="hist-empty">Nenhuma edição registrada ainda.</div>';
+  } else {
+    list.innerHTML = hist.map(h => `
+      <div class="hist-item">
+        <span class="hist-icon">${h.icon}</span>
+        <div class="hist-info">
+          <div class="hist-msg">${h.msg}</div>
+          <div class="hist-time">${h.time}</div>
+        </div>
+      </div>`).join('');
+  }
+  openModal('modalHistorico');
+}
+
 // debounceSave — só salva localmente, sem chamar a API
 function debounceSave() {
   const c = state.colabs[activeColabIdx];
@@ -1142,7 +1205,7 @@ function renderPainel() {
             <div class="colab-progbar"><div class="colab-progfill" style="width:${info.pct}%"></div></div>
             <div class="colab-status ${info.statusClass}">${info.statusLabel}</div>
           </div>
-          <button class="delete-btn" onclick="event.stopPropagation();deleteColab(${i})">🗑</button>
+          <button class="delete-btn tip" data-tip="Excluir colaborador" onclick="event.stopPropagation();deleteColab(${i})">🗑</button>
         </div>`;
       }).join('')
     : `<div class="empty-state">Nenhum colaborador encontrado para a loja selecionada.</div>`;
@@ -1261,10 +1324,10 @@ function renderTrilha() {
           <textarea class="tema-obs ${obs?'show':''}" id="obs-${bi}-${ti}" placeholder="Observação..." oninput="saveObs(${bi},${ti},this.value)">${obs}</textarea>
         </div>
         <div class="abs-btns">
-          <button class="abs-btn ${abs==='g'?'g':''}" onclick="setAbs(${bi},${ti},'g')"><span class='abs-emoji'>🟢</span><span class='abs-label'>OK</span></button>
-          <button class="abs-btn ${abs==='y'?'y':''}" onclick="setAbs(${bi},${ti},'y')"><span class='abs-emoji'>🟡</span><span class='abs-label'>Reforço</span></button>
-          <button class="abs-btn ${abs==='r'?'r':''}" onclick="setAbs(${bi},${ti},'r')"><span class='abs-emoji'>🔴</span><span class='abs-label'>Refazer</span></button>
-          <button class="obs-btn" onclick="toggleObs(${bi},${ti})">📝</button>
+          <button class="abs-btn tip ${abs==='g'?'g':''}" data-tip="Absorveu bem" onclick="setAbs(${bi},${ti},'g')"><span class='abs-emoji'>🟢</span><span class='abs-label'>OK</span></button>
+          <button class="abs-btn tip ${abs==='y'?'y':''}" data-tip="Precisa de reforço" onclick="setAbs(${bi},${ti},'y')"><span class='abs-emoji'>🟡</span><span class='abs-label'>Reforço</span></button>
+          <button class="abs-btn tip ${abs==='r'?'r':''}" data-tip="Precisa refazer" onclick="setAbs(${bi},${ti},'r')"><span class='abs-emoji'>🔴</span><span class='abs-label'>Refazer</span></button>
+          <button class="obs-btn tip" data-tip="Adicionar observação" onclick="toggleObs(${bi},${ti})">📝</button>
         </div>
       </div>`;
     }).join('');
@@ -1294,11 +1357,11 @@ function renderTrilha() {
               <span class="bloco-signature-title">✍️ Assinatura do colaborador</span>
               <span class="sig-mini ${sig.assinada?'done':'pending'}">${sigTxt}</span>
             </div>
-            <button class="btn-assinar ${sig.assinada?'signed':''}" onclick="abrirAssinatura(${bi})">${sig.assinada?'✔ Assinado':'Assinatura'}</button>
+            <button class="btn-assinar tip ${sig.assinada?'signed':''}" data-tip="${sig.assinada?'Ver assinatura':'Registrar assinatura do colaborador'}" onclick="abrirAssinatura(${bi})">${sig.assinada?'✔ Assinado':'Assinatura'}</button>
           </div>
           <div class="bloco-footer-actions">
-            <button class="btn-comentario ${bState.comentario?'filled':''}" onclick="toggleComentarioBloco(${bi})">💬 Comentário</button>
-            <button class="btn-concluir ${isConcluido?'signed':''}" onclick="toggleConcluido(${bi})">${isConcluido?'✔ Bloco concluído':'Concluir bloco'}</button>
+            <button class="btn-comentario tip ${bState.comentario?'filled':''}" data-tip="Comentário do aplicador sobre este bloco" onclick="toggleComentarioBloco(${bi})">💬 Comentário</button>
+            <button class="btn-concluir tip ${isConcluido?'signed':''}" data-tip="${isConcluido?'Clique para reabrir o bloco':'Marcar todos os temas como concluídos'}" onclick="toggleConcluido(${bi})">${isConcluido?'✔ Bloco concluído':'Concluir bloco'}</button>
           </div>
           <div class="bloco-comentario ${(bState.comentarioOpen || bState.comentario)?'show':''}">
             <textarea placeholder="Comentário do bloco..." oninput="saveComentarioBloco(${bi}, this.value)">${bState.comentario||''}</textarea>
@@ -1335,13 +1398,17 @@ function toggleBloco(bi) {
 function setAbs(bi,ti,val) {
   const c=state.colabs[activeColabIdx];
   const b=ensureBlocoState(c,bi);
+  const trilha=TRILHAS[c.funcao];
   b.open=true;
   if(!b.temas[ti])b.temas[ti]={abs:'',obs:''};
   b.temas[ti].abs=b.temas[ti].abs===val?'':val;
+  const absLabel={g:'🟢 Absorveu bem',y:'🟡 Precisa de reforço',r:'🔴 Refazer','':"Avaliação removida"};
+  const temaNome = trilha.blocos[bi]?.temas[ti]?.nome || `Tema ${ti+1}`;
+  const blocoNome = trilha.blocos[bi]?.titulo || `Bloco ${bi+1}`;
+  addLog(c, absLabel[b.temas[ti].abs]?.split(' ')[0]||'⬜', `${absLabel[b.temas[ti].abs]||'Avaliação removida'} — "${temaNome}" (${blocoNome})`);
   renderTrilha();
   debounceSave(c);
-  const labels={g:'🟢 Absorveu bem',y:'🟡 Precisa de reforço',r:'🔴 Refazer','':"Avaliação removida"};
-  toast(labels[b.temas[ti].abs]||'Avaliação removida');
+  toast(absLabel[b.temas[ti].abs]||'Avaliação removida');
 }
 
 function saveObs(bi,ti,val) {
@@ -1361,8 +1428,11 @@ function toggleObs(bi,ti) {
 
 function toggleConcluido(bi) {
   const c=state.colabs[activeColabIdx];
+  const trilha=TRILHAS[c.funcao];
   if(!c.blocos[bi])c.blocos[bi]={open:true,concluido:false,temas:[]};
   c.blocos[bi].concluido=!c.blocos[bi].concluido;
+  const blocoNome = trilha.blocos[bi]?.titulo || `Bloco ${bi+1}`;
+  addLog(c, c.blocos[bi].concluido?'✅':'🔄', c.blocos[bi].concluido?`Bloco concluído: "${blocoNome}"`:`Bloco reaberto: "${blocoNome}"`);
   renderTrilha();
   renderPainel();
   debounceSave(c);
@@ -1374,8 +1444,14 @@ function toggleConcluido(bi) {
 // ══════════════════════════════════════════════
 function saveAplicadoPorBloco(bi,val){
   const c=state.colabs[activeColabIdx];
+  const trilha=TRILHAS[c.funcao];
   const b=ensureBlocoState(c,bi);
+  const prev = b.aplicadoPor;
   b.aplicadoPor=val;
+  if (val && val !== prev) {
+    const blocoNome = trilha.blocos[bi]?.titulo || `Bloco ${bi+1}`;
+    addLog(c, '👤', `Aplicador do "${blocoNome}" definido: ${val}`);
+  }
   debounceSave(c);
 }
 
@@ -1508,6 +1584,7 @@ function confirmarAssinatura() {
   if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
   renderTrilha();
   debounceSave(c);
+  addLog(c, '✍️', `Assinatura registrada no Bloco ${_sigBlocoIdx+1} por ${c.nome}`);
   toast('✔ Assinatura registrada!');
 }
 
@@ -2241,7 +2318,7 @@ function renderComportamento() {
         <button class="comp-btn ${val==='r'?'sel-r':''}" onclick="setComp(${i},'r')">
           <span class="comp-emoji">🔴</span><span class="comp-desc">Interv.</span>
         </button>
-        <button class="obs-btn" onclick="toggleCompObs(${i})">📝</button>
+        <button class="obs-btn tip" data-tip="Adicionar observação" onclick="toggleCompObs(${i})">📝</button>
       </div>
       <textarea class="tema-obs ${obs?'show':''}" id="compObs-${i}"
         placeholder="Observação..." oninput="saveCompObs(${i},this.value)"
@@ -2255,10 +2332,12 @@ function setComp(idx, status) {
   if (!c.comportamento) c.comportamento = {};
   if (!c.comportamento[idx]) c.comportamento[idx] = {status:'', obs:''};
   c.comportamento[idx].status = c.comportamento[idx].status === status ? '' : status;
+  const labels = {g:'🟢 Adequado', y:'🟡 Atenção', r:'🔴 Intervenção necessária'};
+  const critNome = COMP_CRITERIOS[idx]?.titulo || `Critério ${idx+1}`;
+  addLog(c, labels[c.comportamento[idx].status]?.split(' ')[0]||'⬜', `Comportamento — ${critNome}: ${labels[c.comportamento[idx].status]||'Avaliação removida'}`);
   renderComportamento();
   saveComportamentoCache(c.id || c.nome, c.comportamento);
   debounceSave(c);
-  const labels = {g:'🟢 Adequado', y:'🟡 Atenção', r:'🔴 Intervenção necessária'};
   toast(labels[c.comportamento[idx].status] || 'Avaliação removida');
 }
 
