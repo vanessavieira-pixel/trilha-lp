@@ -233,6 +233,11 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .delete-btn { padding: 6px 10px; font-size: 14px; }
   .add-colab-card { padding: 16px; font-size: 13px; }
 
+
+  .filters-grid { grid-template-columns: 1fr; }
+  .filters-actions { width:100%; }
+  .filters-actions .btn { flex:1; }
+
   /* TRILHA HEADER */
   .trilha-header { flex-direction: column; gap: 10px; margin-bottom: 16px; }
   .trilha-actions { width: 100%; display: flex; gap: 8px; }
@@ -268,23 +273,29 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .abs-btns {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr auto;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 6px;
     align-items:center;
   }
   .abs-btn {
-    font-size: 13px;
-    padding: 10px 4px;
+    font-size: 12px;
+    padding: 10px 2px;
     border-radius: 8px;
     text-align: center;
     justify-content: center;
+    min-width: 0;
+  }
+  .abs-label {
+    display: none;
   }
   .obs-btn {
     display: inline-flex;
     align-items:center;
     justify-content:center;
-    min-width: 42px;
+    min-width: 0;
+    width: 100%;
     height: 42px;
+    padding: 0;
   }
 
   /* BLOCO FOOTER */
@@ -331,6 +342,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   /* ESCONDER elementos menos importantes */
   .nav-tabs .nav-tab:not(.active) { display: none; }
   .nav-tab.active { display: block; }
+  .nav-tabs .nav-tab:last-child { display: none !important; }
 }
 
 /* Tablet (601–900px) — ajustes menores */
@@ -340,6 +352,21 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .tema-row { flex-wrap: wrap; }
   .abs-btns { gap: 5px; }
 }
+
+
+/* FILTROS */
+.filters-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:18px}
+.filters-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr auto;gap:10px;align-items:end}
+.filter-field{display:flex;flex-direction:column;gap:6px}
+.filter-field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-family:var(--font-h)}
+.filter-field input,.filter-field select{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--font-b);font-size:14px;outline:none}
+.filter-field input:focus,.filter-field select:focus{border-color:var(--accent)}
+.filters-actions{display:flex;gap:8px;align-items:center}
+.history-list{display:flex;flex-direction:column;gap:10px;max-height:420px;overflow:auto}
+.history-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px}
+.history-item strong{display:block;font-size:12px;color:var(--text);margin-bottom:4px}
+.history-item span{display:block;font-size:11px;color:var(--muted);margin-bottom:6px}
+.history-empty{font-size:13px;color:var(--muted);padding:10px 0}
 
 /* LOGIN */
 .login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
@@ -412,14 +439,40 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       <p>Franqueadora Let's Poke — Trilha de Treinamento Oficial</p>
     </div>
     <div class="painel-stats" id="painelStats"></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <span style="font-size:12px;color:var(--muted);font-family:var(--font-h);font-weight:700;letter-spacing:.5px;text-transform:uppercase">Filtrar por loja</span>
-        <select id="filtroLoja" onchange="aplicarFiltroLoja()" style="min-width:220px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--font-b);font-size:14px;outline:none">
-          <option value="todas">Todas as lojas</option>
-        </select>
+    <div class="filters-card">
+      <div class="filters-grid">
+        <div class="filter-field">
+          <label>Buscar colaborador</label>
+          <input id="filtroBusca" placeholder="Nome, função ou loja" oninput="aplicarFiltrosPainel()" />
+        </div>
+        <div class="filter-field">
+          <label>Loja</label>
+          <select id="filtroLoja" onchange="aplicarFiltrosPainel()">
+            <option value="todas">Todas as lojas</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Status</label>
+          <select id="filtroStatus" onchange="aplicarFiltrosPainel()">
+            <option value="todos">Todos</option>
+            <option value="ok">Pronto</option>
+            <option value="em">Em treino</option>
+            <option value="nao">Não iniciado</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Assinatura</label>
+          <select id="filtroAssinatura" onchange="aplicarFiltrosPainel()">
+            <option value="todos">Todas</option>
+            <option value="assinados">Com assinatura</option>
+            <option value="pendentes">Sem assinatura</option>
+          </select>
+        </div>
+        <div class="filters-actions">
+          <button class="btn btn-ghost" onclick="limparFiltrosPainel()">Limpar</button>
+          <button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Gerencial</button>
+        </div>
       </div>
-      <button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button>
     </div>
     <div class="colab-grid" id="colabGrid"></div>
   </div>
@@ -435,6 +488,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       </div>
       <div class="trilha-actions">
         <button class="btn btn-back" onclick="goView('painel')">← Painel</button>
+        <button class="btn btn-ghost" onclick="openHistory()">🕘 Histórico</button>
         <button class="btn btn-ghost" onclick="openReport()">📋 Relatório</button>
         <button class="btn btn-primary cert-btn" id="certBtn" onclick="openCertificado()">🏅 Certificado</button>
       </div>
@@ -448,6 +502,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
         <div class="pill"><div class="dot" style="background:var(--red)"></div><span id="pRed">0 a refazer</span></div>
         <div class="pill"><div class="dot" style="background:var(--border)"></div><span id="pPend">0 pendentes</span></div>
         <div class="pill"><div class="dot" style="background:var(--accent)"></div><span id="pBlocos">0/0 blocos</span></div>
+        <div class="pill"><div class="dot" style="background:var(--blue)"></div><span id="pNA">0 N/A</span></div>
       </div>
     </div>
     <div id="blocosContainer"></div>
@@ -557,6 +612,19 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   </div>
 </div>
 
+
+<!-- MODAL HISTÓRICO -->
+<div class="overlay" id="modalHistory">
+  <div class="modal" style="max-width:720px">
+    <h3>🕘 Histórico da Trilha</h3>
+    <p id="historySub">Ações recentes do colaborador</p>
+    <div class="history-list" id="historyContent"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalHistory')">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -606,7 +674,15 @@ const TRILHAS = {
       {n:'31',nome:'Cuidados sanitários na manipulação',material:'Orientação',aplicador:'Líder Qualidade LP'},
       {n:'32',nome:'Uso correto de EPIs',material:'Orientação',aplicador:'Líder Qualidade LP'},
     ]},
-    {id:'b6',fase:2,titulo:'INAUGURAÇÃO',temas:[
+    {id:'b6',fase:1,titulo:'AVALIAÇÃO COMPORTAMENTAL',temas:[
+      {n:'AC1',nome:'Postura profissional e apresentação pessoal',material:'Avaliação',aplicador:'Gerente LP'},
+      {n:'AC2',nome:'Pontualidade e comprometimento',material:'Avaliação',aplicador:'Gerente LP'},
+      {n:'AC3',nome:'Comunicação e trabalho em equipe',material:'Avaliação',aplicador:'Gerente LP'},
+      {n:'AC4',nome:'Organização, atenção e agilidade',material:'Avaliação',aplicador:'Gerente LP'},
+      {n:'AC5',nome:'Aderência à cultura e atendimento Let\'s Poke',material:'Avaliação',aplicador:'Gerente LP'},
+    ]},
+    {id:'b7',fase:2,titulo:'INAUGURAÇÃO',temas:[
+
       {n:'F2',nome:'Revisão prática dos temas com absorção insuficiente',material:'Pista/Sistema',aplicador:'Equipe Franqueadora'},
       {n:'F3',nome:'Acompanhamento da operação (Dias 1 e 2)',material:'Observação',aplicador:'Equipe Franqueadora'},
       {n:'F4',nome:'Validação de autonomia e feedback final',material:'Formulário',aplicador:'Equipe Franqueadora'},
@@ -641,16 +717,55 @@ const TRILHAS = {
       {n:'10',nome:'Montagem da pista e reposições',material:'Pista',aplicador:'Líder Cozinha LP'},
       {n:'11',nome:'Fechamento de pista',material:'Orientação',aplicador:'Líder Cozinha LP'},
       {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela',aplicador:'Líder Cozinha LP'},
-      {n:'13',nome:'CORTE — Abacate / Gengibre / Kani / Manga / Mix Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'14',nome:'Pimenta / Tomate / Gengibre cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15',nome:'FRITURAS — Camarão / Crispy / Dadinho / Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'16',nome:'BEBIDAS — Chás / Suchás / Sucos (todos)',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17',nome:'PREPAROS — Bifum / Abacaxi / Moyashi / Caldo / Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18',nome:'Creme Wasabi / Dadinho Salmão / Edamame / Gohan / Quinoa / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19',nome:'Wakame / Maionese Spicy / Arroz Negro / Cenoura / Tartare / Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20',nome:'MOLHOS — Marinadas / Molho Su / Sessame / Asiático / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21',nome:'PROTEÍNAS — Tilápia / Salmão / Atum / Ceviche / Empanado / Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22',nome:'Camarão / Salmão Spicy / Três Peixes / Shimeji / Atum Selado / Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13A',nome:'CORTE — Abacate',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13B',nome:'CORTE — Gengibre',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13C',nome:'CORTE — Kani',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13D',nome:'CORTE — Manga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13E',nome:'CORTE — Mix Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14A',nome:'Pimenta',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14B',nome:'Tomate',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14C',nome:'Gengibre em cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15A',nome:'FRITURAS — Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15B',nome:'FRITURAS — Crispy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15C',nome:'FRITURAS — Dadinho',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15D',nome:'FRITURAS — Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16A',nome:'BEBIDAS — Chás',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16B',nome:'BEBIDAS — Suchás',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16C',nome:'BEBIDAS — Sucos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17A',nome:'PREPAROS — Bifum',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17B',nome:'PREPAROS — Abacaxi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17C',nome:'PREPAROS — Moyashi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17D',nome:'PREPAROS — Caldo',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17E',nome:'PREPAROS — Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18A',nome:'Creme Wasabi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18B',nome:'Dadinho Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18C',nome:'Edamame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18D',nome:'Gohan',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18E',nome:'Quinoa',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18F',nome:'Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19A',nome:'Wakame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19B',nome:'Maionese Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19C',nome:'Arroz Negro',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19D',nome:'Cenoura',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19E',nome:'Tartare',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19F',nome:'Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20A',nome:'MOLHOS — Marinadas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20B',nome:'MOLHOS — Molho Su',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20C',nome:'MOLHOS — Sessame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20D',nome:'MOLHOS — Asiático',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20E',nome:'MOLHOS — Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21A',nome:'PROTEÍNAS — Tilápia',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21B',nome:'PROTEÍNAS — Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21C',nome:'PROTEÍNAS — Atum',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21D',nome:'PROTEÍNAS — Ceviche',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21E',nome:'PROTEÍNAS — Empanado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21F',nome:'PROTEÍNAS — Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22A',nome:'Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22B',nome:'Salmão Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22C',nome:'Três Peixes',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22D',nome:'Shimeji',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22E',nome:'Atum Selado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22F',nome:'Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
     ]},
     {id:'b4',fase:1,titulo:'EXPEDIÇÃO COZ',temas:[
       {n:'C1',nome:'Padrão de montagem — todas as categorias',material:'Pista',aplicador:'Multiplicador LP'},
@@ -732,16 +847,55 @@ const TRILHAS = {
       {n:'10',nome:'Montagem da pista e reposições',material:'Pista',aplicador:'Líder Cozinha LP'},
       {n:'11',nome:'Fechamento de pista',material:'Orientação',aplicador:'Líder Cozinha LP'},
       {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela',aplicador:'Líder Cozinha LP'},
-      {n:'13',nome:'CORTE — Abacate / Gengibre / Kani / Manga / Mix Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'14',nome:'Pimenta / Tomate / Gengibre cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15',nome:'FRITURAS — Camarão / Crispy / Dadinho / Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'16',nome:'BEBIDAS — Chás / Suchás / Sucos (todos)',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17',nome:'PREPAROS — Bifum / Abacaxi / Moyashi / Caldo / Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18',nome:'Creme Wasabi / Dadinho Salmão / Edamame / Gohan / Quinoa / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19',nome:'Wakame / Maionese Spicy / Arroz Negro / Cenoura / Tartare / Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20',nome:'MOLHOS — Marinadas / Molho Su / Sessame / Asiático / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21',nome:'PROTEÍNAS — Tilápia / Salmão / Atum / Ceviche / Empanado / Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22',nome:'Camarão / Salmão Spicy / Três Peixes / Shimeji / Atum Selado / Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13A',nome:'CORTE — Abacate',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13B',nome:'CORTE — Gengibre',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13C',nome:'CORTE — Kani',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13D',nome:'CORTE — Manga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13E',nome:'CORTE — Mix Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14A',nome:'Pimenta',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14B',nome:'Tomate',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14C',nome:'Gengibre em cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15A',nome:'FRITURAS — Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15B',nome:'FRITURAS — Crispy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15C',nome:'FRITURAS — Dadinho',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15D',nome:'FRITURAS — Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16A',nome:'BEBIDAS — Chás',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16B',nome:'BEBIDAS — Suchás',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16C',nome:'BEBIDAS — Sucos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17A',nome:'PREPAROS — Bifum',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17B',nome:'PREPAROS — Abacaxi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17C',nome:'PREPAROS — Moyashi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17D',nome:'PREPAROS — Caldo',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17E',nome:'PREPAROS — Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18A',nome:'Creme Wasabi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18B',nome:'Dadinho Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18C',nome:'Edamame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18D',nome:'Gohan',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18E',nome:'Quinoa',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18F',nome:'Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19A',nome:'Wakame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19B',nome:'Maionese Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19C',nome:'Arroz Negro',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19D',nome:'Cenoura',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19E',nome:'Tartare',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19F',nome:'Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20A',nome:'MOLHOS — Marinadas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20B',nome:'MOLHOS — Molho Su',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20C',nome:'MOLHOS — Sessame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20D',nome:'MOLHOS — Asiático',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20E',nome:'MOLHOS — Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21A',nome:'PROTEÍNAS — Tilápia',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21B',nome:'PROTEÍNAS — Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21C',nome:'PROTEÍNAS — Atum',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21D',nome:'PROTEÍNAS — Ceviche',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21E',nome:'PROTEÍNAS — Empanado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21F',nome:'PROTEÍNAS — Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22A',nome:'Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22B',nome:'Salmão Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22C',nome:'Três Peixes',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22D',nome:'Shimeji',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22E',nome:'Atum Selado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22F',nome:'Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
     ]},
     {id:'b3',fase:1,titulo:'CONTROLE DE QUALIDADE',temas:[
       {n:'23',nome:'Controle de temperatura pista (GNs ≤ 2h)',material:'Controle',aplicador:'Líder Qualidade LP'},
@@ -805,7 +959,7 @@ const FUNC_ICONS={atendimento:'🧾',cozinha:'🍳',asg:'🧹',gerente:'👤'};
 // ══════════════════════════════════════════════
 const API_TOKEN = 'LP_8fK29xQa_Train_2026_zP41Lm';
 let API_URL = 'https://script.google.com/macros/s/AKfycbzEpywGjqJ1d2Y_dqscOZokbc_xiRkVUGYUmE73dw4nsyQs_hxJ6lOd6wQaq1wbASUVBw/exec';
-let state = { colabs: [] };
+let state = { colabs: [], filtroLoja:'todas', filtroStatus:'todos', filtroAssinatura:'todos', filtroBusca:'', lojasAtivas:[] };
 let activeColabIdx = null;
 let saveTimeout = null;
 
@@ -839,7 +993,8 @@ async function loadFromSheets() {
     const res = await fetch(API_URL + '?action=getAll', { redirect: 'follow' });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
-    state.colabs = data.colabs || [];
+    state.colabs = (data.colabs || []).map(c => ({...c, historico: Array.isArray(c.historico) ? c.historico : []}));
+    rebuildLojasAtivas();
     setSyncStatus('ok', '✅ Sincronizado');
   } catch(e) {
     setSyncStatus('err', '❌ Erro de conexão');
@@ -941,6 +1096,31 @@ function isCertificadoElegivel(c){
   return formacao.every((_,i)=>ensureBlocoState(c,i).concluido);
 }
 
+function ensureHistorico(c){
+  if(!Array.isArray(c.historico)) c.historico = [];
+  return c.historico;
+}
+
+function addHistorico(c,acao,detalhe=''){
+  if(!c) return;
+  const hist = ensureHistorico(c);
+  hist.unshift({
+    dataHora: new Date().toISOString(),
+    acao,
+    detalhe
+  });
+  c.historico = hist.slice(0,120);
+}
+
+function hasAnySignature(c){
+  return (c.blocos||[]).some(b => b?.assinaturaColaborador?.assinada);
+}
+
+function escapeHtml(txt){
+  return String(txt ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+
 // ══════════════════════════════════════════════
 // PAINEL
 // ══════════════════════════════════════════════
@@ -963,11 +1143,18 @@ function renderPainel() {
 
   renderFiltroLojas();
 
+  const busca = (state.filtroBusca||'').trim().toLowerCase();
   const cards = state.colabs
-    .map((c,i) => ({ c, i }))
-    .filter(({c}) => state.filtroLoja === 'todas' || normalizaLoja(c.unidade) === state.filtroLoja)
-    .map(({c,i}) => {
-      const info = colabInfo(c);
+    .map((c,i) => ({ c, i, info: colabInfo(c) }))
+    .filter(({c,info}) => {
+      const byLoja = state.filtroLoja === 'todas' || normalizaLoja(c.unidade) === state.filtroLoja;
+      const byStatus = state.filtroStatus === 'todos' || info.statusKey === state.filtroStatus;
+      const byAss = state.filtroAssinatura === 'todos' ||
+        (state.filtroAssinatura === 'assinados' ? hasAnySignature(c) : !hasAnySignature(c));
+      const byBusca = !busca || [c.nome, TRILHAS[c.funcao].label, c.unidade].join(' ').toLowerCase().includes(busca);
+      return byLoja && byStatus && byAss && byBusca;
+    })
+    .map(({c,i,info}) => {
       return `<div class="colab-card" onclick="openTrilha(${i})">
         <div class="colab-avatar">${FUNC_ICONS[c.funcao]||'👤'}</div>
         <div class="colab-info">
@@ -988,15 +1175,20 @@ function renderPainel() {
 
 function colabInfo(c) {
   const trilha = TRILHAS[c.funcao];
-  let total=0, green=0, totalBlocos=trilha.blocos.length, blocosConcl=0;
+  let total=0, done=0, started=0, totalBlocos=trilha.blocos.length, blocosConcl=0;
   trilha.blocos.forEach((bloco,bi) => {
-    bloco.temas.forEach((_,ti) => { total++; if ((c.blocos[bi]?.temas[ti]?.abs||'')==='g') green++; });
+    bloco.temas.forEach((_,ti) => {
+      total++;
+      const abs = (c.blocos[bi]?.temas[ti]?.abs||'');
+      if (abs) started++;
+      if (abs==='g' || abs==='na') done++;
+    });
     if (c.blocos[bi]?.concluido) blocosConcl++;
   });
-  const pct = total>0?Math.round(green/total*100):0;
-  const isInaugurado = blocosConcl===totalBlocos;
+  const pct = total>0?Math.round(done/total*100):0;
+  const isInaugurado = blocosConcl===totalBlocos && totalBlocos>0;
   let statusKey,statusClass,statusLabel;
-  if (green===0){statusKey='nao';statusClass='status-nao';statusLabel='⏳ Não iniciado';}
+  if (started===0){statusKey='nao';statusClass='status-nao';statusLabel='⏳ Não iniciado';}
   else if (isInaugurado){statusKey='ok';statusClass='status-ok';statusLabel='✅ Pronto para inaugurar';}
   else{statusKey='em';statusClass='status-em';statusLabel=`🔄 ${blocosConcl}/${totalBlocos} blocos`;}
   return {pct,statusKey,statusClass,statusLabel};
@@ -1018,28 +1210,51 @@ function openTrilha(idx) {
   renderTrilha();
 }
 
+
+function ordenarBlocosParaRender(blocos){
+  const ordemDesejada = [
+    'ONBOARDING — Cultura e Marca',
+    'CONTROLE DE QUALIDADE',
+    'COZINHA — Organização e Produção',
+    'EXPEDIÇÃO',
+    'AVALIAÇÃO COMPORTAMENTAL',
+    'INAUGURAÇÃO'
+  ];
+  return [...blocos].sort((a,b)=>{
+    const ia = ordemDesejada.indexOf(a.titulo);
+    const ib = ordemDesejada.indexOf(b.titulo);
+    const va = ia === -1 ? 999 : ia;
+    const vb = ib === -1 ? 999 : ib;
+    return va - vb;
+  });
+}
+
 function renderTrilha() {
   const c = state.colabs[activeColabIdx];
   if (!c) return;
   const trilha = TRILHAS[c.funcao];
-  let total=0,green=0,yellow=0,red=0,blocosDone=0;
+  let total=0,green=0,yellow=0,red=0,na=0,blocosDone=0;
   trilha.blocos.forEach((bloco,bi) => {
     const bState=ensureBlocoState(c,bi);
     bloco.temas.forEach((_,ti) => {
       total++;
       const abs=bState.temas?.[ti]?.abs||'';
-      if(abs==='g')green++;else if(abs==='y')yellow++;else if(abs==='r')red++;
+      if(abs==='g')green++;
+      else if(abs==='y')yellow++;
+      else if(abs==='r')red++;
+      else if(abs==='na')na++;
     });
     if(bState.concluido)blocosDone++;
   });
-  const pct=total>0?Math.round(green/total*100):0;
+  const pct=total>0?Math.round((green+na)/total*100):0;
   document.getElementById('trilhaPct').textContent=pct+'%';
   document.getElementById('trilhaFill').style.width=pct+'%';
   document.getElementById('pGreen').textContent=`${green} absorvidos`;
   document.getElementById('pYellow').textContent=`${yellow} reforço`;
   document.getElementById('pRed').textContent=`${red} a refazer`;
-  document.getElementById('pPend').textContent=`${total-green-yellow-red} pendentes`;
+  document.getElementById('pPend').textContent=`${total-green-yellow-red-na} pendentes`;
   document.getElementById('pBlocos').textContent=`${blocosDone}/${trilha.blocos.length} blocos`;
+  document.getElementById('pNA').textContent=`${na} N/A`;
   document.getElementById('certBtn').classList.toggle('show', isCertificadoElegivel(c));
 
   document.getElementById('blocosContainer').innerHTML = trilha.blocos.map((bloco,bi) => {
@@ -1048,12 +1263,12 @@ function renderTrilha() {
     const isConcluido=bState.concluido||false;
     const faseClass=bloco.fase===2?'fase2':'fase1';
     const faseTxt=bloco.fase===2?'🏪 FASE 2':'📍 FASE 1';
-    let tdone=0,ttotal=bloco.temas.length,twarn=0;
+    let tdone=0,ttotal=bloco.temas.length;
     bloco.temas.forEach((_,ti)=>{
       const abs=bState.temas?.[ti]?.abs||'';
-      if(abs==='g')tdone++; if(abs==='r')twarn++;
+      if(abs==='g' || abs==='na') tdone++;
     });
-    let badgeCls='badge-pend',badgeTxt=`0/${ttotal}`;
+    let badgeCls='badge-pend',badgeTxt=`${tdone}/${ttotal}`;
     if(isConcluido){badgeCls='badge-ok';badgeTxt='✔ Concluído';}
     else if(tdone>0){badgeCls='badge-partial';badgeTxt=`${tdone}/${ttotal}`;}
 
@@ -1065,7 +1280,7 @@ function renderTrilha() {
         <div class="tema-num">${tema.n}</div>
         <div class="tema-info">
           <div class="tema-nome">${tema.nome}</div>
-          <div class="tema-meta">${tema.material} · ${tema.aplicador}</div>
+          <div class="tema-meta">${tema.material} · ${tema.aplicador}${tema.material==='Produção'?' · Produção individual':''}</div>
           <textarea class="tema-obs ${obs?'show':''}" id="obs-${bi}-${ti}" placeholder="Observação..." oninput="saveObs(${bi},${ti},this.value)">${obs}</textarea>
         </div>
         <div class="abs-btns">
@@ -1086,7 +1301,7 @@ function renderTrilha() {
         <span class="bloco-fase ${faseClass}">${faseTxt}</span>
         <div style="flex:1;min-width:0">
           <div class="bloco-title">Bloco ${bi+1} · ${bloco.titulo}</div>
-          <div class="bloco-sub">${ttotal} temas</div>
+          <div class="bloco-sub">${ttotal} produções</div>
         </div>
         <span class="bloco-badge ${badgeCls}">${badgeTxt}</span>
         <span class="chevron">▼</span>
@@ -1095,7 +1310,7 @@ function renderTrilha() {
         ${temasHtml}
         <div class="block-aplicador">
           <label>Quem aplicou este bloco</label>
-          <input type="text" value="${(bState.aplicadoPor||'').replace(/"/g,'&quot;')}" placeholder="Ex: João, Maria — Líder / Gerente" oninput="saveAplicadoPorBloco(${bi}, this.value)">
+          <input type="text" value="${escapeHtml(bState.aplicadoPor||'')}" placeholder="Ex: João, Maria — Líder / Gerente" onchange="saveAplicadoPorBloco(${bi}, this.value)">
         </div>
         <div class="bloco-footer">
           <div class="bloco-signature">
@@ -1122,13 +1337,21 @@ function toggleBloco(bi) {
 function setAbs(bi,ti,val) {
   const c=state.colabs[activeColabIdx];
   const b=ensureBlocoState(c,bi);
+  const trilha = TRILHAS[c.funcao];
   b.open=true;
   if(!b.temas[ti])b.temas[ti]={abs:'',obs:''};
+  const anterior = b.temas[ti].abs || '';
   b.temas[ti].abs=b.temas[ti].abs===val?'':val;
+  const atual = b.temas[ti].abs || '';
+  const temaNome = trilha.blocos[bi].temas[ti].nome;
+  if(anterior !== atual){
+    const labels={g:'Absorveu bem',y:'Precisa de reforço',r:'Refazer',na:'N/A','':'Avaliação removida'};
+    addHistorico(c, `Status da produção atualizado`, `Bloco ${bi+1} · ${temaNome} → ${labels[atual]}`);
+  }
   renderTrilha();
   debounceSave(c);
-  const labels={g:'🟢 Absorveu bem',y:'🟡 Precisa de reforço',r:'🔴 Refazer','':"Avaliação removida"};
-  toast(labels[b.temas[ti].abs]||'Avaliação removida');
+  const labels={g:'🟢 Absorveu bem',y:'🟡 Precisa de reforço',r:'🔴 Refazer',na:'⚪ N/A','':"Avaliação removida"};
+  toast(labels[atual]||'Avaliação removida');
 }
 
 function saveObs(bi,ti,val) {
@@ -1150,6 +1373,7 @@ function toggleConcluido(bi) {
   const c=state.colabs[activeColabIdx];
   if(!c.blocos[bi])c.blocos[bi]={open:true,concluido:false,temas:[]};
   c.blocos[bi].concluido=!c.blocos[bi].concluido;
+  addHistorico(c, c.blocos[bi].concluido ? 'Bloco concluído' : 'Bloco reaberto', `Bloco ${bi+1}`);
   renderTrilha();
   renderPainel();
   debounceSave(c);
@@ -1162,8 +1386,14 @@ function toggleConcluido(bi) {
 function saveAplicadoPorBloco(bi,val){
   const c=state.colabs[activeColabIdx];
   const b=ensureBlocoState(c,bi);
-  b.aplicadoPor=val;
-  debounceSave(c);
+  const novo = (val||'').trim();
+  if((b.aplicadoPor||'').trim() !== novo){
+    b.aplicadoPor=novo;
+    addHistorico(c, 'Aplicador do bloco atualizado', `Bloco ${bi+1} · ${novo || 'não informado'}`);
+    debounceSave(c);
+  } else {
+    b.aplicadoPor=novo;
+  }
 }
 
 // ── CANVAS ASSINATURA ──────────────────────────────────────
@@ -1177,6 +1407,7 @@ function abrirAssinatura(bi) {
   if (b.assinaturaColaborador?.assinada) {
     if (!confirm('Remover assinatura existente?')) return;
     b.assinaturaColaborador = {assinada:false, nome:'', dataHora:'', img:''};
+    addHistorico(c, 'Assinatura removida', `Bloco ${bi+1}`);
     renderTrilha(); debounceSave(c); toast('Assinatura removida'); return;
   }
   _sigBlocoIdx = bi;
@@ -1289,6 +1520,7 @@ function confirmarAssinatura() {
   const c = state.colabs[activeColabIdx];
   const b = ensureBlocoState(c, _sigBlocoIdx);
   b.assinaturaColaborador = { assinada: true, nome: c.nome, dataHora: new Date().toISOString(), img };
+  addHistorico(c, 'Assinatura registrada', `Bloco ${_sigBlocoIdx+1}`);
   syncAssinaturaToColab(c);
   document.getElementById('sigOverlay').classList.remove('open');
   document.body.style.overflow = '';
@@ -1379,14 +1611,14 @@ ${txt}</body></html>`);
 }
 
 function initBlocos(funcao) {
-  return TRILHAS[funcao].blocos.map(()=>({
+  return TRILHAS[funcao].blocos.map(() => ({
     open:false,
     concluido:false,
     aplicadoPor:'',
     assinaturaColaborador:{assinada:false,nome:'',dataHora:'',img:''},
     temas:[]
   }));
-
+}
 
 function normalizaLoja(v){
   return (v||'').trim() || '—';
@@ -1404,15 +1636,26 @@ function renderFiltroLojas(){
   rebuildLojasAtivas();
   const atual = state.filtroLoja || 'todas';
   el.innerHTML = `<option value="todas">Todas as lojas</option>` + state.lojasAtivas.map(loja =>
-    `<option value="${loja.replace(/"/g,'&quot;')}" ${atual===loja?'selected':''}>${loja}</option>`
+    `<option value="${escapeHtml(loja)}" ${atual===loja?'selected':''}>${loja}</option>`
   ).join('');
 }
 
-function aplicarFiltroLoja(){
-  const el = document.getElementById('filtroLoja');
-  state.filtroLoja = el ? el.value : 'todas';
+function aplicarFiltrosPainel(){
+  state.filtroLoja = document.getElementById('filtroLoja')?.value || 'todas';
+  state.filtroStatus = document.getElementById('filtroStatus')?.value || 'todos';
+  state.filtroAssinatura = document.getElementById('filtroAssinatura')?.value || 'todos';
+  state.filtroBusca = document.getElementById('filtroBusca')?.value || '';
   renderPainel();
 }
+
+function limparFiltrosPainel(){
+  state.filtroLoja='todas';
+  state.filtroStatus='todos';
+  state.filtroAssinatura='todos';
+  state.filtroBusca='';
+  const ids = {filtroLoja:'todas',filtroStatus:'todos',filtroAssinatura:'todos',filtroBusca:''};
+  Object.entries(ids).forEach(([id,val]) => { const el=document.getElementById(id); if(el) el.value=val; });
+  renderPainel();
 }
 
 async function criarColab() {
@@ -1421,7 +1664,8 @@ async function criarColab() {
   const unidade=normalizaLoja(document.getElementById('fUnidade').value);
   const dataInicio=document.getElementById('fData').value||new Date().toLocaleDateString('pt-BR');
   if(!nome){alert('Informe o nome do colaborador');return;}
-  const colab={id:'',nome,funcao,unidade,dataInicio,aplicadoPor:'',statusFinal:'',obsFinal:'',dataEncerramento:'',assinaturaTreinado:'',nomeAssinante:'',blocos:initBlocos(funcao)};
+  const colab={id:'',nome,funcao,unidade,dataInicio,aplicadoPor:'',statusFinal:'',obsFinal:'',dataEncerramento:'',assinaturaTreinado:'',nomeAssinante:'',historico:[],blocos:initBlocos(funcao)};
+  addHistorico(colab, 'Colaborador criado', `Função: ${TRILHAS[funcao].label} · Loja: ${unidade}`);
   state.colabs.push(colab);
   rebuildLojasAtivas();
   closeModal('modalColab');
@@ -1455,6 +1699,7 @@ function saveUrlFromBanner() {
   document.getElementById('configUrl').value = url;
   toast('✅ URL salva! Conectando…');
   document.getElementById('loadingScreen').classList.remove('hidden');
+  state.filtroLoja='todas'; state.filtroStatus='todos'; state.filtroAssinatura='todos'; state.filtroBusca='';
   loadFromSheets();
 }
 
@@ -1511,8 +1756,8 @@ ${'─'.repeat(45)}
     bloco.temas.forEach((tema,ti)=>{
       const tState=bState.temas?.[ti]||{};
       const abs=tState.abs||'';
-      const icon=abs==='g'?'🟢':abs==='y'?'🟡':abs==='r'?'🔴':'⬜';
-      const label=abs==='g'?'Absorveu bem':abs==='y'?'Precisa de reforço':abs==='r'?'Refazer':'Não avaliado';
+      const icon=abs==='g'?'🟢':abs==='y'?'🟡':abs==='r'?'🔴':abs==='na'?'⚪':'⬜';
+      const label=abs==='g'?'Absorveu bem':abs==='y'?'Precisa de reforço':abs==='r'?'Refazer':abs==='na'?'N/A':'Não avaliado';
       r+=`  [${tema.n}] ${tema.nome}
        ${icon} ${label} | ${tema.material} | ${tema.aplicador}
 `;
@@ -1825,6 +2070,23 @@ function printGerencial() {
 </div>
 <pre>${document.getElementById('gerencialContent').textContent}</pre><script>window.onload=()=>window.print()<\/script></body></html>`);
   w.document.close();
+}
+
+
+function openHistory(){
+  const c = state.colabs[activeColabIdx];
+  if(!c) return;
+  const trilha=TRILHAS[c.funcao];
+  document.getElementById('historySub').textContent = `${c.nome} · ${trilha.label} · ${c.unidade}`;
+  const hist = ensureHistorico(c);
+  document.getElementById('historyContent').innerHTML = hist.length ? hist.map(item => `
+    <div class="history-item">
+      <strong>${escapeHtml(item.acao)}</strong>
+      <span>${formatDateShort(item.dataHora)} ${item.dataHora?.includes('T') ? new Date(item.dataHora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : ''}</span>
+      <div>${escapeHtml(item.detalhe || '—')}</div>
+    </div>
+  `).join('') : `<div class="history-empty">Nenhuma movimentação registrada ainda.</div>`;
+  openModal('modalHistory');
 }
 
 function copyReport(){navigator.clipboard.writeText(document.getElementById('reportContent').textContent);toast('📄 Copiado!');}
