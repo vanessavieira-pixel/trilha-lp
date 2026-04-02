@@ -121,6 +121,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .abs-btn.g{background:rgba(61,184,122,.15);border-color:var(--green);color:var(--green)}
 .abs-btn.y{background:rgba(232,184,48,.15);border-color:var(--yellow);color:var(--yellow)}
 .abs-btn.r{background:rgba(224,72,72,.15);border-color:var(--red);color:var(--red)}
+.abs-btn.na{background:rgba(72,152,232,.15);border-color:var(--blue);color:var(--blue)}
 .obs-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 7px;color:var(--muted);cursor:pointer;font-size:11px;transition:all .12s}
 .obs-btn:hover{border-color:var(--accent);color:var(--accent)}
 .bloco-sig{padding:12px 18px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -222,12 +223,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .painel-header h2 { font-size: 18px; }
   .painel-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .stat-card { padding: 12px 14px; }
-  .stat-card .val { font-size: 24px; }
+  .stat-card .val { font-size: 24px; white-space:nowrap; line-height:1; }
   .colab-card { padding: 14px 14px; gap: 10px; }
   .colab-avatar { width: 36px; height: 36px; font-size: 16px; }
   .colab-name { font-size: 14px; }
   .colab-meta { font-size: 11px; }
-  .colab-pct { font-size: 16px; }
+  .colab-pct { font-size: 16px; white-space:nowrap; }
   .colab-progbar { width: 70px; }
   .delete-btn { padding: 6px 10px; font-size: 14px; }
   .add-colab-card { padding: 16px; font-size: 13px; }
@@ -267,8 +268,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .abs-btns {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr auto;
     gap: 6px;
+    align-items:center;
   }
   .abs-btn {
     font-size: 13px;
@@ -278,7 +280,11 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
     justify-content: center;
   }
   .obs-btn {
-    display: none; /* no celular, obs abre automaticamente ao tocar no tema */
+    display: inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width: 42px;
+    height: 42px;
   }
 
   /* BLOCO FOOTER */
@@ -406,7 +412,15 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       <p>Franqueadora Let's Poke — Trilha de Treinamento Oficial</p>
     </div>
     <div class="painel-stats" id="painelStats"></div>
-    <div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="font-size:12px;color:var(--muted);font-family:var(--font-h);font-weight:700;letter-spacing:.5px;text-transform:uppercase">Filtrar por loja</span>
+        <select id="filtroLoja" onchange="aplicarFiltroLoja()" style="min-width:220px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--font-b);font-size:14px;outline:none">
+          <option value="todas">Todas as lojas</option>
+        </select>
+      </div>
+      <button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button>
+    </div>
     <div class="colab-grid" id="colabGrid"></div>
   </div>
 </div>
@@ -627,55 +641,16 @@ const TRILHAS = {
       {n:'10',nome:'Montagem da pista e reposições',material:'Pista',aplicador:'Líder Cozinha LP'},
       {n:'11',nome:'Fechamento de pista',material:'Orientação',aplicador:'Líder Cozinha LP'},
       {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela',aplicador:'Líder Cozinha LP'},
-      {n:'13a',nome:'CORTE — Abacate',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'13b',nome:'CORTE — Gengibre',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'13c',nome:'CORTE — Kani',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'13d',nome:'CORTE — Manga',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'13e',nome:'CORTE — Mix de Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'14a',nome:'CORTE — Pimenta',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'14b',nome:'CORTE — Tomate',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'14c',nome:'CORTE — Gengibre em cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15a',nome:'FRITURAS — Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15b',nome:'FRITURAS — Crispy',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15c',nome:'FRITURAS — Dadinho',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15d',nome:'FRITURAS — Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'16a',nome:'BEBIDAS — Chás',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'16b',nome:'BEBIDAS — Suchás',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'16c',nome:'BEBIDAS — Sucos',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17a',nome:'PREPAROS — Bifum',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17b',nome:'PREPAROS — Abacaxi',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17c',nome:'PREPAROS — Moyashi',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17d',nome:'PREPAROS — Caldo',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17e',nome:'PREPAROS — Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18a',nome:'PREPAROS — Creme Wasabi',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18b',nome:'PREPAROS — Dadinho Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18c',nome:'PREPAROS — Edamame',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18d',nome:'PREPAROS — Gohan',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18e',nome:'PREPAROS — Quinoa',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18f',nome:'PREPAROS — Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19a',nome:'PREPAROS — Wakame',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19b',nome:'PREPAROS — Maionese Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19c',nome:'PREPAROS — Arroz Negro',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19d',nome:'PREPAROS — Cenoura',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19e',nome:'PREPAROS — Tartare',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19f',nome:'PREPAROS — Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20a',nome:'MOLHOS — Marinadas',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20b',nome:'MOLHOS — Molho Su',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20c',nome:'MOLHOS — Sessame',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20d',nome:'MOLHOS — Asiático',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20e',nome:'MOLHOS — Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21a',nome:'PROTEÍNAS — Tilápia',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21b',nome:'PROTEÍNAS — Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21c',nome:'PROTEÍNAS — Atum',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21d',nome:'PROTEÍNAS — Ceviche',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21e',nome:'PROTEÍNAS — Empanado',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21f',nome:'PROTEÍNAS — Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22a',nome:'PROTEÍNAS — Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22b',nome:'PROTEÍNAS — Salmão Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22c',nome:'PROTEÍNAS — Três Peixes',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22d',nome:'PROTEÍNAS — Shimeji',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22e',nome:'PROTEÍNAS — Atum Selado',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22f',nome:'PROTEÍNAS — Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13',nome:'CORTE — Abacate / Gengibre / Kani / Manga / Mix Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14',nome:'Pimenta / Tomate / Gengibre cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15',nome:'FRITURAS — Camarão / Crispy / Dadinho / Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16',nome:'BEBIDAS — Chás / Suchás / Sucos (todos)',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17',nome:'PREPAROS — Bifum / Abacaxi / Moyashi / Caldo / Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18',nome:'Creme Wasabi / Dadinho Salmão / Edamame / Gohan / Quinoa / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19',nome:'Wakame / Maionese Spicy / Arroz Negro / Cenoura / Tartare / Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20',nome:'MOLHOS — Marinadas / Molho Su / Sessame / Asiático / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21',nome:'PROTEÍNAS — Tilápia / Salmão / Atum / Ceviche / Empanado / Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22',nome:'Camarão / Salmão Spicy / Três Peixes / Shimeji / Atum Selado / Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
     ]},
     {id:'b4',fase:1,titulo:'EXPEDIÇÃO COZ',temas:[
       {n:'C1',nome:'Padrão de montagem — todas as categorias',material:'Pista',aplicador:'Multiplicador LP'},
@@ -757,55 +732,16 @@ const TRILHAS = {
       {n:'10',nome:'Montagem da pista e reposições',material:'Pista',aplicador:'Líder Cozinha LP'},
       {n:'11',nome:'Fechamento de pista',material:'Orientação',aplicador:'Líder Cozinha LP'},
       {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela',aplicador:'Líder Cozinha LP'},
-      {n:'13a',nome:'CORTE — Abacate',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'13b',nome:'CORTE — Gengibre',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'13c',nome:'CORTE — Kani',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'13d',nome:'CORTE — Manga',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'13e',nome:'CORTE — Mix de Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'14a',nome:'CORTE — Pimenta',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'14b',nome:'CORTE — Tomate',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'14c',nome:'CORTE — Gengibre em cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15a',nome:'FRITURAS — Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15b',nome:'FRITURAS — Crispy',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15c',nome:'FRITURAS — Dadinho',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15d',nome:'FRITURAS — Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'16a',nome:'BEBIDAS — Chás',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'16b',nome:'BEBIDAS — Suchás',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'16c',nome:'BEBIDAS — Sucos',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17a',nome:'PREPAROS — Bifum',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17b',nome:'PREPAROS — Abacaxi',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17c',nome:'PREPAROS — Moyashi',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17d',nome:'PREPAROS — Caldo',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17e',nome:'PREPAROS — Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18a',nome:'PREPAROS — Creme Wasabi',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18b',nome:'PREPAROS — Dadinho Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18c',nome:'PREPAROS — Edamame',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18d',nome:'PREPAROS — Gohan',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18e',nome:'PREPAROS — Quinoa',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18f',nome:'PREPAROS — Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19a',nome:'PREPAROS — Wakame',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19b',nome:'PREPAROS — Maionese Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19c',nome:'PREPAROS — Arroz Negro',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19d',nome:'PREPAROS — Cenoura',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19e',nome:'PREPAROS — Tartare',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19f',nome:'PREPAROS — Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20a',nome:'MOLHOS — Marinadas',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20b',nome:'MOLHOS — Molho Su',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20c',nome:'MOLHOS — Sessame',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20d',nome:'MOLHOS — Asiático',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20e',nome:'MOLHOS — Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21a',nome:'PROTEÍNAS — Tilápia',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21b',nome:'PROTEÍNAS — Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21c',nome:'PROTEÍNAS — Atum',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21d',nome:'PROTEÍNAS — Ceviche',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21e',nome:'PROTEÍNAS — Empanado',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21f',nome:'PROTEÍNAS — Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22a',nome:'PROTEÍNAS — Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22b',nome:'PROTEÍNAS — Salmão Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22c',nome:'PROTEÍNAS — Três Peixes',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22d',nome:'PROTEÍNAS — Shimeji',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22e',nome:'PROTEÍNAS — Atum Selado',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22f',nome:'PROTEÍNAS — Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13',nome:'CORTE — Abacate / Gengibre / Kani / Manga / Mix Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14',nome:'Pimenta / Tomate / Gengibre cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15',nome:'FRITURAS — Camarão / Crispy / Dadinho / Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16',nome:'BEBIDAS — Chás / Suchás / Sucos (todos)',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17',nome:'PREPAROS — Bifum / Abacaxi / Moyashi / Caldo / Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18',nome:'Creme Wasabi / Dadinho Salmão / Edamame / Gohan / Quinoa / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19',nome:'Wakame / Maionese Spicy / Arroz Negro / Cenoura / Tartare / Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20',nome:'MOLHOS — Marinadas / Molho Su / Sessame / Asiático / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21',nome:'PROTEÍNAS — Tilápia / Salmão / Atum / Ceviche / Empanado / Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22',nome:'Camarão / Salmão Spicy / Três Peixes / Shimeji / Atum Selado / Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
     ]},
     {id:'b3',fase:1,titulo:'CONTROLE DE QUALIDADE',temas:[
       {n:'23',nome:'Controle de temperatura pista (GNs ≤ 2h)',material:'Controle',aplicador:'Líder Qualidade LP'},
@@ -1017,14 +953,20 @@ function renderPainel() {
     else if (info.statusKey==='em') em++;
     else nao++;
   });
+
   document.getElementById('painelStats').innerHTML = `
     <div class="stat-card"><div class="val">${total}</div><div class="lbl">Colaboradores</div></div>
     <div class="stat-card"><div class="val" style="color:var(--green)">${prontos}</div><div class="lbl">✅ Prontos</div></div>
     <div class="stat-card"><div class="val" style="color:var(--yellow)">${em}</div><div class="lbl">🔄 Em Treino</div></div>
     <div class="stat-card"><div class="val" style="color:var(--muted)">${nao}</div><div class="lbl">⏳ Não Iniciados</div></div>
   `;
-  document.getElementById('colabGrid').innerHTML =
-    state.colabs.map((c,i) => {
+
+  renderFiltroLojas();
+
+  const cards = state.colabs
+    .map((c,i) => ({ c, i }))
+    .filter(({c}) => state.filtroLoja === 'todas' || normalizaLoja(c.unidade) === state.filtroLoja)
+    .map(({c,i}) => {
       const info = colabInfo(c);
       return `<div class="colab-card" onclick="openTrilha(${i})">
         <div class="colab-avatar">${FUNC_ICONS[c.funcao]||'👤'}</div>
@@ -1039,8 +981,9 @@ function renderPainel() {
         </div>
         <button class="delete-btn" onclick="event.stopPropagation();deleteColab(${i})">🗑</button>
       </div>`;
-    }).join('') +
-    `<div class="add-colab-card" onclick="openModal('modalColab')">+ Novo Colaborador</div>`;
+    }).join('');
+
+  document.getElementById('colabGrid').innerHTML = cards + `<div class="add-colab-card" onclick="openModal('modalColab')">+ Novo Colaborador</div>`;
 }
 
 function colabInfo(c) {
@@ -1129,6 +1072,7 @@ function renderTrilha() {
           <button class="abs-btn ${abs==='g'?'g':''}" onclick="setAbs(${bi},${ti},'g')"><span class='abs-emoji'>🟢</span><span class='abs-label'>OK</span></button>
           <button class="abs-btn ${abs==='y'?'y':''}" onclick="setAbs(${bi},${ti},'y')"><span class='abs-emoji'>🟡</span><span class='abs-label'>Reforço</span></button>
           <button class="abs-btn ${abs==='r'?'r':''}" onclick="setAbs(${bi},${ti},'r')"><span class='abs-emoji'>🔴</span><span class='abs-label'>Refazer</span></button>
+          <button class="abs-btn ${abs==='na'?'na':''}" onclick="setAbs(${bi},${ti},'na')"><span class='abs-emoji'>⚪</span><span class='abs-label'>N/A</span></button>
           <button class="obs-btn" onclick="toggleObs(${bi},${ti})">📝</button>
         </div>
       </div>`;
@@ -1442,16 +1386,44 @@ function initBlocos(funcao) {
     assinaturaColaborador:{assinada:false,nome:'',dataHora:'',img:''},
     temas:[]
   }));
+
+
+function normalizaLoja(v){
+  return (v||'').trim() || '—';
+}
+
+function rebuildLojasAtivas(){
+  const set = new Set();
+  state.colabs.forEach(c => set.add(normalizaLoja(c.unidade)));
+  state.lojasAtivas = Array.from(set).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+}
+
+function renderFiltroLojas(){
+  const el = document.getElementById('filtroLoja');
+  if(!el) return;
+  rebuildLojasAtivas();
+  const atual = state.filtroLoja || 'todas';
+  el.innerHTML = `<option value="todas">Todas as lojas</option>` + state.lojasAtivas.map(loja =>
+    `<option value="${loja.replace(/"/g,'&quot;')}" ${atual===loja?'selected':''}>${loja}</option>`
+  ).join('');
+}
+
+function aplicarFiltroLoja(){
+  const el = document.getElementById('filtroLoja');
+  state.filtroLoja = el ? el.value : 'todas';
+  renderPainel();
+}
 }
 
 async function criarColab() {
   const nome=document.getElementById('fNome').value.trim();
   const funcao=document.getElementById('fFuncao').value;
-  const unidade=document.getElementById('fUnidade').value.trim()||'—';
+  const unidade=normalizaLoja(document.getElementById('fUnidade').value);
   const dataInicio=document.getElementById('fData').value||new Date().toLocaleDateString('pt-BR');
   if(!nome){alert('Informe o nome do colaborador');return;}
   const colab={id:'',nome,funcao,unidade,dataInicio,aplicadoPor:'',statusFinal:'',obsFinal:'',dataEncerramento:'',assinaturaTreinado:'',nomeAssinante:'',blocos:initBlocos(funcao)};
   state.colabs.push(colab);
+  rebuildLojasAtivas();
   closeModal('modalColab');
   document.getElementById('fNome').value='';
   document.getElementById('fUnidade').value='';
@@ -1464,6 +1436,8 @@ async function deleteColab(idx) {
   const c=state.colabs[idx];
   if(!confirm(`Excluir ${c.nome}? Esta ação não pode ser desfeita.`))return;
   state.colabs.splice(idx,1);
+  rebuildLojasAtivas();
+  if(state.filtroLoja!=='todas' && !state.lojasAtivas.includes(state.filtroLoja)) state.filtroLoja='todas';
   renderPainel();
   toast('🗑 Colaborador removido');
   if(c.id)await deleteColabFromSheets(c.id);
