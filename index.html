@@ -21,28 +21,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:16px;height:56px}
 .nav-logo{font-family:var(--font-h);font-weight:800;font-size:16px;color:var(--accent);letter-spacing:-.3px;flex-shrink:0}
 .nav-logo span{color:var(--muted);font-weight:400}
-.nav-logo{display:flex;align-items:center;gap:8px}
-.nav-logo img{width:28px;height:28px;object-fit:contain;flex-shrink:0}
-.report-brand{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.report-brand img{width:30px;height:30px;object-fit:contain}
-.report-brand-title{font-family:var(--font-h);font-size:14px;font-weight:800;color:var(--accent);letter-spacing:-.2px}
-.report-brand-sub{font-size:11px;color:var(--muted)}
-.stat-card .val{font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;letter-spacing:-.03em}
-.colab-pct{white-space:nowrap;font-variant-numeric:tabular-nums}
-.filter-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-.filter-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.filter-box label{margin:0;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
-.filter-select{min-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--font-b);font-size:12px;outline:none}
-.empty-state{background:transparent;border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;color:var(--muted);font-size:13px}
-.bloco-footer-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-.btn-comentario{font-family:var(--font-h);font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .15s}
-.btn-comentario:hover{border-color:var(--blue);color:var(--blue)}
-.btn-comentario.filled{background:rgba(72,152,232,.12);border-color:var(--blue);color:var(--blue)}
-.bloco-comentario{display:none;margin-top:12px}
-.bloco-comentario.show{display:block}
-.bloco-comentario textarea{width:100%;min-height:74px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--font-b);font-size:13px;outline:none;resize:vertical;transition:border-color .2s}
-.bloco-comentario textarea:focus{border-color:var(--accent)}
-
 .nav-sync{font-size:11px;color:var(--muted);margin-left:8px}
 .nav-sync.ok{color:var(--green)}.nav-sync.err{color:var(--red)}.nav-sync.loading{color:var(--yellow)}
 .nav-tabs{display:flex;gap:2px;margin-left:auto}
@@ -108,16 +86,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .5s cubic-bezier(.4,0,.2,1)}
 .prog-pills{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
 .pill{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
-.pill-filter{padding:3px 10px;border-radius:99px;border:1px solid transparent;transition:all .15s}
-.pill-filter:hover{border-color:var(--border);color:var(--text)}
-.pill-filter.active{background:var(--surface);border-color:var(--accent);color:var(--text)}
 .dot{width:7px;height:7px;border-radius:50%}
-
-/* TOOLTIP */
-.tip{position:relative}
-.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1a18;color:var(--text);font-size:11px;font-family:var(--font-b);white-space:nowrap;padding:4px 9px;border-radius:6px;border:1px solid var(--border);pointer-events:none;opacity:0;transition:opacity .15s;z-index:99}
-.tip::before{content:'';position:absolute;bottom:calc(100% + 1px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1a1a18;pointer-events:none;opacity:0;transition:opacity .15s;z-index:99}
-.tip:hover::after,.tip:hover::before{opacity:1}
 
 /* BLOCO */
 .bloco{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;transition:border-color .2s}
@@ -251,21 +220,15 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 
   /* PAINEL */
   .painel-header h2 { font-size: 18px; }
-  .painel-stats { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
-  .stat-card { padding: 12px 12px; min-width:0; }
-  .stat-card .val { font-size: clamp(18px, 6vw, 24px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .stat-card .lbl { font-size: 10px; line-height: 1.3; }
-  .filter-row { align-items: stretch; }
-  .filter-box { width: 100%; }
-  .filter-box label { width: 100%; }
-  .filter-select { width: 100%; min-width: 0; font-size: 14px; padding: 10px 12px; }
-  .colab-card { padding: 14px 14px; gap: 10px; align-items: flex-start; }
+  .painel-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat-card { padding: 12px 14px; }
+  .stat-card .val { font-size: 24px; }
+  .colab-card { padding: 14px 14px; gap: 10px; }
   .colab-avatar { width: 36px; height: 36px; font-size: 16px; }
   .colab-name { font-size: 14px; }
   .colab-meta { font-size: 11px; }
-  .colab-pct { font-size: 16px; white-space: nowrap; }
+  .colab-pct { font-size: 16px; }
   .colab-progbar { width: 70px; }
-  .colab-right { min-width: 78px; }
   .delete-btn { padding: 6px 10px; font-size: 14px; }
   .add-colab-card { padding: 16px; font-size: 13px; }
 
@@ -345,9 +308,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
     border-color: var(--accent);
     color: var(--accent);
   }
-  .bloco-footer-actions { width: 100%; flex-direction: column; }
-  .btn-comentario { width: 100%; text-align: center; padding: 12px; font-size: 14px; }
-  .bloco-comentario textarea { font-size: 16px; }
 
   /* MODAL */
   .overlay { padding: 16px 12px; align-items: flex-end; }
@@ -389,46 +349,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
 .login-btn:hover{background:#f5cc55}
 .login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
-
-/* HISTÓRICO */
-.hist-btn{font-family:var(--font-h);font-size:11px;font-weight:600;padding:5px 12px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
-.hist-btn:hover{border-color:var(--accent);color:var(--accent)}
-.hist-list{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;padding:2px 0}
-.hist-item{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px}
-.hist-icon{font-size:14px;flex-shrink:0;margin-top:1px}
-.hist-info{flex:1;min-width:0}
-.hist-msg{color:var(--text);line-height:1.4}
-.hist-time{font-size:10px;color:var(--muted);margin-top:2px}
-.hist-empty{text-align:center;color:var(--muted);font-size:13px;padding:20px}
-
-/* AVALIAÇÃO COMPORTAMENTAL — SEMÁFORO */
-.comp-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-top:20px}
-.comp-section-title{font-family:var(--font-h);font-size:14px;font-weight:700;margin-bottom:4px}
-.comp-section-sub{font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.5}
-.comp-item{display:flex;align-items:center;gap:10px;padding:11px 18px;border-bottom:1px solid rgba(45,45,41,.6);transition:background .12s}
-.comp-item:last-child{border-bottom:none}
-.comp-item:hover{background:var(--surface)}
-.comp-item-title{flex:1;min-width:0;font-size:13px;font-weight:500;line-height:1.4;color:var(--text)}
-.comp-semaforo{display:flex;gap:6px;flex-shrink:0}
-.comp-btn{border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;background:transparent;transition:all .12s;display:flex;align-items:center;gap:5px;white-space:nowrap}
-.comp-btn:hover{background:var(--surface);color:var(--text)}
-.comp-btn .comp-emoji{font-size:14px;line-height:1}
-.comp-btn .comp-desc{font-size:11px;color:var(--muted)}
-.comp-btn.sel-g{background:rgba(61,184,122,.15);border-color:var(--green)}
-.comp-btn.sel-g .comp-desc{color:var(--green)}
-.comp-btn.sel-y{background:rgba(232,184,48,.15);border-color:var(--yellow)}
-.comp-btn.sel-y .comp-desc{color:var(--yellow)}
-.comp-btn.sel-r{background:rgba(224,72,72,.15);border-color:var(--red)}
-.comp-btn.sel-r .comp-desc{color:var(--red)}
-.comp-obs-field{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--font-b);font-size:12px;resize:none;outline:none;transition:border-color .2s;display:none;margin-top:6px}
-.comp-obs-field.show{display:block}
-.comp-obs-field:focus{border-color:var(--accent)}
-.comp-obs-toggle{font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;margin-top:4px}
-.comp-obs-toggle:hover{color:var(--accent)}
-.comp-disclaimer{font-size:10px;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;line-height:1.6;margin-top:14px}
-.comp-disclaimer strong{color:var(--yellow)}
-@media(max-width:640px){.comp-item{flex-direction:column;align-items:flex-start;gap:8px;padding:14px}.comp-semaforo{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.comp-btn{justify-content:center;padding:8px 4px;width:100%}.comp-btn .comp-desc{font-size:10px}}
-
 </style>
 </head>
 <body>
@@ -436,7 +356,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 <!-- TELA DE LOGIN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
-    <div class="login-logo" style="display:flex;align-items:center;justify-content:center;gap:10px;"><img src="data:image/png;base64,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" alt="Logo Let's Poke" style="width:34px;height:34px;object-fit:contain;"><span>Let's Poke</span></div>
+    <div class="login-logo">Let's Poke</div>
     <div class="login-sub">Sistema de Trilha de Treinamento</div>
     <div class="login-input-wrap">
       <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
@@ -456,9 +376,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 </div>
 
 <nav>
-  <div class="nav-logo"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div>Let's Poke <span>/ Trilha</span></div></div>
+  <div class="nav-logo">Let's Poke <span>/ Trilha</span></div>
   <div class="nav-sync" id="syncStatus">⏳ Sincronizando…</div>
   <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goView('painel')">📊 Painel</button>
     <button class="nav-tab" id="tabTrilha" onclick="goView('trilha')" style="display:none">📋 Trilha</button>
     <button class="nav-tab" onclick="openModal('modalConfig')">⚙️</button>
   </div>
@@ -485,6 +406,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       <p>Franqueadora Let's Poke — Trilha de Treinamento Oficial</p>
     </div>
     <div class="painel-stats" id="painelStats"></div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button></div>
     <div class="colab-grid" id="colabGrid"></div>
   </div>
 </div>
@@ -500,7 +422,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       <div class="trilha-actions">
         <button class="btn btn-back" onclick="goView('painel')">← Painel</button>
         <button class="btn btn-ghost" onclick="openReport()">📋 Relatório</button>
-        <button class="btn btn-ghost tip" data-tip="Ver histórico de edições" onclick="openHistorico()">🕓 Histórico</button>
         <button class="btn btn-primary cert-btn" id="certBtn" onclick="openCertificado()">🏅 Certificado</button>
       </div>
     </div>
@@ -508,31 +429,11 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       <div class="prog-row"><span>Progresso da Trilha</span><span class="prog-pct" id="trilhaPct">0%</span></div>
       <div class="prog-bar"><div class="prog-fill" id="trilhaFill" style="width:0%"></div></div>
       <div class="prog-pills">
-        <div class="pill pill-filter" id="pillTodos" onclick="setTemaFiltro('todos')" style="cursor:pointer"><div class="dot" style="background:var(--accent)"></div><span id="pBlocos">0/0 blocos</span></div>
-        <div class="pill pill-filter" id="pillGreen" onclick="setTemaFiltro('g')" style="cursor:pointer"><div class="dot" style="background:var(--green)"></div><span id="pGreen">0 absorvidos</span></div>
-        <div class="pill pill-filter" id="pillYellow" onclick="setTemaFiltro('y')" style="cursor:pointer"><div class="dot" style="background:var(--yellow)"></div><span id="pYellow">0 reforço</span></div>
-        <div class="pill pill-filter" id="pillRed" onclick="setTemaFiltro('r')" style="cursor:pointer"><div class="dot" style="background:var(--red)"></div><span id="pRed">0 a refazer</span></div>
-        <div class="pill pill-filter" id="pillPend" onclick="setTemaFiltro('pend')" style="cursor:pointer"><div class="dot" style="background:var(--border)"></div><span id="pPend">0 pendentes</span></div>
-      </div>
-    </div>
-    <div class="bloco" id="compSection" style="display:none">
-      <div class="bloco-header" onclick="toggleCompBloco()">
-        <span class="bloco-fase fase1">📋 COMPORTAMENTO</span>
-        <div style="flex:1;min-width:0">
-          <div class="bloco-title">Avaliação de Desempenho Observado</div>
-          <div class="bloco-sub">Instrumento pedagógico · Lei nº 13.966/2019</div>
-        </div>
-        <span class="bloco-badge badge-pend" id="compBadge">—</span>
-        <span class="chevron">▼</span>
-      </div>
-      <div class="bloco-body">
-        <div style="padding:12px 18px 4px;font-size:12px;color:var(--muted)">
-          Selecione o status observado para cada critério durante o treinamento.
-        </div>
-        <div id="compGrid"></div>
-        <div style="padding:10px 18px 14px;font-size:11px;color:var(--muted);line-height:1.5;border-top:1px solid var(--border);margin-top:8px">
-          ⚖️ Esta avaliação é de responsabilidade exclusiva do franqueado empregador, conforme a Lei nº 13.966/2019.
-        </div>
+        <div class="pill"><div class="dot" style="background:var(--green)"></div><span id="pGreen">0 absorvidos</span></div>
+        <div class="pill"><div class="dot" style="background:var(--yellow)"></div><span id="pYellow">0 reforço</span></div>
+        <div class="pill"><div class="dot" style="background:var(--red)"></div><span id="pRed">0 a refazer</span></div>
+        <div class="pill"><div class="dot" style="background:var(--border)"></div><span id="pPend">0 pendentes</span></div>
+        <div class="pill"><div class="dot" style="background:var(--accent)"></div><span id="pBlocos">0/0 blocos</span></div>
       </div>
     </div>
     <div id="blocosContainer"></div>
@@ -578,25 +479,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   </div>
 </div>
 
-<!-- MODAL HISTÓRICO -->
-<div class="overlay" id="modalHistorico">
-  <div class="modal" style="max-width:560px">
-    <div class="report-brand"><div><div class="report-brand-title">Histórico de Edições</div><div class="report-brand-sub" id="histSub">—</div></div></div>
-    <h3>🕓 Histórico</h3>
-    <p>Registro de alterações realizadas nesta trilha.</p>
-    <div style="max-height:360px;overflow-y:auto;margin-bottom:18px">
-      <div class="hist-list" id="histList"></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modalHistorico')">Fechar</button>
-    </div>
-  </div>
-</div>
-
 <!-- MODAL RELATÓRIO -->
 <div class="overlay" id="modalReport">
   <div class="modal" style="max-width:680px">
-    <div class="report-brand"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div><div class="report-brand-title">Let's Poke</div><div class="report-brand-sub">Relatório de Treinamento</div></div></div><h3>📋 Relatório de Treinamento</h3>
+    <h3>📋 Relatório de Treinamento</h3>
     <p id="reportSub">—</p>
     <div class="report-pre" id="reportContent"></div>
     <div class="modal-actions">
@@ -610,7 +496,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 <!-- MODAL CERTIFICADO -->
 <div class="overlay" id="modalCert">
   <div class="modal" style="max-width:760px">
-    <div class="report-brand"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div><div class="report-brand-title">Let's Poke</div><div class="report-brand-sub">Certificado de Conclusão</div></div></div><h3>🏅 Certificado de Conclusão</h3>
+    <h3>🏅 Certificado de Conclusão</h3>
     <p id="certSub">—</p>
     <div class="report-pre" id="certContent"></div>
     <div class="modal-actions">
@@ -626,7 +512,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 <!-- MODAL RELATÓRIO GERENCIAL -->
 <div class="overlay" id="modalGerencial">
   <div class="modal" style="max-width:700px">
-    <div class="report-brand"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div><div class="report-brand-title">Let's Poke</div><div class="report-brand-sub">Relatório Gerencial</div></div></div><h3>📊 Relatório Gerencial</h3>
+    <h3>📊 Relatório Gerencial</h3>
     <p id="gerencialSub">Visão consolidada de todos os colaboradores</p>
     <div class="report-pre" id="gerencialContent"></div>
     <div class="modal-actions">
@@ -741,16 +627,55 @@ const TRILHAS = {
       {n:'10',nome:'Montagem da pista e reposições',material:'Pista',aplicador:'Líder Cozinha LP'},
       {n:'11',nome:'Fechamento de pista',material:'Orientação',aplicador:'Líder Cozinha LP'},
       {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela',aplicador:'Líder Cozinha LP'},
-      {n:'13',nome:'CORTE — Abacate / Gengibre / Kani / Manga / Mix Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'14',nome:'Pimenta / Tomate / Gengibre cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15',nome:'FRITURAS — Camarão / Crispy / Dadinho / Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'16',nome:'BEBIDAS — Chás / Suchás / Sucos (todos)',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17',nome:'PREPAROS — Bifum / Abacaxi / Moyashi / Caldo / Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18',nome:'Creme Wasabi / Dadinho Salmão / Edamame / Gohan / Quinoa / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19',nome:'Wakame / Maionese Spicy / Arroz Negro / Cenoura / Tartare / Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20',nome:'MOLHOS — Marinadas / Molho Su / Sessame / Asiático / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21',nome:'PROTEÍNAS — Tilápia / Salmão / Atum / Ceviche / Empanado / Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22',nome:'Camarão / Salmão Spicy / Três Peixes / Shimeji / Atum Selado / Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13a',nome:'CORTE — Abacate',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13b',nome:'CORTE — Gengibre',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13c',nome:'CORTE — Kani',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13d',nome:'CORTE — Manga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13e',nome:'CORTE — Mix de Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14a',nome:'CORTE — Pimenta',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14b',nome:'CORTE — Tomate',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14c',nome:'CORTE — Gengibre em cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15a',nome:'FRITURAS — Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15b',nome:'FRITURAS — Crispy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15c',nome:'FRITURAS — Dadinho',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15d',nome:'FRITURAS — Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16a',nome:'BEBIDAS — Chás',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16b',nome:'BEBIDAS — Suchás',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16c',nome:'BEBIDAS — Sucos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17a',nome:'PREPAROS — Bifum',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17b',nome:'PREPAROS — Abacaxi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17c',nome:'PREPAROS — Moyashi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17d',nome:'PREPAROS — Caldo',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17e',nome:'PREPAROS — Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18a',nome:'PREPAROS — Creme Wasabi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18b',nome:'PREPAROS — Dadinho Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18c',nome:'PREPAROS — Edamame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18d',nome:'PREPAROS — Gohan',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18e',nome:'PREPAROS — Quinoa',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18f',nome:'PREPAROS — Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19a',nome:'PREPAROS — Wakame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19b',nome:'PREPAROS — Maionese Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19c',nome:'PREPAROS — Arroz Negro',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19d',nome:'PREPAROS — Cenoura',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19e',nome:'PREPAROS — Tartare',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19f',nome:'PREPAROS — Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20a',nome:'MOLHOS — Marinadas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20b',nome:'MOLHOS — Molho Su',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20c',nome:'MOLHOS — Sessame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20d',nome:'MOLHOS — Asiático',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20e',nome:'MOLHOS — Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21a',nome:'PROTEÍNAS — Tilápia',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21b',nome:'PROTEÍNAS — Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21c',nome:'PROTEÍNAS — Atum',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21d',nome:'PROTEÍNAS — Ceviche',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21e',nome:'PROTEÍNAS — Empanado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21f',nome:'PROTEÍNAS — Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22a',nome:'PROTEÍNAS — Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22b',nome:'PROTEÍNAS — Salmão Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22c',nome:'PROTEÍNAS — Três Peixes',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22d',nome:'PROTEÍNAS — Shimeji',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22e',nome:'PROTEÍNAS — Atum Selado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22f',nome:'PROTEÍNAS — Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
     ]},
     {id:'b4',fase:1,titulo:'EXPEDIÇÃO COZ',temas:[
       {n:'C1',nome:'Padrão de montagem — todas as categorias',material:'Pista',aplicador:'Multiplicador LP'},
@@ -832,16 +757,55 @@ const TRILHAS = {
       {n:'10',nome:'Montagem da pista e reposições',material:'Pista',aplicador:'Líder Cozinha LP'},
       {n:'11',nome:'Fechamento de pista',material:'Orientação',aplicador:'Líder Cozinha LP'},
       {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela',aplicador:'Líder Cozinha LP'},
-      {n:'13',nome:'CORTE — Abacate / Gengibre / Kani / Manga / Mix Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'14',nome:'Pimenta / Tomate / Gengibre cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'15',nome:'FRITURAS — Camarão / Crispy / Dadinho / Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'16',nome:'BEBIDAS — Chás / Suchás / Sucos (todos)',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'17',nome:'PREPAROS — Bifum / Abacaxi / Moyashi / Caldo / Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'18',nome:'Creme Wasabi / Dadinho Salmão / Edamame / Gohan / Quinoa / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'19',nome:'Wakame / Maionese Spicy / Arroz Negro / Cenoura / Tartare / Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'20',nome:'MOLHOS — Marinadas / Molho Su / Sessame / Asiático / Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'21',nome:'PROTEÍNAS — Tilápia / Salmão / Atum / Ceviche / Empanado / Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
-      {n:'22',nome:'Camarão / Salmão Spicy / Três Peixes / Shimeji / Atum Selado / Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13a',nome:'CORTE — Abacate',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13b',nome:'CORTE — Gengibre',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13c',nome:'CORTE — Kani',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13d',nome:'CORTE — Manga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'13e',nome:'CORTE — Mix de Folhas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14a',nome:'CORTE — Pimenta',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14b',nome:'CORTE — Tomate',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'14c',nome:'CORTE — Gengibre em cubos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15a',nome:'FRITURAS — Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15b',nome:'FRITURAS — Crispy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15c',nome:'FRITURAS — Dadinho',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'15d',nome:'FRITURAS — Tempurá',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16a',nome:'BEBIDAS — Chás',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16b',nome:'BEBIDAS — Suchás',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'16c',nome:'BEBIDAS — Sucos',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17a',nome:'PREPAROS — Bifum',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17b',nome:'PREPAROS — Abacaxi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17c',nome:'PREPAROS — Moyashi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17d',nome:'PREPAROS — Caldo',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'17e',nome:'PREPAROS — Cream Cheese',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18a',nome:'PREPAROS — Creme Wasabi',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18b',nome:'PREPAROS — Dadinho Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18c',nome:'PREPAROS — Edamame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18d',nome:'PREPAROS — Gohan',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18e',nome:'PREPAROS — Quinoa',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'18f',nome:'PREPAROS — Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19a',nome:'PREPAROS — Wakame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19b',nome:'PREPAROS — Maionese Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19c',nome:'PREPAROS — Arroz Negro',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19d',nome:'PREPAROS — Cenoura',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19e',nome:'PREPAROS — Tartare',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'19f',nome:'PREPAROS — Acelga',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20a',nome:'MOLHOS — Marinadas',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20b',nome:'MOLHOS — Molho Su',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20c',nome:'MOLHOS — Sessame',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20d',nome:'MOLHOS — Asiático',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'20e',nome:'MOLHOS — Tofu',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21a',nome:'PROTEÍNAS — Tilápia',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21b',nome:'PROTEÍNAS — Salmão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21c',nome:'PROTEÍNAS — Atum',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21d',nome:'PROTEÍNAS — Ceviche',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21e',nome:'PROTEÍNAS — Empanado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'21f',nome:'PROTEÍNAS — Marinado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22a',nome:'PROTEÍNAS — Camarão',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22b',nome:'PROTEÍNAS — Salmão Spicy',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22c',nome:'PROTEÍNAS — Três Peixes',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22d',nome:'PROTEÍNAS — Shimeji',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22e',nome:'PROTEÍNAS — Atum Selado',material:'Produção',aplicador:'Líder Cozinha LP'},
+      {n:'22f',nome:'PROTEÍNAS — Frango',material:'Produção',aplicador:'Líder Cozinha LP'},
     ]},
     {id:'b3',fase:1,titulo:'CONTROLE DE QUALIDADE',temas:[
       {n:'23',nome:'Controle de temperatura pista (GNs ≤ 2h)',material:'Controle',aplicador:'Líder Qualidade LP'},
@@ -905,7 +869,7 @@ const FUNC_ICONS={atendimento:'🧾',cozinha:'🍳',asg:'🧹',gerente:'👤'};
 // ══════════════════════════════════════════════
 const API_TOKEN = 'LP_8fK29xQa_Train_2026_zP41Lm';
 let API_URL = 'https://script.google.com/macros/s/AKfycbzEpywGjqJ1d2Y_dqscOZokbc_xiRkVUGYUmE73dw4nsyQs_hxJ6lOd6wQaq1wbASUVBw/exec';
-let state = { colabs: [], lojaFiltro: 'todas', statusFiltro: 'todos' };
+let state = { colabs: [] };
 let activeColabIdx = null;
 let saveTimeout = null;
 
@@ -932,40 +896,6 @@ async function callApi(action, payload = {}) {
   return data;
 }
 
-// ── Cache local de comportamento (fallback para reload) ──────
-function saveComportamentoCache(colabId, comportamento) {
-  try {
-    const cache = JSON.parse(localStorage.getItem('lp_comp_cache') || '{}');
-    cache[colabId] = comportamento;
-    localStorage.setItem('lp_comp_cache', JSON.stringify(cache));
-  } catch(e) {}
-}
-
-function loadComportamentoCache() {
-  try {
-    return JSON.parse(localStorage.getItem('lp_comp_cache') || '{}');
-  } catch(e) { return {}; }
-}
-
-function mergeComportamentoFromCache(colabs) {
-  const cache = loadComportamentoCache();
-  colabs.forEach(c => {
-    const key = c.id || c.nome;
-    const cached = cache[key];
-    if (!cached) return;
-    const serverHasData = c.comportamento && Object.values(c.comportamento).some(v => v?.status);
-    if (!serverHasData) {
-      c.comportamento = cached;
-    } else {
-      Object.keys(cached).forEach(k => {
-        if (!c.comportamento[k]?.status && cached[k]?.status) {
-          c.comportamento[k] = cached[k];
-        }
-      });
-    }
-  });
-}
-
 async function loadFromSheets() {
   try {
     setSyncStatus('loading', '⏳ Carregando…');
@@ -974,24 +904,10 @@ async function loadFromSheets() {
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     state.colabs = data.colabs || [];
-    mergeComportamentoFromCache(state.colabs);
-    localStorage.setItem('lp_colabs_cache', JSON.stringify(state.colabs));
     setSyncStatus('ok', '✅ Sincronizado');
   } catch(e) {
-    try {
-      const cached = localStorage.getItem('lp_colabs_cache');
-      if (cached) {
-        state.colabs = JSON.parse(cached);
-        mergeComportamentoFromCache(state.colabs);
-        setSyncStatus('err', '⚠️ Offline — dados locais');
-        toast('Sem conexão com servidor. Usando dados salvos localmente.', true);
-      } else {
-        setSyncStatus('err', '❌ Sem conexão');
-        toast('Erro ao carregar: ' + e.message, true);
-      }
-    } catch(e2) {
-      setSyncStatus('err', '❌ Sem conexão');
-    }
+    setSyncStatus('err', '❌ Erro de conexão');
+    toast('Erro: ' + e.message, true);
   } finally {
     document.getElementById('loadingScreen').classList.add('hidden');
     renderPainel();
@@ -1013,7 +929,7 @@ async function saveColabToSheets(colab) {
     setSyncStatus('ok', '✅ Salvo');
   } catch(e) {
     setSyncStatus('err', '❌ Erro ao salvar');
-    // toast suprimido — status na nav já indica o erro
+    toast('Erro ao salvar: ' + e.message, true);
   }
 }
 
@@ -1043,56 +959,16 @@ function syncAssinaturaToColab(c) {
   }
 }
 
-// ── HISTÓRICO DE EDIÇÕES ──────────────────────────────────
-function addLog(c, icon, msg) {
-  if (!c) return;
-  if (!c.historico) c.historico = [];
-  c.historico.unshift({ icon, msg, time: new Date().toLocaleString('pt-BR') });
-  if (c.historico.length > 100) c.historico.length = 100;
-}
-
-function openHistorico() {
-  const c = state.colabs[activeColabIdx];
-  if (!c) return;
-  const trilha = TRILHAS[c.funcao];
-  document.getElementById('histSub').textContent = `${c.nome} · ${trilha.label}`;
-  const list = document.getElementById('histList');
-  const hist = c.historico || [];
-  if (hist.length === 0) {
-    list.innerHTML = '<div class="hist-empty">Nenhuma edição registrada ainda.</div>';
-  } else {
-    list.innerHTML = hist.map(h => `
-      <div class="hist-item">
-        <span class="hist-icon">${h.icon}</span>
-        <div class="hist-info">
-          <div class="hist-msg">${h.msg}</div>
-          <div class="hist-time">${h.time}</div>
-        </div>
-      </div>`).join('');
-  }
-  openModal('modalHistorico');
-}
-
-// debounceSave — só salva localmente, sem chamar a API
 function debounceSave() {
-  const c = state.colabs[activeColabIdx];
-  if (!c) return;
-  c._dirty = true;
-  if (c.comportamento) saveComportamentoCache(c.id || c.nome, c.comportamento);
-}
-
-// exitSave — chamado ao sair da trilha, aí sim envia para o Sheets
-async function exitSave() {
-  const c = state.colabs[activeColabIdx];
-  if (!c || !c._dirty) return;
-  try {
-    setSyncStatus('loading', '⏳ Salvando…');
-    syncAssinaturaToColab(c);
-    await saveColabToSheets(c);
-    c._dirty = false;
-  } catch(e) {
-    setSyncStatus('err', '❌ Erro ao salvar');
-  }
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(async () => {
+    const c = state.colabs[activeColabIdx];
+    if (!c) return;
+    try {
+      syncAssinaturaToColab(c);
+      await saveColabToSheets(c);
+    } catch (e) {}
+  }, 900);
 }
 
 
@@ -1108,11 +984,10 @@ function formatDateShort(value){
 }
 
 function ensureBlocoState(c,bi){
-  if(!c.blocos[bi]) c.blocos[bi]={open:false,concluido:false,aplicadoPor:'',comentario:'',comentarioOpen:false,assinaturaColaborador:{assinada:false,nome:'',dataHora:'',img:''},temas:[]};
+  if(!c.blocos[bi]) c.blocos[bi]={open:false,concluido:false,aplicadoPor:'',assinaturaColaborador:{assinada:false,nome:'',dataHora:'',img:''},temas:[]};
   if(typeof c.blocos[bi].aplicadoPor!=='string') c.blocos[bi].aplicadoPor='';
-  if(typeof c.blocos[bi].comentario!=='string') c.blocos[bi].comentario='';
-  if(typeof c.blocos[bi].comentarioOpen!=='boolean') c.blocos[bi].comentarioOpen=!!c.blocos[bi].comentario;
-  if(!c.blocos[bi].assinaturaColaborador || typeof c.blocos[bi].assinaturaColaborador!=='object') c.blocos[bi].assinaturaColaborador={assinada:false,nome:'',dataHora:'',img:''};
+  if(!c.blocos[bi].assinaturaColaborador) c.blocos[bi].assinaturaColaborador={assinada:false,nome:'',dataHora:'',img:''};
+  if(!c.blocos[bi].assinaturaColaborador || typeof c.blocos[bi].assinaturaColaborador!=='object') c.blocos[bi].assinaturaColaborador={assinada:false,nome:'',dataHora:''};
   if(!Array.isArray(c.blocos[bi].temas)) c.blocos[bi].temas=[];
   return c.blocos[bi];
 }
@@ -1133,22 +1008,6 @@ function isCertificadoElegivel(c){
 // ══════════════════════════════════════════════
 // PAINEL
 // ══════════════════════════════════════════════
-function getLojasAtivas() {
-  const set = new Set();
-  state.colabs.forEach(c => { if (c.unidade && c.unidade !== '—') set.add(c.unidade); });
-  return Array.from(set).sort((a,b) => a.localeCompare(b, 'pt-BR'));
-}
-
-function applyLojaFilter(value) {
-  state.lojaFiltro = value;
-  renderPainel();
-}
-
-function applyStatusFilter(value) {
-  state.statusFiltro = value;
-  renderPainel();
-}
-
 function renderPainel() {
   const total = state.colabs.length;
   let prontos=0, em=0, nao=0;
@@ -1158,59 +1017,30 @@ function renderPainel() {
     else if (info.statusKey==='em') em++;
     else nao++;
   });
-
-  const lojas = getLojasAtivas();
-  if (state.lojaFiltro !== 'todas' && !lojas.includes(state.lojaFiltro)) {
-    state.lojaFiltro = 'todas';
-  }
-
-  const filtrados = state.colabs.filter(c => {
-    const lojaOk = state.lojaFiltro === 'todas' || c.unidade === state.lojaFiltro;
-    const info = colabInfo(c);
-    const statusOk = state.statusFiltro === 'todos' || info.statusKey === state.statusFiltro;
-    return lojaOk && statusOk;
-  });
-
   document.getElementById('painelStats').innerHTML = `
     <div class="stat-card"><div class="val">${total}</div><div class="lbl">Colaboradores</div></div>
     <div class="stat-card"><div class="val" style="color:var(--green)">${prontos}</div><div class="lbl">✅ Prontos</div></div>
     <div class="stat-card"><div class="val" style="color:var(--yellow)">${em}</div><div class="lbl">🔄 Em Treino</div></div>
     <div class="stat-card"><div class="val" style="color:var(--muted)">${nao}</div><div class="lbl">⏳ Não Iniciados</div></div>
   `;
-
-  const filtroHtml = `
-    <div class="filter-row">
-      <div class="filter-box">
-        <label for="filtroLoja">Loja</label>
-        <select id="filtroLoja" class="filter-select" onchange="applyLojaFilter(this.value)">
-          <option value="todas" ${state.lojaFiltro==='todas'?'selected':''}>Todas as lojas</option>
-          ${lojas.map(loja => `<option value="${loja}" ${state.lojaFiltro===loja?'selected':''}>${loja}</option>`).join('')}
-        </select>
-      </div>
-      <button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Relatório Gerencial</button>
-    </div>`;
-
-  const cardsHtml = filtrados.length
-    ? filtrados.map(c => {
-        const i = state.colabs.indexOf(c);
-        const info = colabInfo(c);
-        return `<div class="colab-card" onclick="openTrilha(${i})">
-          <div class="colab-avatar">${FUNC_ICONS[c.funcao]||'👤'}</div>
-          <div class="colab-info">
-            <div class="colab-name">${c.nome}</div>
-            <div class="colab-meta">${TRILHAS[c.funcao].label} · ${c.unidade} · Início: ${formatDateShort(c.dataInicio)}</div>
-          </div>
-          <div class="colab-right">
-            <div class="colab-pct">${info.pct}%</div>
-            <div class="colab-progbar"><div class="colab-progfill" style="width:${info.pct}%"></div></div>
-            <div class="colab-status ${info.statusClass}">${info.statusLabel}</div>
-          </div>
-          <button class="delete-btn tip" data-tip="Excluir colaborador" onclick="event.stopPropagation();deleteColab(${i})">🗑</button>
-        </div>`;
-      }).join('')
-    : `<div class="empty-state">Nenhum colaborador encontrado para a loja selecionada.</div>`;
-
-  document.getElementById('colabGrid').innerHTML = filtroHtml + cardsHtml + `<div class="add-colab-card" onclick="openModal('modalColab')">+ Novo Colaborador</div>`;
+  document.getElementById('colabGrid').innerHTML =
+    state.colabs.map((c,i) => {
+      const info = colabInfo(c);
+      return `<div class="colab-card" onclick="openTrilha(${i})">
+        <div class="colab-avatar">${FUNC_ICONS[c.funcao]||'👤'}</div>
+        <div class="colab-info">
+          <div class="colab-name">${c.nome}</div>
+          <div class="colab-meta">${TRILHAS[c.funcao].label} · ${c.unidade} · Início: ${formatDateShort(c.dataInicio)}</div>
+        </div>
+        <div class="colab-right">
+          <div class="colab-pct">${info.pct}%</div>
+          <div class="colab-progbar"><div class="colab-progfill" style="width:${info.pct}%"></div></div>
+          <div class="colab-status ${info.statusClass}">${info.statusLabel}</div>
+        </div>
+        <button class="delete-btn" onclick="event.stopPropagation();deleteColab(${i})">🗑</button>
+      </div>`;
+    }).join('') +
+    `<div class="add-colab-card" onclick="openModal('modalColab')">+ Novo Colaborador</div>`;
 }
 
 function colabInfo(c) {
@@ -1234,7 +1064,6 @@ function colabInfo(c) {
 // ══════════════════════════════════════════════
 function openTrilha(idx) {
   activeColabIdx = idx;
-  temaFiltro = 'todos';
   const c = state.colabs[idx];
   const trilha = TRILHAS[c.funcao];
   document.getElementById('trilhaNome').textContent = `${FUNC_ICONS[c.funcao]} ${c.nome}`;
@@ -1243,19 +1072,6 @@ function openTrilha(idx) {
   document.getElementById('certBtn').classList.toggle('show', isCertificadoElegivel(c));
   document.getElementById('tabTrilha').style.display='';
   goView('trilha');
-  renderTrilha();
-}
-
-let temaFiltro = 'todos';
-
-function setTemaFiltro(filtro) {
-  temaFiltro = filtro;
-  // Atualiza visual das pills
-  ['pillTodos','pillGreen','pillYellow','pillRed','pillPend'].forEach(id => {
-    document.getElementById(id)?.classList.remove('active');
-  });
-  const map = {todos:'pillTodos', g:'pillGreen', y:'pillYellow', r:'pillRed', pend:'pillPend'};
-  document.getElementById(map[filtro])?.classList.add('active');
   renderTrilha();
 }
 
@@ -1283,14 +1099,6 @@ function renderTrilha() {
   document.getElementById('pBlocos').textContent=`${blocosDone}/${trilha.blocos.length} blocos`;
   document.getElementById('certBtn').classList.toggle('show', isCertificadoElegivel(c));
 
-  // Atualiza pill ativa
-  ['pillTodos','pillGreen','pillYellow','pillRed','pillPend'].forEach(id => {
-    document.getElementById(id)?.classList.remove('active');
-  });
-  const pillMap = {todos:'pillTodos', g:'pillGreen', y:'pillYellow', r:'pillRed', pend:'pillPend'};
-  document.getElementById(pillMap[temaFiltro])?.classList.add('active');
-
-  renderComportamento();
   document.getElementById('blocosContainer').innerHTML = trilha.blocos.map((bloco,bi) => {
     const bState=ensureBlocoState(c,bi);
     const isOpen=bState.open||false;
@@ -1310,13 +1118,7 @@ function renderTrilha() {
       const tState=bState.temas?.[ti]||{};
       const abs=tState.abs||'';
       const obs=tState.obs||'';
-      const isPend = !abs;
-      const matchFiltro = temaFiltro==='todos' ||
-        (temaFiltro==='g' && abs==='g') ||
-        (temaFiltro==='y' && abs==='y') ||
-        (temaFiltro==='r' && abs==='r') ||
-        (temaFiltro==='pend' && isPend);
-      return `<div class="tema-row" style="display:${matchFiltro?'flex':'none'}">
+      return `<div class="tema-row">
         <div class="tema-num">${tema.n}</div>
         <div class="tema-info">
           <div class="tema-nome">${tema.nome}</div>
@@ -1324,10 +1126,10 @@ function renderTrilha() {
           <textarea class="tema-obs ${obs?'show':''}" id="obs-${bi}-${ti}" placeholder="Observação..." oninput="saveObs(${bi},${ti},this.value)">${obs}</textarea>
         </div>
         <div class="abs-btns">
-          <button class="abs-btn tip ${abs==='g'?'g':''}" data-tip="Absorveu bem" onclick="setAbs(${bi},${ti},'g')"><span class='abs-emoji'>🟢</span><span class='abs-label'>OK</span></button>
-          <button class="abs-btn tip ${abs==='y'?'y':''}" data-tip="Precisa de reforço" onclick="setAbs(${bi},${ti},'y')"><span class='abs-emoji'>🟡</span><span class='abs-label'>Reforço</span></button>
-          <button class="abs-btn tip ${abs==='r'?'r':''}" data-tip="Precisa refazer" onclick="setAbs(${bi},${ti},'r')"><span class='abs-emoji'>🔴</span><span class='abs-label'>Refazer</span></button>
-          <button class="obs-btn tip" data-tip="Adicionar observação" onclick="toggleObs(${bi},${ti})">📝</button>
+          <button class="abs-btn ${abs==='g'?'g':''}" onclick="setAbs(${bi},${ti},'g')"><span class='abs-emoji'>🟢</span><span class='abs-label'>OK</span></button>
+          <button class="abs-btn ${abs==='y'?'y':''}" onclick="setAbs(${bi},${ti},'y')"><span class='abs-emoji'>🟡</span><span class='abs-label'>Reforço</span></button>
+          <button class="abs-btn ${abs==='r'?'r':''}" onclick="setAbs(${bi},${ti},'r')"><span class='abs-emoji'>🔴</span><span class='abs-label'>Refazer</span></button>
+          <button class="obs-btn" onclick="toggleObs(${bi},${ti})">📝</button>
         </div>
       </div>`;
     }).join('');
@@ -1357,35 +1159,13 @@ function renderTrilha() {
               <span class="bloco-signature-title">✍️ Assinatura do colaborador</span>
               <span class="sig-mini ${sig.assinada?'done':'pending'}">${sigTxt}</span>
             </div>
-            <button class="btn-assinar tip ${sig.assinada?'signed':''}" data-tip="${sig.assinada?'Ver assinatura':'Registrar assinatura do colaborador'}" onclick="abrirAssinatura(${bi})">${sig.assinada?'✔ Assinado':'Assinatura'}</button>
+            <button class="btn-assinar ${sig.assinada?'signed':''}" onclick="abrirAssinatura(${bi})">${sig.assinada?'✔ Assinado':'Assinatura'}</button>
           </div>
-          <div class="bloco-footer-actions">
-            <button class="btn-comentario tip ${bState.comentario?'filled':''}" data-tip="Comentário do aplicador sobre este bloco" onclick="toggleComentarioBloco(${bi})">💬 Comentário</button>
-            <button class="btn-concluir tip ${isConcluido?'signed':''}" data-tip="${isConcluido?'Clique para reabrir o bloco':'Marcar todos os temas como concluídos'}" onclick="toggleConcluido(${bi})">${isConcluido?'✔ Bloco concluído':'Concluir bloco'}</button>
-          </div>
-          <div class="bloco-comentario ${(bState.comentarioOpen || bState.comentario)?'show':''}">
-            <textarea placeholder="Comentário do bloco..." oninput="saveComentarioBloco(${bi}, this.value)">${bState.comentario||''}</textarea>
-          </div>
+          <button class="btn-concluir ${isConcluido?'signed':''}" onclick="toggleConcluido(${bi})">${isConcluido?'✔ Bloco concluído':'Concluir bloco'}</button>
         </div>
       </div>
     </div>`;
   }).join('');
-}
-
-function toggleComentarioBloco(bi) {
-  const c=state.colabs[activeColabIdx];
-  const b=ensureBlocoState(c,bi);
-  b.comentarioOpen = !b.comentarioOpen;
-  b.open = true;
-  renderTrilha();
-}
-
-function saveComentarioBloco(bi, value) {
-  const c=state.colabs[activeColabIdx];
-  const b=ensureBlocoState(c,bi);
-  b.comentario = value;
-  b.comentarioOpen = true;
-  debounceSave(c);
 }
 
 function toggleBloco(bi) {
@@ -1398,17 +1178,13 @@ function toggleBloco(bi) {
 function setAbs(bi,ti,val) {
   const c=state.colabs[activeColabIdx];
   const b=ensureBlocoState(c,bi);
-  const trilha=TRILHAS[c.funcao];
   b.open=true;
   if(!b.temas[ti])b.temas[ti]={abs:'',obs:''};
   b.temas[ti].abs=b.temas[ti].abs===val?'':val;
-  const absLabel={g:'🟢 Absorveu bem',y:'🟡 Precisa de reforço',r:'🔴 Refazer','':"Avaliação removida"};
-  const temaNome = trilha.blocos[bi]?.temas[ti]?.nome || `Tema ${ti+1}`;
-  const blocoNome = trilha.blocos[bi]?.titulo || `Bloco ${bi+1}`;
-  addLog(c, absLabel[b.temas[ti].abs]?.split(' ')[0]||'⬜', `${absLabel[b.temas[ti].abs]||'Avaliação removida'} — "${temaNome}" (${blocoNome})`);
   renderTrilha();
   debounceSave(c);
-  toast(absLabel[b.temas[ti].abs]||'Avaliação removida');
+  const labels={g:'🟢 Absorveu bem',y:'🟡 Precisa de reforço',r:'🔴 Refazer','':"Avaliação removida"};
+  toast(labels[b.temas[ti].abs]||'Avaliação removida');
 }
 
 function saveObs(bi,ti,val) {
@@ -1428,11 +1204,8 @@ function toggleObs(bi,ti) {
 
 function toggleConcluido(bi) {
   const c=state.colabs[activeColabIdx];
-  const trilha=TRILHAS[c.funcao];
   if(!c.blocos[bi])c.blocos[bi]={open:true,concluido:false,temas:[]};
   c.blocos[bi].concluido=!c.blocos[bi].concluido;
-  const blocoNome = trilha.blocos[bi]?.titulo || `Bloco ${bi+1}`;
-  addLog(c, c.blocos[bi].concluido?'✅':'🔄', c.blocos[bi].concluido?`Bloco concluído: "${blocoNome}"`:`Bloco reaberto: "${blocoNome}"`);
   renderTrilha();
   renderPainel();
   debounceSave(c);
@@ -1444,14 +1217,8 @@ function toggleConcluido(bi) {
 // ══════════════════════════════════════════════
 function saveAplicadoPorBloco(bi,val){
   const c=state.colabs[activeColabIdx];
-  const trilha=TRILHAS[c.funcao];
   const b=ensureBlocoState(c,bi);
-  const prev = b.aplicadoPor;
   b.aplicadoPor=val;
-  if (val && val !== prev) {
-    const blocoNome = trilha.blocos[bi]?.titulo || `Bloco ${bi+1}`;
-    addLog(c, '👤', `Aplicador do "${blocoNome}" definido: ${val}`);
-  }
   debounceSave(c);
 }
 
@@ -1584,7 +1351,6 @@ function confirmarAssinatura() {
   if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
   renderTrilha();
   debounceSave(c);
-  addLog(c, '✍️', `Assinatura registrada no Bloco ${_sigBlocoIdx+1} por ${c.nome}`);
   toast('✔ Assinatura registrada!');
 }
 
@@ -1630,9 +1396,42 @@ function copyCertificado(){
 }
 
 function printCertificado(){
+  const txt=document.getElementById('certContent').textContent.replace(/\n/g,'<br>');
   const w=window.open('','_blank');
-  w.document.write(buildPrintWindow('Certificado de Conclusão', document.getElementById('certContent').textContent));
+  w.document.write(`<html><head><title>Certificado</title><style>body{font-family:Arial,sans-serif;padding:32px;line-height:1.6}
+/* LOGIN */
+.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-screen.hidden{display:none}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
+.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
+.login-input-wrap{position:relative;margin-bottom:12px}
+.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 44px 12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px}
+.login-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0;line-height:1}
+.login-eye:hover{color:var(--text)}
+.login-input:focus{border-color:var(--accent)}
+.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
+.login-btn:hover{background:#f5cc55}
+.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
+</style></head><body>
+
+<!-- TELA DE LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Let's Poke</div>
+    <div class="login-sub">Sistema de Trilha de Treinamento</div>
+    <div class="login-input-wrap">
+      <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
+        onkeydown="if(event.key==='Enter') fazerLogin()" />
+      <button class="login-eye" onclick="toggleSenha()" type="button" id="eyeBtn">👁</button>
+    </div>
+    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+${txt}</body></html>`);
   w.document.close();
+  w.print();
 }
 
 function initBlocos(funcao) {
@@ -1640,8 +1439,6 @@ function initBlocos(funcao) {
     open:false,
     concluido:false,
     aplicadoPor:'',
-    comentario:'',
-    comentarioOpen:false,
     assinaturaColaborador:{assinada:false,nome:'',dataHora:'',img:''},
     temas:[]
   }));
@@ -1735,10 +1532,7 @@ ${'─'.repeat(45)}
     r+=`Aplicado por: ${bState.aplicadoPor||'—'}
 `;
     r+=`Assinatura do colaborador: ${ass.assinada?`Assinada por ${ass.nome||c.nome} em ${formatDateShort(ass.dataHora)}`:'Pendente'}
-`;
-    if (bState.comentario) r+=`Comentário do bloco: ${bState.comentario}
-`;
-    r+=`
+
 `;
     bloco.temas.forEach((tema,ti)=>{
       const tState=bState.temas?.[ti]||{};
@@ -1752,27 +1546,10 @@ ${'─'.repeat(45)}
 `;
     });
   });
-
-  // Avaliação comportamental
-  const comp = c.comportamento || {};
-  const hasComp = Object.values(comp).some(v => v?.status);
-  if (hasComp) {
-    const STATUS_LABEL_TXT = {g:'🟢 Adequado', y:'🟡 Atenção', r:'🔴 Intervenção necessária'};
-    r += `\n📋 AVALIAÇÃO DE DESEMPENHO OBSERVADO\n${'─'.repeat(50)}\nInstrumento pedagógico · Lei de Franquias nº 13.966/2019\n\n`;
-    COMP_CRITERIOS.forEach((crit, i) => {
-      const cv = comp[i] || {};
-      if (!cv.status) return;
-      const desc = cv.status==='g' ? crit.g : cv.status==='y' ? crit.y : crit.r;
-      r += `  ${crit.titulo}\n`;
-      r += `  ${STATUS_LABEL_TXT[cv.status]}\n`;
-      r += `  "${desc}"\n`;
-      if (cv.obs) r += `  Obs: ${cv.obs}\n`;
-      r += `\n`;
-    });
-    r += `⚖️ Aviso Legal: Esta avaliação é de responsabilidade exclusiva do franqueado\nempregador. Nos termos da Lei nº 13.966/2019, a relação de emprego é\ndireta e exclusivamente entre o franqueado e seus colaboradores, não\nhavendo vínculo, responsabilidade ou ingerência da franqueadora Let's\nPoke sobre contratação, demissão ou gestão de pessoal.\n`;
-  }
-
-  r+=`\n${'='.repeat(50)}\nGerado em ${new Date().toLocaleString('pt-BR')}\n`;
+  r+=`
+${'='.repeat(50)}
+Gerado em ${new Date().toLocaleString('pt-BR')}
+`;
   document.getElementById('reportSub').textContent=`${c.nome} · ${trilha.label} · ${c.unidade}`;
   document.getElementById('reportContent').textContent=r;
   openModal('modalReport');
@@ -2038,339 +1815,92 @@ function openRelatorioGerencial() {
   openModal('modalGerencial');
 }
 
-function buildPrintWindow(title, preContent) {
-  const safe = preContent.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><style>
-    body{font-family:Arial,sans-serif;padding:28px;color:#111;line-height:1.6}
-    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-    .brand img{width:38px;height:38px;object-fit:contain}
-    .brand strong{display:block;font-size:18px}
-    .brand span{display:block;font-size:12px;color:#666}
-    pre{white-space:pre-wrap;font-family:Consolas,monospace;font-size:12px;line-height:1.7;margin:0}
-  </style></head><body>
-    <div class="brand"><img src="data:image/png;base64,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" alt="Logo Let's Poke"><div><strong>Let's Poke</strong><span>${title}</span></div></div>
-    <pre>${safe}</pre>
-    <script>window.onload=()=>window.print()<\/script>
-  </body></html>`;
-}
-
 function copyGerencial() { navigator.clipboard.writeText(document.getElementById('gerencialContent').textContent); toast('📄 Copiado!'); }
 function printGerencial() {
   const w = window.open('', '_blank');
-  w.document.write(buildPrintWindow('Relatório Gerencial', document.getElementById('gerencialContent').textContent));
+  w.document.write(`<html><head><title>Relatório Gerencial</title><style>body{font-family:monospace;font-size:12px;line-height:1.7;padding:28px}pre{white-space:pre-wrap}
+/* LOGIN */
+.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-screen.hidden{display:none}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
+.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
+.login-input-wrap{position:relative;margin-bottom:12px}
+.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 44px 12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px}
+.login-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0;line-height:1}
+.login-eye:hover{color:var(--text)}
+.login-input:focus{border-color:var(--accent)}
+.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
+.login-btn:hover{background:#f5cc55}
+.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
+</style></head><body>
+
+<!-- TELA DE LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Let's Poke</div>
+    <div class="login-sub">Sistema de Trilha de Treinamento</div>
+    <div class="login-input-wrap">
+      <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
+        onkeydown="if(event.key==='Enter') fazerLogin()" />
+      <button class="login-eye" onclick="toggleSenha()" type="button" id="eyeBtn">👁</button>
+    </div>
+    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+<pre>${document.getElementById('gerencialContent').textContent}</pre><script>window.onload=()=>window.print()<\/script></body></html>`);
   w.document.close();
 }
 
 function copyReport(){navigator.clipboard.writeText(document.getElementById('reportContent').textContent);toast('📄 Copiado!');}
 function printReport(){
-  const col = state.colabs[activeColabIdx];
-  if (!col) return;
-  const trilha = TRILHAS[col.funcao];
-  const info = colabInfo(col);
-  const now = new Date().toLocaleString('pt-BR');
-  const STATUS_LABEL = {g:'🟢 Adequado', y:'🟡 Atenção', r:'🔴 Intervenção necessária'};
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Relatório</title><style>body{font-family:monospace;font-size:12px;line-height:1.7;padding:28px}pre{white-space:pre-wrap}
+/* LOGIN */
+.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-screen.hidden{display:none}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
+.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
+.login-input-wrap{position:relative;margin-bottom:12px}
+.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 44px 12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px}
+.login-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0;line-height:1}
+.login-eye:hover{color:var(--text)}
+.login-input:focus{border-color:var(--accent)}
+.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
+.login-btn:hover{background:#f5cc55}
+.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
+</style></head><body>
 
-  let html = '';
-
-  // Cabeçalho
-  html += `<div class="hdr">
-    <img src="data:image/png;base64,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" class="logo-img" alt="Logo">
-    <div>
-      <div class="logo-nome">Let's Poke</div>
-      <div class="hdr-title">Relatório de Treinamento</div>
-      <div class="hdr-sub">Franqueadora Let's Poke — Trilha de Treinamento Oficial</div>
+<!-- TELA DE LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Let's Poke</div>
+    <div class="login-sub">Sistema de Trilha de Treinamento</div>
+    <div class="login-input-wrap">
+      <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
+        onkeydown="if(event.key==='Enter') fazerLogin()" />
+      <button class="login-eye" onclick="toggleSenha()" type="button" id="eyeBtn">👁</button>
     </div>
-  </div>`;
-
-  // Dados do colaborador
-  html += `<table class="info-tbl">
-    <tr><td class="lbl">Colaborador</td><td>${col.nome}</td><td class="lbl">Função</td><td>${trilha.label}</td></tr>
-    <tr><td class="lbl">Unidade</td><td>${col.unidade}</td><td class="lbl">Início</td><td>${col.dataInicio}</td></tr>
-    <tr><td class="lbl">Progresso</td><td>${info.pct}%</td><td class="lbl">Status</td><td>${info.statusLabel}</td></tr>
-  </table>`;
-
-  // Avaliação comportamental
-  const comp = col.comportamento || {};
-  const hasComp = Object.values(comp).some(v => v.status);
-  if (hasComp) {
-    const compSummary = {g:0, y:0, r:0, n:0};
-    COMP_CRITERIOS.forEach((_,i) => {
-      const s = comp[i]?.status || '';
-      if (s) compSummary[s]++; else compSummary.n++;
-    });
-
-    html += `<div class="bloco comp-bloco">
-      <div class="bloco-hdr">
-        <span>📋 Avaliação de Desempenho Observado</span>
-        <span class="badge badge-comp">Instrumento Pedagógico</span>
-      </div>
-      <div class="comp-sub-meta">
-        Registro de acompanhamento comportamental durante a trilha de treinamento · Lei de Franquias nº 13.966/2019
-      </div>
-
-      <div class="comp-resumo">
-        <div class="comp-resumo-item comp-resumo-g">🟢 Adequado<span>${compSummary.g}</span></div>
-        <div class="comp-resumo-item comp-resumo-y">🟡 Atenção<span>${compSummary.y}</span></div>
-        <div class="comp-resumo-item comp-resumo-r">🔴 Intervenção<span>${compSummary.r}</span></div>
-        ${compSummary.n > 0 ? `<div class="comp-resumo-item comp-resumo-n">⬜ Não avaliado<span>${compSummary.n}</span></div>` : ''}
-      </div>
-
-      <table class="temas-tbl comp-tbl">
-        <tr><th style="width:38%">Critério Avaliado</th><th style="width:20%">Status</th><th>Descrição</th><th style="width:22%">Obs. do Aplicador</th></tr>`;
-
-    COMP_CRITERIOS.forEach((crit, i) => {
-      const cv = comp[i] || {};
-      const s = cv.status || '';
-      const statusLabel = s ? STATUS_LABEL[s] : '⬜ Não avaliado';
-      const desc = s ? (s==='g'?crit.g : s==='y'?crit.y : crit.r) : '—';
-      const rowClass = s==='g'?'comp-row-g' : s==='y'?'comp-row-y' : s==='r'?'comp-row-r' : '';
-      html += `<tr class="${rowClass}">
-        <td><b>${crit.titulo}</b></td>
-        <td class="comp-status-cell">${statusLabel}</td>
-        <td style="font-size:10px;color:#555;font-style:italic">${desc}</td>
-        <td style="font-size:10px;color:#666;font-style:italic">${cv.obs || '—'}</td>
-      </tr>`;
-    });
-
-    html += `</table>
-
-      <div class="comp-aviso-legal">
-        <div class="comp-aviso-titulo">⚖️ Aviso Legal — Lei de Franquias nº 13.966/2019</div>
-        <p>Esta avaliação constitui exclusivamente um instrumento pedagógico de acompanhamento do treinamento, sendo de responsabilidade integral do <strong>franqueado empregador</strong>. Nos termos da Lei nº 13.966/2019, a relação de emprego é estabelecida direta e exclusivamente entre o franqueado e seus colaboradores, não havendo qualquer vínculo empregatício, responsabilidade ou ingerência da <strong>franqueadora Let's Poke</strong> sobre decisões de contratação, demissão, gestão de pessoal ou quaisquer obrigações trabalhistas. O presente registro não representa manifestação da franqueadora acerca da conduta do colaborador.</p>
-      </div>
-    </div>`;
-  }
-
-  // Blocos
-  trilha.blocos.forEach((bloco, bi) => {
-    const bState = col.blocos[bi] || {};
-    const ass = bState.assinaturaColaborador || {};
-    const fase = bloco.fase === 2 ? '🏪 FASE 2' : '📍 FASE 1';
-    html += `<div class="bloco">
-      <div class="bloco-hdr">
-        <span>${fase} · Bloco ${bi+1} · ${bloco.titulo}</span>
-        <span class="badge ${bState.concluido?'ok':'pend'}">${bState.concluido?'✔ CONCLUÍDO':'PENDENTE'}</span>
-      </div>
-      <div class="bloco-meta">Aplicado por: <b>${bState.aplicadoPor||'—'}</b></div>
-      <table class="temas-tbl">
-        <tr><th style="width:38px">#</th><th>Tema</th><th style="width:85px">Material</th><th style="width:135px">Absorção</th></tr>`;
-    bloco.temas.forEach((tema, ti) => {
-      const abs = bState.temas?.[ti]?.abs || '';
-      const icon = abs==='g'?'🟢 Absorveu bem':abs==='y'?'🟡 Precisa de reforço':abs==='r'?'🔴 Refazer':'⬜ Não avaliado';
-      const obs = bState.temas?.[ti]?.obs || '';
-      html += `<tr>
-        <td class="tc">${tema.n}</td>
-        <td>${tema.nome}${obs?`<br><i style="font-size:10px;color:#888">Obs: ${obs}</i>`:''}</td>
-        <td>${tema.material}</td><td>${icon}</td>
-      </tr>`;
-    });
-    html += `</table>
-      <div class="sig-box">
-        <div class="sig-lbl">✍️ Assinatura do Colaborador</div>
-        ${ass.assinada && ass.img
-          ? `<div class="sig-info">Assinado por <b>${ass.nome||col.nome}</b> em ${new Date(ass.dataHora).toLocaleString('pt-BR')}</div><img class="sig-img" src="${ass.img}" alt="Assinatura">`
-          : `<span class="sig-pend">⬜ Pendente</span>`}
-      </div>
-    </div>`;
-  });
-
-
-  html += `<div class="footer">Relatório gerado em ${now} · Let's Poke — Trilha de Treinamento Oficial</div>`;
-
-  const css = `
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:24px;max-width:800px;margin:0 auto;word-wrap:break-word;overflow-wrap:break-word}
-    .hdr{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:3px solid #e8a830;padding-bottom:14px}
-    .logo-img{width:42px;height:42px;object-fit:contain;flex-shrink:0}
-    .logo-nome{font-size:20px;font-weight:900;color:#e8a830}
-    .hdr-title{font-size:14px;font-weight:700;margin-top:2px}
-    .hdr-sub{font-size:10px;color:#666}
-    .info-tbl{width:100%;border-collapse:collapse;table-layout:fixed;margin-bottom:18px}
-    .info-tbl td{padding:6px 10px;border:1px solid #ddd;font-size:12px;word-break:break-all;overflow-wrap:anywhere}
-    .info-tbl .lbl{width:90px;font-weight:600;background:#f5f5f5;color:#555}
-    .bloco{margin-bottom:16px;border:1px solid #ccc;border-radius:6px;overflow:hidden;page-break-inside:avoid}
-    .bloco-hdr{background:#f0f0f0;padding:9px 12px;font-weight:700;font-size:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-    .bloco-meta{padding:5px 12px;font-size:11px;color:#555;background:#fafafa;border-bottom:1px solid #eee}
-    .badge{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:700;white-space:nowrap;flex-shrink:0}
-    .badge.ok{background:#d4edda;color:#155724}
-    .badge.pend{background:#f8f9fa;color:#666;border:1px solid #ddd}
-    .temas-tbl{width:100%;border-collapse:collapse;table-layout:fixed}
-    .temas-tbl th{background:#f8f8f8;padding:6px 10px;text-align:left;font-size:11px;border-bottom:1px solid #ddd;font-weight:600}
-    .temas-tbl td{padding:6px 10px;border-bottom:1px solid #eee;font-size:11px;vertical-align:top;word-break:break-all;overflow-wrap:anywhere}
-    .temas-tbl tr:last-child td{border-bottom:none}
-    .tc{text-align:center;color:#888;width:38px}
-    .sig-box{padding:12px 14px;border-top:1px solid #eee;background:#fafafa}
-    .sig-lbl{font-size:11px;font-weight:700;color:#555;margin-bottom:6px}
-    .sig-info{font-size:11px;color:#333;margin-bottom:6px}
-    .sig-img{max-width:220px;max-height:75px;border:1px solid #ddd;border-radius:4px;background:#fff;display:block}
-    .sig-pend{font-size:11px;color:#aaa;font-style:italic}
-    .footer{margin-top:20px;text-align:center;font-size:10px;color:#999;border-top:1px solid #eee;padding-top:10px}
-    .comp-bloco{border-color:#b0b0b0}
-    .comp-bloco .bloco-hdr{background:#2c2c2c;color:#fff}
-    .badge-comp{background:#e8a830;color:#111;border:none}
-    .comp-sub-meta{padding:6px 12px;font-size:10px;color:#666;background:#f7f7f7;border-bottom:1px solid #e5e5e5;font-style:italic}
-    .comp-resumo{display:flex;gap:10px;padding:10px 12px;background:#fafafa;border-bottom:1px solid #eee;flex-wrap:wrap}
-    .comp-resumo-item{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;border:1px solid transparent}
-    .comp-resumo-item span{font-size:14px;font-weight:800}
-    .comp-resumo-g{background:#d4edda;color:#155724;border-color:#c3e6cb}
-    .comp-resumo-y{background:#fff3cd;color:#856404;border-color:#ffeeba}
-    .comp-resumo-r{background:#f8d7da;color:#721c24;border-color:#f5c6cb}
-    .comp-resumo-n{background:#f8f9fa;color:#666;border-color:#ddd}
-    .comp-tbl th{font-size:10px}
-    .comp-row-g td{background:#f0fff4}
-    .comp-row-y td{background:#fffdf0}
-    .comp-row-r td{background:#fff5f5}
-    .comp-status-cell{font-weight:700;font-size:11px;white-space:nowrap}
-    .comp-aviso-legal{margin:0;padding:12px 14px;background:#f8f8f0;border-top:2px solid #e8a830}
-    .comp-aviso-titulo{font-size:11px;font-weight:800;color:#7a5c00;margin-bottom:6px}
-    .comp-aviso-legal p{font-size:10px;color:#555;line-height:1.65}
-    .comp-aviso-legal strong{color:#333}
-    @media print{body{padding:12px}.bloco{page-break-inside:avoid}}
-  `;
-
-  const w = window.open('','_blank');
-  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatorio</title><style>'+css+'</style></head><body>'+html+'<script>window.onload=function(){window.print()}<\/script></body></html>');
+    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+<pre>${document.getElementById('reportContent').textContent}</pre><script>window.onload=()=>window.print()<\/script></body></html>`);
   w.document.close();
 }
 
 // ══════════════════════════════════════════════
-
-// ── AVALIAÇÃO COMPORTAMENTAL — SEMÁFORO ────────────────────
-const COMP_CRITERIOS = [
-  {
-    titulo: 'Pontualidade e Presença',
-    g: 'Cumpre horários e comunica ausências com antecedência',
-    y: 'Apresentou atrasos ou ausências sem comunicação prévia',
-    r: 'Reincidência de atrasos ou ausências que impactaram o treinamento'
-  },
-  {
-    titulo: 'Postura e Apresentação Pessoal',
-    g: 'Uniforme correto, higiene adequada e apresentação dentro do padrão',
-    y: 'Apresentou irregularidade pontual de uniforme ou higiene pessoal',
-    r: 'Reincidência de não conformidade com o padrão de apresentação'
-  },
-  {
-    titulo: 'Relacionamento com a Equipe',
-    g: 'Colaborativo, respeitoso e receptivo a orientações',
-    y: 'Demonstrou resistência pontual ou dificuldade de integração',
-    r: 'Comportamento que gerou conflito ou comprometeu o ambiente de trabalho'
-  },
-  {
-    titulo: 'Engajamento no Aprendizado',
-    g: 'Participativo, demonstrou iniciativa e interesse durante o treino',
-    y: 'Participação irregular ou necessitou de estímulo constante',
-    r: 'Desengajamento persistente que prejudicou o aproveitamento do treinamento'
-  },
-  {
-    titulo: 'Execução das Tarefas',
-    g: 'Seguiu procedimentos com qualidade e atenção dentro do esperado',
-    y: 'Cometeu erros pontuais corrigíveis com reorientação',
-    r: 'Dificuldade recorrente em seguir procedimentos após múltiplas orientações'
-  },
-  {
-    titulo: 'Postura no Atendimento ao Cliente',
-    g: 'Cordial, empático e com postura adequada no atendimento',
-    y: 'Demonstrou timidez ou hesitação em situações de atendimento',
-    r: 'Comportamento inadequado registrado durante interação com clientes'
-  }
-];
-
-function toggleCompBloco() {
-  document.getElementById('compSection').classList.toggle('open');
-}
-
-function renderComportamento() {
-  const c = state.colabs[activeColabIdx];
-  if (!c) return;
-  document.getElementById('compSection').style.display = 'block';
-  if (!c.comportamento) c.comportamento = {};
-
-  // Atualiza badge com resumo do status
-  const comp = c.comportamento;
-  let g=0, y=0, r=0;
-  COMP_CRITERIOS.forEach((_,i) => {
-    const s = comp[i]?.status || '';
-    if (s==='g') g++; else if (s==='y') y++; else if (s==='r') r++;
-  });
-  const total = g+y+r;
-  const badge = document.getElementById('compBadge');
-  if (badge) {
-    if (total === 0) { badge.textContent = '—'; badge.className = 'bloco-badge badge-pend'; }
-    else if (r > 0)  { badge.textContent = `🔴 ${r} interv.`; badge.className = 'bloco-badge badge-partial'; }
-    else if (y > 0)  { badge.textContent = `🟡 ${y} atenção`; badge.className = 'bloco-badge badge-partial'; }
-    else             { badge.textContent = `✔ ${g}/${COMP_CRITERIOS.length}`; badge.className = 'bloco-badge badge-ok'; }
-  }
-
-  document.getElementById('compGrid').innerHTML = COMP_CRITERIOS.map((crit, i) => {
-    const val = c.comportamento[i]?.status || '';
-    const obs = c.comportamento[i]?.obs || '';
-    return `<div class="comp-item">
-      <div class="comp-item-title">${crit.titulo}
-        ${obs ? `<div class="tema-obs show" style="margin-top:6px"><i style="font-size:11px;color:var(--muted)">Obs: ${obs}</i></div>` : ''}
-      </div>
-      <div class="comp-semaforo">
-        <button class="comp-btn ${val==='g'?'sel-g':''}" onclick="setComp(${i},'g')">
-          <span class="comp-emoji">🟢</span><span class="comp-desc">OK</span>
-        </button>
-        <button class="comp-btn ${val==='y'?'sel-y':''}" onclick="setComp(${i},'y')">
-          <span class="comp-emoji">🟡</span><span class="comp-desc">Atenção</span>
-        </button>
-        <button class="comp-btn ${val==='r'?'sel-r':''}" onclick="setComp(${i},'r')">
-          <span class="comp-emoji">🔴</span><span class="comp-desc">Interv.</span>
-        </button>
-        <button class="obs-btn tip" data-tip="Adicionar observação" onclick="toggleCompObs(${i})">📝</button>
-      </div>
-      <textarea class="tema-obs ${obs?'show':''}" id="compObs-${i}"
-        placeholder="Observação..." oninput="saveCompObs(${i},this.value)"
-        rows="2">${obs}</textarea>
-    </div>`;
-  }).join('');
-}
-
-function setComp(idx, status) {
-  const c = state.colabs[activeColabIdx];
-  if (!c.comportamento) c.comportamento = {};
-  if (!c.comportamento[idx]) c.comportamento[idx] = {status:'', obs:''};
-  c.comportamento[idx].status = c.comportamento[idx].status === status ? '' : status;
-  const labels = {g:'🟢 Adequado', y:'🟡 Atenção', r:'🔴 Intervenção necessária'};
-  const critNome = COMP_CRITERIOS[idx]?.titulo || `Critério ${idx+1}`;
-  addLog(c, labels[c.comportamento[idx].status]?.split(' ')[0]||'⬜', `Comportamento — ${critNome}: ${labels[c.comportamento[idx].status]||'Avaliação removida'}`);
-  renderComportamento();
-  saveComportamentoCache(c.id || c.nome, c.comportamento);
-  debounceSave(c);
-  toast(labels[c.comportamento[idx].status] || 'Avaliação removida');
-}
-
-function saveCompObs(idx, val) {
-  const c = state.colabs[activeColabIdx];
-  if (!c.comportamento) c.comportamento = {};
-  if (!c.comportamento[idx]) c.comportamento[idx] = {status:'', obs:''};
-  c.comportamento[idx].obs = val;
-  saveComportamentoCache(c.id || c.nome, c.comportamento);
-  debounceSave(c);
-}
-
-function toggleCompObs(idx) {
-  const el = document.getElementById('compObs-' + idx);
-  if (el) { el.classList.toggle('show'); if(el.classList.contains('show')) el.focus(); }
-}
-
 // UTILS
 // ══════════════════════════════════════════════
 function goView(v) {
-  // Se está saindo da trilha, salva agora
-  const currentView = document.querySelector('.view.active');
-  if (currentView && currentView.id === 'viewTrilha' && v !== 'trilha') {
-    exitSave();
-  }
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.getElementById('view'+v.charAt(0).toUpperCase()+v.slice(1)).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  if(v==='painel'){document.getElementById('tabTrilha').style.display='none';renderPainel();}
-  else{document.getElementById('tabTrilha').style.display='';document.getElementById('tabTrilha').classList.add('active');}
+  if(v==='painel'){document.querySelector('.nav-tab').classList.add('active');document.getElementById('tabTrilha').style.display='none';renderPainel();}
+  else{document.getElementById('tabTrilha').classList.add('active');}
 }
-// Segurança extra: salva se fechar/recarregar a aba
-window.addEventListener('beforeunload', () => { exitSave(); });
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 let toastT;
