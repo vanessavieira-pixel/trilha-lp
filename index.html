@@ -354,6 +354,36 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 }
 
 
+/* CONFORMIDADE OPERACIONAL */
+.conf-block{border:1px solid rgba(240,192,64,.3);border-radius:14px;overflow:hidden;margin-bottom:14px;background:rgba(240,192,64,.03)}
+.conf-header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(240,192,64,.06);cursor:pointer;user-select:none}
+.conf-header:hover{background:rgba(240,192,64,.1)}
+.conf-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.5px;text-transform:uppercase;flex-shrink:0;font-family:var(--font-h);background:rgba(240,192,64,.15);color:var(--accent)}
+.conf-title{font-family:var(--font-h);font-size:14px;font-weight:700;flex:1;color:var(--accent)}
+.conf-body{display:none;background:var(--bg);border-top:1px solid rgba(240,192,64,.2)}
+.conf-block.open .conf-body{display:block}
+.conf-aviso{margin:16px 18px 0;padding:12px 14px;background:rgba(240,192,64,.06);border:1px solid rgba(240,192,64,.15);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.7}
+.conf-aviso strong{color:var(--accent)}
+.conf-item{display:flex;align-items:flex-start;gap:10px;padding:13px 18px;border-bottom:1px solid rgba(45,45,41,.6);flex-wrap:wrap}
+.conf-item:last-of-type{border-bottom:none}
+.conf-item-info{flex:1;min-width:160px}
+.conf-item-nome{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:4px}
+.conf-btns{display:flex;gap:5px;flex-shrink:0}
+.conf-btn{font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .12s;white-space:nowrap;font-family:var(--font-h);font-weight:600}
+.conf-btn:hover{background:var(--surface);color:var(--text)}
+.conf-btn.gc{background:rgba(61,184,122,.15);border-color:var(--green);color:var(--green)}
+.conf-btn.yc{background:rgba(232,184,48,.15);border-color:var(--yellow);color:var(--yellow)}
+.conf-btn.rc{background:rgba(224,72,72,.15);border-color:var(--red);color:var(--red)}
+.conf-obs{width:100%;margin-top:8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--font-b);font-size:12px;resize:none;min-height:52px;outline:none;transition:border-color .2s}
+.conf-obs:focus{border-color:var(--accent)}
+.conf-obs::placeholder{color:var(--muted)}
+.conf-footer{padding:14px 18px;border-top:1px solid rgba(240,192,64,.15);display:flex;justify-content:flex-end}
+@media(max-width:640px){
+  .conf-btns{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .conf-btn{padding:10px 4px;text-align:center;font-size:12px}
+  .conf-item{flex-direction:column}
+}
+
 /* FILTROS */
 .filters-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:18px}
 .filters-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr auto;gap:10px;align-items:end}
@@ -506,6 +536,16 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
       </div>
     </div>
     <div id="blocosContainer"></div>
+    <!-- BLOCO CONFORMIDADE OPERACIONAL -->
+    <div class="conf-block" id="confBlock">
+      <div class="conf-header" onclick="toggleConf()">
+        <span class="conf-tag">⚖️ Franqueadora</span>
+        <div class="conf-title">Conformidade Operacional — Relatório ao Franqueado</div>
+        <span id="confBadge" class="bloco-badge badge-pend">0/6</span>
+        <span class="chevron" id="confChevron">▼</span>
+      </div>
+      <div class="conf-body" id="confBody"></div>
+    </div>
   </div>
 </div>
 
@@ -955,6 +995,82 @@ const TRILHAS = {
 const FUNC_ICONS={atendimento:'🧾',cozinha:'🍳',asg:'🧹',gerente:'👤'};
 
 // ══════════════════════════════════════════════
+// CONFORMIDADE OPERACIONAL
+// ══════════════════════════════════════════════
+const CONF_ITENS = [
+  { id:'c1', nome:'Apresentação conforme Manual de Marca', placeholder:'Ex: uniforme completo, higiene pessoal, uso correto de EPI...' },
+  { id:'c2', nome:'Cumprimento de processos', placeholder:'Ex: segue fluxo operacional, checklists, rotinas de abertura/fechamento...' },
+  { id:'c3', nome:'Aplicação dos protocolos de higiene e manipulação', placeholder:'Ex: temperatura, etiquetagem, armazenamento, descarte...' },
+  { id:'c4', nome:'Cordialidade no atendimento ao cliente', placeholder:'Ex: postura receptiva, comunicação respeitosa, tratamento ao cliente...' },
+  { id:'c5', nome:'Postura no ambiente operacional', placeholder:'Ex: conduta alinhada ao Manual de Conduta, comportamento no posto de trabalho...' },
+  { id:'c6', nome:'Ritmo de absorção durante o treinamento', placeholder:'Ex: engajamento nas atividades, evolução ao longo dos blocos...' },
+];
+
+const CONF_AVISO = `Este instrumento é destinado exclusivamente ao franqueado como subsídio para gestão de sua equipe. A verificação de conformidade é realizada sobre os padrões de marca, sem interferência na relação de trabalho, conforme art. 2º da Lei nº 13.966/2019.`;
+
+function ensureConformidade(c) {
+  if (!Array.isArray(c.conformidade) || c.conformidade.length !== CONF_ITENS.length) {
+    c.conformidade = CONF_ITENS.map(item => ({ id: item.id, status: '', obs: '' }));
+  }
+  return c.conformidade;
+}
+
+function toggleConf() {
+  document.getElementById('confBlock').classList.toggle('open');
+}
+
+function renderConformidade() {
+  const c = state.colabs[activeColabIdx];
+  if (!c) return;
+  const conf = ensureConformidade(c);
+  const avaliados = conf.filter(d => d.status).length;
+
+  // Badge
+  const badge = document.getElementById('confBadge');
+  if (badge) {
+    badge.textContent = avaliados === CONF_ITENS.length ? '✔ Completo' : `${avaliados}/${CONF_ITENS.length}`;
+    badge.className = 'bloco-badge ' + (avaliados === CONF_ITENS.length ? 'badge-ok' : avaliados > 0 ? 'badge-partial' : 'badge-pend');
+  }
+
+  document.getElementById('confBody').innerHTML = `
+    <div class="conf-aviso"><strong>⚖️ Aviso Legal:</strong> ${CONF_AVISO}</div>
+    ${CONF_ITENS.map((item, i) => {
+      const d = conf[i];
+      return `<div class="conf-item">
+        <div class="conf-item-info">
+          <div class="conf-item-nome">${item.nome}</div>
+          <div class="conf-btns">
+            <button class="conf-btn ${d.status==='g'?'gc':''}" onclick="setConf(${i},'g')">🟢 Conforme</button>
+            <button class="conf-btn ${d.status==='y'?'yc':''}" onclick="setConf(${i},'y')">🟡 Requer reforço</button>
+            <button class="conf-btn ${d.status==='r'?'rc':''}" onclick="setConf(${i},'r')">🔴 Não conforme</button>
+          </div>
+          <textarea class="conf-obs" placeholder="${item.placeholder}" onchange="setConfObs(${i},this.value)" oninput="setConfObs(${i},this.value)">${escapeHtml(d.obs||'')}</textarea>
+        </div>
+      </div>`;
+    }).join('')}
+    <div class="conf-footer">
+      <span style="font-size:11px;color:var(--muted)">${avaliados}/${CONF_ITENS.length} critérios avaliados · Relatório disponível no botão 📋</span>
+    </div>
+  `;
+}
+
+function setConf(i, val) {
+  const c = state.colabs[activeColabIdx];
+  const conf = ensureConformidade(c);
+  conf[i].status = conf[i].status === val ? '' : val;
+  addHistorico(c, 'Conformidade atualizada', `${CONF_ITENS[i].nome} → ${val==='g'?'Conforme':val==='y'?'Requer reforço':'Não conforme'}`);
+  renderConformidade();
+  debounceSave(c);
+}
+
+function setConfObs(i, val) {
+  const c = state.colabs[activeColabIdx];
+  const conf = ensureConformidade(c);
+  conf[i].obs = val;
+  debounceSave(c);
+}
+
+// ══════════════════════════════════════════════
 // CONFIG & API — Google Apps Script
 // ══════════════════════════════════════════════
 const API_TOKEN = 'LP_8fK29xQa_Train_2026_zP41Lm';
@@ -1256,6 +1372,9 @@ function renderTrilha() {
   document.getElementById('pBlocos').textContent=`${blocosDone}/${trilha.blocos.length} blocos`;
   document.getElementById('pNA').textContent=`${na} N/A`;
   document.getElementById('certBtn').classList.toggle('show', isCertificadoElegivel(c));
+
+  // render conformidade badge early (body rendered after)
+  setTimeout(renderConformidade, 0);
 
   document.getElementById('blocosContainer').innerHTML = trilha.blocos.map((bloco,bi) => {
     const bState=ensureBlocoState(c,bi);
@@ -1572,42 +1691,77 @@ function copyCertificado(){
 }
 
 function printCertificado(){
-  const txt=document.getElementById('certContent').textContent.replace(/\n/g,'<br>');
-  const w=window.open('','_blank');
-  w.document.write(`<html><head><title>Certificado</title><style>body{font-family:Arial,sans-serif;padding:32px;line-height:1.6}
-/* LOGIN */
-.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
-.login-screen.hidden{display:none}
-.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
-.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
-.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
-.login-input-wrap{position:relative;margin-bottom:12px}
-.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 44px 12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px}
-.login-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0;line-height:1}
-.login-eye:hover{color:var(--text)}
-.login-input:focus{border-color:var(--accent)}
-.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
-.login-btn:hover{background:#f5cc55}
-.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
-</style></head><body>
+  const c=state.colabs[activeColabIdx];
+  if(!c)return;
+  const trilha=TRILHAS[c.funcao];
+  const aplicadores=collectAplicadores(c);
+  const dataConclusao=new Date().toLocaleDateString('pt-BR');
 
-<!-- TELA DE LOGIN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">Let's Poke</div>
-    <div class="login-sub">Sistema de Trilha de Treinamento</div>
-    <div class="login-input-wrap">
-      <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
-        onkeydown="if(event.key==='Enter') fazerLogin()" />
-      <button class="login-eye" onclick="toggleSenha()" type="button" id="eyeBtn">👁</button>
+  // Pega a última assinatura disponível
+  let ultimaAss=null;
+  for(let i=c.blocos.length-1;i>=0;i--){
+    const sig=c.blocos[i]?.assinaturaColaborador;
+    if(sig?.assinada){ultimaAss=sig;break;}
+  }
+
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+  <title>Certificado — ${escapeHtml(c.nome)}</title>
+  <style>${reportBaseCSS()}
+    body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f5f3ee;padding:20px}
+    @page{margin:10mm;size:A4 landscape}
+  </style></head><body>
+  <div class="cert-wrap">
+    <div class="cert-inner">
+      <img src="${LOGO_URL}" style="height:52px;object-fit:contain;margin-bottom:8px" onerror="this.style.display='none'" />
+      <div class="cert-sub">Sistema de Treinamento de Implantação</div>
+
+      <div class="cert-title">Certificamos que</div>
+      <div class="cert-nome">${escapeHtml(c.nome)}</div>
+      <div class="cert-funcao">${escapeHtml(trilha.label)}</div>
+      <div class="cert-unidade">${escapeHtml(c.unidade)}</div>
+
+      <div class="cert-body">
+        concluiu com êxito a trilha obrigatória de formação operacional da marca Let's Poke,
+        cumprindo todos os blocos de treinamento previstos para sua função,
+        estando apto(a) para atuar na operação da unidade franqueada.
+      </div>
+
+      <div class="cert-dados">
+        <div class="cert-dado"><label>Data de conclusão</label><span>${dataConclusao}</span></div>
+        <div class="cert-dado"><label>Carga da trilha</label><span>${trilha.diasUteis} dias úteis</span></div>
+        <div class="cert-dado"><label>Início da trilha</label><span>${formatDateShort(c.dataInicio)}</span></div>
+        <div class="cert-dado"><label>Aplicadores</label><span>${aplicadores.length?escapeHtml(aplicadores.join(', ')):'—'}</span></div>
+      </div>
+
+      <div class="cert-assinatura">
+        <div class="cert-sig-box">
+          ${ultimaAss?.img?`<img src="${ultimaAss.img}" style="height:44px;max-width:160px;object-fit:contain;display:block;margin:0 auto 6px" />`:'<div style="height:44px"></div>'}
+          <div class="cert-sig-line"></div>
+          <div class="cert-sig-label">${escapeHtml(c.nome)}</div>
+          <div style="font-size:7.5pt;color:#aaa">${ultimaAss?.dataHora?formatDateShort(ultimaAss.dataHora):dataConclusao}</div>
+        </div>
+        <div class="cert-sig-box">
+          <div style="height:44px"></div>
+          <div class="cert-sig-line"></div>
+          <div class="cert-sig-label">Franqueadora Let's Poke</div>
+          <div style="font-size:7.5pt;color:#aaa">Responsável pela Implantação</div>
+        </div>
+      </div>
+
+      <div class="cert-seal">🏅</div>
+
+      <div style="margin-top:16px;font-size:7pt;color:#bbb;line-height:1.6">
+        Este certificado refere-se à trilha obrigatória de formação, anterior à etapa de inauguração.<br>
+        Gerado em ${new Date().toLocaleString('pt-BR')} pelo Sistema de Treinamento de Implantação Let's Poke.
+      </div>
     </div>
-    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
-    <div class="login-error" id="loginError"></div>
   </div>
-</div>
-${txt}</body></html>`);
+  <script>window.onload=()=>window.print()<\/script>
+  </body></html>`;
+
+  const w=window.open('','_blank');
+  w.document.write(html);
   w.document.close();
-  w.print();
 }
 
 function initBlocos(funcao) {
@@ -1664,7 +1818,7 @@ async function criarColab() {
   const unidade=normalizaLoja(document.getElementById('fUnidade').value);
   const dataInicio=document.getElementById('fData').value||new Date().toLocaleDateString('pt-BR');
   if(!nome){alert('Informe o nome do colaborador');return;}
-  const colab={id:'',nome,funcao,unidade,dataInicio,aplicadoPor:'',statusFinal:'',obsFinal:'',dataEncerramento:'',assinaturaTreinado:'',nomeAssinante:'',historico:[],blocos:initBlocos(funcao)};
+  const colab={id:'',nome,funcao,unidade,dataInicio,aplicadoPor:'',statusFinal:'',obsFinal:'',dataEncerramento:'',assinaturaTreinado:'',nomeAssinante:'',historico:[],blocos:initBlocos(funcao),conformidade:CONF_ITENS.map(item=>({id:item.id,status:'',obs:''}))};
   addHistorico(colab, 'Colaborador criado', `Função: ${TRILHAS[funcao].label} · Loja: ${unidade}`);
   state.colabs.push(colab);
   rebuildLojasAtivas();
@@ -1767,8 +1921,25 @@ ${'─'.repeat(45)}
   });
   r+=`
 ${'='.repeat(50)}
-Gerado em ${new Date().toLocaleString('pt-BR')}
 `;
+
+  // ── CONFORMIDADE OPERACIONAL ────────────────────────────
+  const conf = ensureConformidade(c);
+  const confLabels = {g:'🟢 Conforme', y:'🟡 Requer reforço pelo franqueado', r:'🔴 Não conforme — ação necessária', '':'⬜ Não avaliado'};
+  r+=`\n⚖️ CONFORMIDADE OPERACIONAL — RELATÓRIO AO FRANQUEADO\n`;
+  r+=`${'─'.repeat(50)}\n`;
+  r+=`Destinatário: ${c.unidade} · Para uso exclusivo do franqueado\n\n`;
+  CONF_ITENS.forEach((item, i) => {
+    const d = conf[i];
+    r+=`  ${item.nome}\n`;
+    r+=`  ${confLabels[d.status||'']}\n`;
+    if(d.obs) r+=`  Observação: ${d.obs}\n`;
+    r+=`\n`;
+  });
+  r+=`Aviso Legal: ${CONF_AVISO}\n`;
+  r+=`\n${'='.repeat(50)}\n`;
+  r+=`Gerado em ${new Date().toLocaleString('pt-BR')}\n`;
+
   document.getElementById('reportSub').textContent=`${c.nome} · ${trilha.label} · ${c.unidade}`;
   document.getElementById('reportContent').textContent=r;
   openModal('modalReport');
@@ -2036,39 +2207,163 @@ function openRelatorioGerencial() {
 
 function copyGerencial() { navigator.clipboard.writeText(document.getElementById('gerencialContent').textContent); toast('📄 Copiado!'); }
 function printGerencial() {
-  const w = window.open('', '_blank');
-  w.document.write(`<html><head><title>Relatório Gerencial</title><style>body{font-family:monospace;font-size:12px;line-height:1.7;padding:28px}pre{white-space:pre-wrap}
-/* LOGIN */
-.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
-.login-screen.hidden{display:none}
-.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
-.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
-.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
-.login-input-wrap{position:relative;margin-bottom:12px}
-.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 44px 12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px}
-.login-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0;line-height:1}
-.login-eye:hover{color:var(--text)}
-.login-input:focus{border-color:var(--accent)}
-.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
-.login-btn:hover{background:#f5cc55}
-.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
-</style></head><body>
+  if (state.colabs.length === 0) { toast('Nenhum colaborador cadastrado', true); return; }
 
-<!-- TELA DE LOGIN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">Let's Poke</div>
-    <div class="login-sub">Sistema de Trilha de Treinamento</div>
-    <div class="login-input-wrap">
-      <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
-        onkeydown="if(event.key==='Enter') fazerLogin()" />
-      <button class="login-eye" onclick="toggleSenha()" type="button" id="eyeBtn">👁</button>
+  let prontos=0, em=0, nao=0, totalTemas=0, totalGreen=0, totalRed=0, totalYellow=0;
+  let somasDias=[], pctList=[];
+
+  state.colabs.forEach(col => {
+    const trilha=TRILHAS[col.funcao], inf=colabInfo(col);
+    if(inf.statusKey==='ok') prontos++; else if(inf.statusKey==='em') em++; else nao++;
+    pctList.push(inf.pct);
+    const dias=calcDiasNaTrilha(col.dataInicio); if(dias!==null) somasDias.push(dias);
+    trilha.blocos.forEach((bloco,bi) => bloco.temas.forEach((_,ti) => {
+      totalTemas++; const abs=col.blocos[bi]?.temas[ti]?.abs||'';
+      if(abs==='g') totalGreen++; else if(abs==='r') totalRed++; else if(abs==='y') totalYellow++;
+    }));
+  });
+
+  const pctMedio=pctList.length?Math.round(pctList.reduce((a,b)=>a+b,0)/pctList.length):0;
+  const diasMedio=somasDias.length?Math.round(somasDias.reduce((a,b)=>a+b,0)/somasDias.length):0;
+  const taxaProntidao=state.colabs.length?Math.round(prontos/state.colabs.length*100):0;
+  const taxaAbsorcao=totalTemas?Math.round(totalGreen/totalTemas*100):0;
+
+  // Ranking por unidade
+  const unidades={};
+  state.colabs.forEach(col=>{ if(!unidades[col.unidade]) unidades[col.unidade]=[]; unidades[col.unidade].push(col); });
+  const rankUnidades=Object.entries(unidades).map(([unidade,cols])=>{
+    let totalT=0,totalG=0,totalR=0,pr=0;
+    cols.forEach(col=>{ const inf=colabInfo(col); if(inf.statusKey==='ok') pr++;
+      TRILHAS[col.funcao].blocos.forEach((bloco,bi)=>bloco.temas.forEach((_,ti)=>{
+        totalT++; const abs=col.blocos[bi]?.temas[ti]?.abs||'';
+        if(abs==='g') totalG++; if(abs==='r') totalR++;
+      }));
+    });
+    return {unidade,cols,prontos:pr,totalT,totalR,pctAbsorcao:totalT?Math.round(totalG/totalT*100):0,pctProntidao:cols.length?Math.round(pr/cols.length*100):0};
+  }).sort((a,b)=>b.pctProntidao-a.pctProntidao);
+
+  // Top temas com dificuldade
+  const temaMap={};
+  state.colabs.forEach(col=>{
+    TRILHAS[col.funcao].blocos.forEach((bloco,bi)=>bloco.temas.forEach((tema,ti)=>{
+      const abs=col.blocos[bi]?.temas[ti]?.abs||'';
+      if(!temaMap[tema.nome]) temaMap[tema.nome]={red:0,yellow:0,total:0};
+      temaMap[tema.nome].total++;
+      if(abs==='r') temaMap[tema.nome].red++;
+      if(abs==='y') temaMap[tema.nome].yellow++;
+    }));
+  });
+  const topRed=Object.entries(temaMap).filter(([,v])=>v.red>0).sort((a,b)=>b[1].red-a[1].red).slice(0,8);
+
+  const atrasados=state.colabs.filter(col=>{const d=calcDiasNaTrilha(col.dataInicio),inf=colabInfo(col);return d!==null&&d>28&&inf.statusKey!=='ok';});
+
+  const alertClass = taxaProntidao>=80?'green':taxaProntidao>=50?'yellow':'red';
+  const alertMsg = taxaProntidao>=80?'✅ Equipe com alta taxa de prontidão. Manter ritmo de implantação.':taxaProntidao>=50?'🟡 Progresso moderado. Foco nos colaboradores em risco de atraso.':'🔴 ATENÇÃO: menos da metade da equipe está pronta para inaugurar.';
+
+  const rankRows=rankUnidades.map((u,i)=>{
+    const medalha=i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}º`;
+    return `<tr>
+      <td><strong>${medalha}</strong></td>
+      <td><strong>${escapeHtml(u.unidade)}</strong></td>
+      <td style="text-align:center">${u.cols.length}</td>
+      <td style="text-align:center">${u.prontos}/${u.cols.length}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="rpt-pbar"><div class="rpt-pbar-fill" style="width:${u.pctAbsorcao}%"></div></div>
+          <span style="font-size:8.5pt;font-weight:600">${u.pctAbsorcao}%</span>
+        </div>
+      </td>
+      <td style="text-align:center;color:#991b1b;font-weight:600">${u.totalR>0?`🔴 ${u.totalR}`:'-'}</td>
+    </tr>`;
+  }).join('');
+
+  const topRedRows=topRed.map(([nome,dados])=>{
+    const freq=Math.round(dados.red/dados.total*100);
+    return `<tr>
+      <td>${escapeHtml(nome)}</td>
+      <td style="text-align:center;color:#991b1b;font-weight:700">${dados.red}</td>
+      <td style="text-align:center;color:#854d0e;font-weight:700">${dados.yellow}</td>
+      <td><div class="rpt-pbar"><div class="rpt-pbar-fill" style="width:${freq}%;background:#ef4444"></div></div><span style="font-size:8pt"> ${freq}%</span></td>
+    </tr>`;
+  }).join('');
+
+  const colabDetalhes=rankUnidades.map(u=>`
+    <div style="margin-bottom:8px">
+      <div style="font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#e07830;margin-bottom:6px">📍 ${escapeHtml(u.unidade)}</div>
+      ${u.cols.map(col=>{
+        const trilha=TRILHAS[col.funcao],inf=colabInfo(col),dias=calcDiasNaTrilha(col.dataInicio);
+        let colRed=0; trilha.blocos.forEach((bloco,bi)=>bloco.temas.forEach((_,ti)=>{if((col.blocos[bi]?.temas[ti]?.abs||'')==='r')colRed++;}));
+        const pBar=`<div class="rpt-pbar" style="display:inline-block;width:50px;vertical-align:middle"><div class="rpt-pbar-fill" style="width:${inf.pct}%"></div></div>`;
+        return `<div class="rpt-col-detail">
+          <div class="rpt-col-detail-header">
+            <div>
+              <div class="rpt-col-name">${FUNC_ICONS[col.funcao]} ${escapeHtml(col.nome)}</div>
+              <div class="rpt-col-meta">${escapeHtml(trilha.label)} · Início: ${formatDateShort(col.dataInicio)}${dias!==null?` · ${dias} dias`:''}</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:12pt;font-weight:800">${inf.pct}%</div>
+              <div style="font-size:8pt;color:#888">${inf.statusLabel}</div>
+            </div>
+          </div>
+          ${pBar} <span style="font-size:8pt;color:#666;vertical-align:middle">${inf.pct}% concluído</span>
+          ${colRed>0?`<span style="font-size:8pt;color:#991b1b;font-weight:600;margin-left:12px">🔴 ${colRed} tema(s) a refazer</span>`:''}
+          ${dias!==null&&dias>28&&inf.statusKey!=='ok'?`<span style="font-size:8pt;color:#991b1b;font-weight:700;margin-left:12px">⚠️ Acima do prazo</span>`:''}
+        </div>`;
+      }).join('')}
     </div>
-    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
-    <div class="login-error" id="loginError"></div>
+  `).join('');
+
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+  <title>Relatório Gerencial — Let's Poke</title>
+  <style>${reportBaseCSS()}</style></head><body>
+  ${reportHeader('Relatório Gerencial de Implantação', `${state.colabs.length} colaboradores · ${Object.keys(unidades).length} unidade(s)`)}
+
+  <div class="rpt-kpi-grid">
+    <div class="rpt-kpi"><div class="val">${state.colabs.length}</div><div class="lbl">Colaboradores</div></div>
+    <div class="rpt-kpi green"><div class="val">${taxaProntidao}%</div><div class="lbl">Taxa de Prontidão</div></div>
+    <div class="rpt-kpi accent"><div class="val">${pctMedio}%</div><div class="lbl">Progresso Médio</div></div>
+    <div class="rpt-kpi"><div class="val">${diasMedio}d</div><div class="lbl">Tempo Médio na Trilha</div></div>
   </div>
-</div>
-<pre>${document.getElementById('gerencialContent').textContent}</pre><script>window.onload=()=>window.print()<\/script></body></html>`);
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px">
+    <div class="rpt-kpi"><div class="val" style="color:#166534;font-size:18pt">${prontos}</div><div class="lbl">✅ Prontos</div></div>
+    <div class="rpt-kpi"><div class="val" style="color:#854d0e;font-size:18pt">${em}</div><div class="lbl">🔄 Em Treino</div></div>
+    <div class="rpt-kpi"><div class="val" style="color:#9ca3af;font-size:18pt">${nao}</div><div class="lbl">⏳ Não Iniciados</div></div>
+  </div>
+
+  <div class="rpt-alert ${alertClass}">${alertMsg}</div>
+  ${atrasados.length>0?`<div class="rpt-alert red">⏰ ${atrasados.length} colaborador(es) acima de 28 dias sem concluir: ${atrasados.map(col=>`<strong>${escapeHtml(col.nome)}</strong> (${escapeHtml(col.unidade)})`).join(', ')}</div>`:''}
+
+  <div class="rpt-section">
+    <div class="rpt-section-title">Ranking de Prontidão por Unidade</div>
+    <table class="rpt-rank-table">
+      <thead><tr><th style="width:32px">#</th><th>Unidade</th><th style="width:60px;text-align:center">Colab.</th><th style="width:70px;text-align:center">Prontos</th><th style="width:130px">Absorção</th><th style="width:70px;text-align:center">Críticos</th></tr></thead>
+      <tbody>${rankRows}</tbody>
+    </table>
+  </div>
+
+  ${topRed.length>0?`<div class="rpt-section">
+    <div class="rpt-section-title">Temas com Maior Dificuldade na Rede</div>
+    <table class="rpt-rank-table">
+      <thead><tr><th>Tema</th><th style="width:60px;text-align:center">🔴</th><th style="width:60px;text-align:center">🟡</th><th style="width:120px">Frequência</th></tr></thead>
+      <tbody>${topRedRows}</tbody>
+    </table>
+  </div>`:''}
+
+  <div class="rpt-section">
+    <div class="rpt-section-title">Detalhamento por Colaborador</div>
+    ${colabDetalhes}
+  </div>
+
+  <div class="rpt-footer">
+    <div class="rpt-footer-logo">Let's Poke</div>
+    <div>Relatório Gerencial · Gerado em ${new Date().toLocaleString('pt-BR')}</div>
+  </div>
+  <script>window.onload=()=>window.print()<\/script>
+  </body></html>`;
+
+  const w=window.open('','_blank');
+  w.document.write(html);
   w.document.close();
 }
 
@@ -2090,40 +2385,301 @@ function openHistory(){
 }
 
 function copyReport(){navigator.clipboard.writeText(document.getElementById('reportContent').textContent);toast('📄 Copiado!');}
-function printReport(){
-  const w=window.open('','_blank');
-  w.document.write(`<html><head><title>Relatório</title><style>body{font-family:monospace;font-size:12px;line-height:1.7;padding:28px}pre{white-space:pre-wrap}
-/* LOGIN */
-.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
-.login-screen.hidden{display:none}
-.login-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 32px;width:100%;max-width:360px;text-align:center}
-.login-logo{font-family:var(--font-h);font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px}
-.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px}
-.login-input-wrap{position:relative;margin-bottom:12px}
-.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 44px 12px 16px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;text-align:center;letter-spacing:2px}
-.login-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0;line-height:1}
-.login-eye:hover{color:var(--text)}
-.login-input:focus{border-color:var(--accent)}
-.login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
-.login-btn:hover{background:#f5cc55}
-.login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
-</style></head><body>
 
-<!-- TELA DE LOGIN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">Let's Poke</div>
-    <div class="login-sub">Sistema de Trilha de Treinamento</div>
-    <div class="login-input-wrap">
-      <input class="login-input" id="loginInput" type="password" placeholder="••••••••••••"
-        onkeydown="if(event.key==='Enter') fazerLogin()" />
-      <button class="login-eye" onclick="toggleSenha()" type="button" id="eyeBtn">👁</button>
-    </div>
-    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
-    <div class="login-error" id="loginError"></div>
+// ── CSS COMPARTILHADO DOS RELATÓRIOS ──────────────────────
+function reportBaseCSS() {
+  return `
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',Arial,sans-serif;font-size:11pt;color:#1a1a1a;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    @page{margin:18mm 15mm 18mm 15mm;size:A4}
+
+    /* CABEÇALHO */
+    .rpt-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:3px solid #f0c040;margin-bottom:20px}
+    .rpt-logo-area{display:flex;align-items:center;gap:12px}
+    .rpt-logo{height:44px;object-fit:contain}
+    .rpt-logo-text{font-size:20pt;font-weight:800;color:#1a1a1a;letter-spacing:-0.5px;line-height:1}
+    .rpt-logo-sub{font-size:8pt;color:#888;font-weight:400;margin-top:2px;letter-spacing:.5px;text-transform:uppercase}
+    .rpt-header-right{text-align:right}
+    .rpt-doc-title{font-size:10pt;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:.5px}
+    .rpt-doc-date{font-size:8pt;color:#888;margin-top:3px}
+    .rpt-doc-num{font-size:7pt;color:#bbb;margin-top:2px}
+
+    /* FICHA DO COLABORADOR */
+    .rpt-ficha{background:#f9f8f5;border:1px solid #e8e4d8;border-radius:8px;padding:14px 18px;margin-bottom:20px;display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}
+    .rpt-ficha-full{grid-column:1/-1}
+    .rpt-field label{font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#888;display:block;margin-bottom:2px}
+    .rpt-field span{font-size:10pt;font-weight:600;color:#1a1a1a}
+
+    /* PROGRESS BAR */
+    .rpt-progress-wrap{margin-bottom:20px}
+    .rpt-progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+    .rpt-progress-label span{font-size:8.5pt;color:#666;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+    .rpt-progress-label strong{font-size:14pt;font-weight:800;color:#1a1a1a}
+    .rpt-progress-bar{height:8px;background:#ece8d8;border-radius:99px;overflow:hidden}
+    .rpt-progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#e07830,#f0c040)}
+    .rpt-pills{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap}
+    .rpt-pill{font-size:8pt;color:#666;display:flex;align-items:center;gap:4px}
+    .rpt-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+    /* SEÇÃO */
+    .rpt-section{margin-bottom:24px}
+    .rpt-section-title{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#e07830;padding-bottom:5px;border-bottom:1px solid #ece8d8;margin-bottom:12px}
+
+    /* BLOCO */
+    .rpt-bloco{border:1px solid #e8e4d8;border-radius:8px;margin-bottom:14px;overflow:hidden;page-break-inside:avoid}
+    .rpt-bloco-header{background:#f9f8f5;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #e8e4d8}
+    .rpt-bloco-header-left{display:flex;align-items:center;gap:8px}
+    .rpt-fase-tag{font-size:7pt;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+    .rpt-fase1{background:#dbeafe;color:#1d4ed8}
+    .rpt-fase2{background:#dcfce7;color:#166534}
+    .rpt-bloco-nome{font-size:10pt;font-weight:700;color:#1a1a1a}
+    .rpt-bloco-meta{font-size:8pt;color:#888;margin-top:1px}
+    .rpt-bloco-badge{font-size:7.5pt;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+    .rpt-badge-ok{background:#dcfce7;color:#166534}
+    .rpt-badge-pend{background:#f3f4f6;color:#6b7280}
+    .rpt-badge-partial{background:#fef9c3;color:#854d0e}
+
+    /* TEMAS */
+    .rpt-tema-table{width:100%;border-collapse:collapse}
+    .rpt-tema-table th{font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#888;padding:6px 10px;text-align:left;background:#faf9f6;border-bottom:1px solid #ece8d8}
+    .rpt-tema-table th:last-child{text-align:center;width:110px}
+    .rpt-tema-table td{font-size:9pt;padding:7px 10px;border-bottom:1px solid #f0ede4;vertical-align:top;color:#1a1a1a}
+    .rpt-tema-table tr:last-child td{border-bottom:none}
+    .rpt-tema-table td:last-child{text-align:center}
+    .rpt-tema-table tr:nth-child(even) td{background:#fafaf8}
+    .rpt-n{font-size:8pt;color:#aaa;font-weight:600}
+    .rpt-obs{font-size:7.5pt;color:#666;font-style:italic;margin-top:3px}
+    .abs-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:8pt;font-weight:600;white-space:nowrap}
+    .abs-g{background:#dcfce7;color:#166534}
+    .abs-y{background:#fef9c3;color:#854d0e}
+    .abs-r{background:#fee2e2;color:#991b1b}
+    .abs-na{background:#dbeafe;color:#1d4ed8}
+    .abs-pend{background:#f3f4f6;color:#9ca3af}
+
+    /* ASSINATURA inline */
+    .rpt-sig-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f0fdf4;border-top:1px solid #dcfce7;gap:16px;flex-wrap:wrap}
+    .rpt-sig-label{font-size:8pt;color:#166534;font-weight:600}
+    .rpt-sig-detail{font-size:7.5pt;color:#4b7a57;margin-top:2px}
+    .rpt-sig-img{height:40px;max-width:130px;object-fit:contain;border:1px solid #dcfce7;border-radius:4px;background:#fff;padding:2px}
+    .rpt-sig-pending{font-size:8pt;color:#9ca3af;padding:10px 14px;background:#fafaf8;border-top:1px solid #ece8d8}
+
+    /* CONFORMIDADE */
+    .rpt-conf-table{width:100%;border-collapse:collapse;margin-bottom:12px}
+    .rpt-conf-table th{font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#888;padding:6px 10px;text-align:left;background:#fffbf0;border-bottom:1px solid #f0e0a0}
+    .rpt-conf-table td{font-size:9pt;padding:8px 10px;border-bottom:1px solid #f5f0e0;vertical-align:top}
+    .rpt-conf-table tr:last-child td{border-bottom:none}
+    .rpt-aviso-legal{background:#fffbf0;border:1px solid #f0e0a0;border-radius:6px;padding:10px 14px;font-size:7.5pt;color:#776030;line-height:1.7;margin-top:12px}
+    .rpt-aviso-legal strong{color:#b07820}
+
+    /* RODAPÉ */
+    .rpt-footer{margin-top:28px;padding-top:12px;border-top:1px solid #ece8d8;display:flex;justify-content:space-between;align-items:center;font-size:7.5pt;color:#aaa}
+    .rpt-footer-logo{font-weight:800;color:#ccc;font-size:9pt}
+
+    /* GERENCIAL */
+    .rpt-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+    .rpt-kpi{background:#f9f8f5;border:1px solid #e8e4d8;border-radius:8px;padding:12px 14px;text-align:center}
+    .rpt-kpi .val{font-size:22pt;font-weight:800;color:#1a1a1a;line-height:1}
+    .rpt-kpi .lbl{font-size:7.5pt;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
+    .rpt-kpi.accent .val{color:#e07830}
+    .rpt-kpi.green .val{color:#166534}
+    .rpt-kpi.red .val{color:#991b1b}
+    .rpt-rank-table{width:100%;border-collapse:collapse}
+    .rpt-rank-table th{font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#888;padding:7px 10px;text-align:left;background:#f9f8f5;border-bottom:2px solid #e8e4d8}
+    .rpt-rank-table td{font-size:9pt;padding:8px 10px;border-bottom:1px solid #f0ede4;vertical-align:middle}
+    .rpt-rank-table tr:last-child td{border-bottom:none}
+    .rpt-rank-table tr:nth-child(even) td{background:#fafaf8}
+    .rpt-pbar{height:5px;background:#ece8d8;border-radius:99px;overflow:hidden;min-width:60px}
+    .rpt-pbar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#e07830,#f0c040)}
+    .rpt-alert{padding:10px 14px;border-radius:6px;font-size:8.5pt;margin-bottom:8px;line-height:1.6}
+    .rpt-alert.green{background:#dcfce7;border-left:3px solid #22c55e;color:#166534}
+    .rpt-alert.yellow{background:#fef9c3;border-left:3px solid #eab308;color:#854d0e}
+    .rpt-alert.red{background:#fee2e2;border-left:3px solid #ef4444;color:#991b1b}
+    .rpt-col-detail{background:#f9f8f5;border:1px solid #e8e4d8;border-radius:6px;padding:10px 14px;margin-bottom:8px;page-break-inside:avoid}
+    .rpt-col-detail-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .rpt-col-name{font-size:10pt;font-weight:700}
+    .rpt-col-meta{font-size:8pt;color:#888;margin-top:1px}
+
+    /* CERTIFICADO */
+    .cert-wrap{max-width:640px;margin:40px auto;border:3px solid #f0c040;border-radius:16px;padding:48px 56px;text-align:center;position:relative}
+    .cert-inner{border:1px solid #f0e0a0;border-radius:12px;padding:36px;position:relative}
+    .cert-marca{font-size:28pt;font-weight:800;color:#1a1a1a;margin-bottom:2px}
+    .cert-sub{font-size:9pt;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:32px}
+    .cert-title{font-size:11pt;text-transform:uppercase;letter-spacing:2px;color:#e07830;font-weight:700;margin-bottom:8px}
+    .cert-nome{font-size:22pt;font-weight:800;color:#1a1a1a;margin-bottom:6px;border-bottom:2px solid #f0c040;padding-bottom:12px}
+    .cert-funcao{font-size:11pt;color:#555;margin-bottom:4px}
+    .cert-unidade{font-size:10pt;color:#888;margin-bottom:28px}
+    .cert-body{font-size:9.5pt;color:#444;line-height:1.8;margin-bottom:28px;max-width:440px;margin-left:auto;margin-right:auto}
+    .cert-dados{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;text-align:left;background:#f9f8f5;border-radius:8px;padding:14px 18px;border:1px solid #ece8d8}
+    .cert-dado label{font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#888;display:block}
+    .cert-dado span{font-size:9.5pt;font-weight:600;color:#1a1a1a}
+    .cert-assinatura{margin-top:28px;display:flex;justify-content:center;gap:48px;flex-wrap:wrap}
+    .cert-sig-box{text-align:center}
+    .cert-sig-line{width:160px;border-top:1px solid #333;margin:0 auto 6px}
+    .cert-sig-label{font-size:8pt;color:#666}
+    .cert-seal{margin:20px auto 0;width:72px;height:72px;border:3px solid #f0c040;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
+    @media print{.no-print{display:none}}
+  `;
+}
+
+const LOGO_URL = 'https://static.wixstatic.com/media/f622bb_a0e591b6cba04315b9890548e5bf1e5e~mv2_d_3800_2000_s_2.png/v1/crop/x_152,y_407,w_3513,h_1288/fill/w_238,h_85,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/f622bb_a0e591b6cba04315b9890548e5bf1e5e~mv2_d_3800_2000_s_2.png';
+
+function reportHeader(titulo, subtitulo='') {
+  return `
+    <div class="rpt-header">
+      <div class="rpt-logo-area">
+        <img class="rpt-logo" src="${LOGO_URL}" onerror="this.style.display='none'" />
+        <div>
+          <div class="rpt-logo-text">Let's Poke</div>
+          <div class="rpt-logo-sub">Sistema de Treinamento de Implantação</div>
+        </div>
+      </div>
+      <div class="rpt-header-right">
+        <div class="rpt-doc-title">${titulo}</div>
+        ${subtitulo ? `<div class="rpt-doc-date">${subtitulo}</div>` : ''}
+        <div class="rpt-doc-num">Gerado em ${new Date().toLocaleString('pt-BR')}</div>
+      </div>
+    </div>`;
+}
+
+function printReport() {
+  const c = state.colabs[activeColabIdx];
+  if (!c) return;
+  const trilha = TRILHAS[c.funcao];
+  const info = colabInfo(c);
+  const aplicadores = collectAplicadores(c);
+  const conf = ensureConformidade(c);
+
+  let totalTemas = 0, cntG = 0, cntY = 0, cntR = 0, cntNA = 0;
+  trilha.blocos.forEach((bloco, bi) => {
+    const bState = ensureBlocoState(c, bi);
+    bloco.temas.forEach((_, ti) => {
+      totalTemas++;
+      const abs = bState.temas?.[ti]?.abs || '';
+      if (abs==='g') cntG++; else if (abs==='y') cntY++; else if (abs==='r') cntR++; else if (abs==='na') cntNA++;
+    });
+  });
+  const pct = info.pct;
+
+  const absHTML = (abs) => {
+    const map = {g:'<span class="abs-badge abs-g">🟢 Absorveu bem</span>',y:'<span class="abs-badge abs-y">🟡 Reforço</span>',r:'<span class="abs-badge abs-r">🔴 Refazer</span>',na:'<span class="abs-badge abs-na">⚪ N/A</span>'};
+    return map[abs] || '<span class="abs-badge abs-pend">⬜ Pendente</span>';
+  };
+
+  const blocosHTML = trilha.blocos.map((bloco, bi) => {
+    const bState = ensureBlocoState(c, bi);
+    const ass = bState.assinaturaColaborador || {};
+    const isConcluido = bState.concluido;
+    let tdone = 0;
+    bloco.temas.forEach((_,ti) => { const a = bState.temas?.[ti]?.abs||''; if(a==='g'||a==='na') tdone++; });
+    const badgeClass = isConcluido ? 'rpt-badge-ok' : tdone > 0 ? 'rpt-badge-partial' : 'rpt-badge-pend';
+    const badgeTxt = isConcluido ? '✔ Concluído' : `${tdone}/${bloco.temas.length} temas`;
+    const faseTag = bloco.fase===2 ? '<span class="rpt-fase-tag rpt-fase2">🏪 Fase 2</span>' : '<span class="rpt-fase-tag rpt-fase1">📍 Fase 1</span>';
+
+    const temasRows = bloco.temas.map((tema, ti) => {
+      const tState = bState.temas?.[ti] || {};
+      return `<tr>
+        <td><span class="rpt-n">${tema.n}</span></td>
+        <td>${escapeHtml(tema.nome)}${tState.obs ? `<div class="rpt-obs">Obs: ${escapeHtml(tState.obs)}</div>` : ''}</td>
+        <td style="font-size:8pt;color:#999">${tema.material}</td>
+        <td>${absHTML(tState.abs||'')}</td>
+      </tr>`;
+    }).join('');
+
+    const sigHTML = ass.assinada
+      ? `<div class="rpt-sig-row">
+          <div>
+            <div class="rpt-sig-label">✍️ Assinatura do colaborador</div>
+            <div class="rpt-sig-detail">Assinado por <strong>${escapeHtml(ass.nome||c.nome)}</strong> em ${formatDateShort(ass.dataHora)}</div>
+          </div>
+          ${ass.img ? `<img class="rpt-sig-img" src="${ass.img}" />` : ''}
+        </div>`
+      : `<div class="rpt-sig-pending">✍️ Assinatura pendente</div>`;
+
+    return `<div class="rpt-bloco">
+      <div class="rpt-bloco-header">
+        <div class="rpt-bloco-header-left">
+          ${faseTag}
+          <div>
+            <div class="rpt-bloco-nome">Bloco ${bi+1} · ${escapeHtml(bloco.titulo)}</div>
+            <div class="rpt-bloco-meta">Aplicado por: ${escapeHtml(bState.aplicadoPor||'—')}</div>
+          </div>
+        </div>
+        <span class="rpt-bloco-badge ${badgeClass}">${badgeTxt}</span>
+      </div>
+      <table class="rpt-tema-table">
+        <thead><tr><th style="width:36px">#</th><th>Tema</th><th style="width:80px">Material</th><th>Absorção</th></tr></thead>
+        <tbody>${temasRows}</tbody>
+      </table>
+      ${sigHTML}
+    </div>`;
+  }).join('');
+
+  const confLabels = {g:'<span class="abs-badge abs-g">🟢 Conforme</span>',y:'<span class="abs-badge abs-y">🟡 Requer reforço</span>',r:'<span class="abs-badge abs-r">🔴 Não conforme</span>'};
+  const confRows = CONF_ITENS.map((item, i) => {
+    const d = conf[i];
+    return `<tr>
+      <td>${escapeHtml(item.nome)}</td>
+      <td>${confLabels[d.status] || '<span class="abs-badge abs-pend">⬜ Não avaliado</span>'}</td>
+      <td style="font-size:8pt;color:#666">${escapeHtml(d.obs||'—')}</td>
+    </tr>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+  <title>Relatório — ${escapeHtml(c.nome)}</title>
+  <style>${reportBaseCSS()}</style></head><body>
+  ${reportHeader('Relatório de Treinamento', `${escapeHtml(c.nome)} · ${escapeHtml(c.unidade)}`)}
+
+  <div class="rpt-ficha">
+    <div class="rpt-field"><label>Colaborador</label><span>${escapeHtml(c.nome)}</span></div>
+    <div class="rpt-field"><label>Função</label><span>${escapeHtml(trilha.label)}</span></div>
+    <div class="rpt-field"><label>Unidade / Loja</label><span>${escapeHtml(c.unidade)}</span></div>
+    <div class="rpt-field"><label>Início da trilha</label><span>${formatDateShort(c.dataInicio)}</span></div>
+    <div class="rpt-field"><label>Aplicadores</label><span>${aplicadores.length ? escapeHtml(aplicadores.join(', ')) : '—'}</span></div>
+    <div class="rpt-field"><label>Status</label><span>${escapeHtml(info.statusLabel)}</span></div>
   </div>
-</div>
-<pre>${document.getElementById('reportContent').textContent}</pre><script>window.onload=()=>window.print()<\/script></body></html>`);
+
+  <div class="rpt-progress-wrap">
+    <div class="rpt-progress-label"><span>Progresso geral da trilha</span><strong>${pct}%</strong></div>
+    <div class="rpt-progress-bar"><div class="rpt-progress-fill" style="width:${pct}%"></div></div>
+    <div class="rpt-pills">
+      <div class="rpt-pill"><div class="rpt-dot" style="background:#166534"></div>${cntG} absorvidos</div>
+      <div class="rpt-pill"><div class="rpt-dot" style="background:#854d0e"></div>${cntY} reforço</div>
+      <div class="rpt-pill"><div class="rpt-dot" style="background:#991b1b"></div>${cntR} a refazer</div>
+      <div class="rpt-pill"><div class="rpt-dot" style="background:#6b7280"></div>${totalTemas - cntG - cntY - cntR - cntNA} pendentes</div>
+      <div class="rpt-pill"><div class="rpt-dot" style="background:#1d4ed8"></div>${cntNA} N/A</div>
+    </div>
+  </div>
+
+  <div class="rpt-section">
+    <div class="rpt-section-title">Trilha de Treinamento — Detalhamento por Bloco</div>
+    ${blocosHTML}
+  </div>
+
+  <div class="rpt-section">
+    <div class="rpt-section-title">⚖️ Conformidade Operacional — Relatório ao Franqueado</div>
+    <div class="rpt-bloco">
+      <div class="rpt-bloco-header">
+        <div><div class="rpt-bloco-nome">Verificação de Padrão de Marca</div>
+        <div class="rpt-bloco-meta">Destinatário: ${escapeHtml(c.unidade)} · Para uso exclusivo do franqueado</div></div>
+      </div>
+      <table class="rpt-conf-table">
+        <thead><tr><th>Critério de Conformidade</th><th style="width:160px">Resultado</th><th>Observações do treinador</th></tr></thead>
+        <tbody>${confRows}</tbody>
+      </table>
+    </div>
+    <div class="rpt-aviso-legal"><strong>⚖️ Aviso Legal:</strong> ${CONF_AVISO}</div>
+  </div>
+
+  <div class="rpt-footer">
+    <div class="rpt-footer-logo">Let's Poke</div>
+    <div>Documento gerado pelo Sistema de Treinamento de Implantação · ${new Date().toLocaleString('pt-BR')}</div>
+  </div>
+  <script>window.onload=()=>window.print()<\/script>
+  </body></html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
   w.document.close();
 }
 
