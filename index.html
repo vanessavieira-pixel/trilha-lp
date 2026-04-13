@@ -38,11 +38,11 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .config-banner-text strong{font-family:var(--font-h);font-size:14px;display:block;margin-bottom:2px;color:var(--accent)}
 .config-banner-text p{font-size:12px;color:var(--muted);line-height:1.5}
 .config-url-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.config-url-input{flex:1;min-width:240px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--font-b);font-size:12px;outline:none;transition:border-color .2s}
+.config-url-input{flex:1;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--font-b);font-size:12px;outline:none;transition:border-color .2s}
 .config-url-input:focus{border-color:var(--accent)}
 
 /* PAINEL */
-.painel-header{margin-bottom:24px}
+.painel-header{margin-bottom:20px}
 .painel-header h2{font-family:var(--font-h);font-size:22px;font-weight:800}
 .painel-header p{font-size:13px;color:var(--muted);margin-top:4px}
 .painel-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:28px}
@@ -55,7 +55,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .colab-avatar{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:var(--card);border:1px solid var(--border)}
 .colab-info{flex:1;min-width:0}
 .colab-name{font-family:var(--font-h);font-size:15px;font-weight:700}
-.colab-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.colab-meta{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4;word-break:break-word}
 .colab-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 .colab-pct{font-family:var(--font-h);font-size:18px;font-weight:800;color:var(--accent)}
 .colab-status{font-size:11px;padding:3px 10px;border-radius:99px;font-family:var(--font-h);font-weight:600;white-space:nowrap}
@@ -156,7 +156,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .loading-txt{font-family:var(--font-h);font-size:14px;color:var(--muted)}
 
 /* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--green);color:#111;font-family:var(--font-h);font-weight:700;font-size:13px;padding:11px 18px;border-radius:10px;transform:translateY(60px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);z-index:300}
+.toast{position:fixed;bottom:24px;right:12px;left:12px;max-width:480px;margin:0 auto;text-align:center;background:var(--green);color:#111;font-family:var(--font-h);font-weight:700;font-size:13px;padding:11px 18px;border-radius:10px;transform:translateY(60px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);z-index:300}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.error{background:var(--red);color:#fff}
 
@@ -220,7 +220,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .wrap { padding: 16px 12px 100px; }
 
   /* PAINEL */
-  .painel-header h2 { font-size: 18px; }
+  .painel-header h2 { font-size: 18px; line-height: 1.25; }
+  .painel-header p { font-size: 12px; line-height: 1.5; }
   .painel-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .stat-card { padding: 12px 14px; }
   .stat-card .val { font-size: 24px; white-space:nowrap; line-height:1; }
@@ -228,15 +229,49 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .colab-avatar { width: 36px; height: 36px; font-size: 16px; }
   .colab-name { font-size: 14px; }
   .colab-meta { font-size: 11px; }
+  .colab-right { flex-direction: row; align-items: center; gap: 10px; flex-wrap: nowrap; }
   .colab-pct { font-size: 16px; white-space:nowrap; }
-  .colab-progbar { width: 70px; }
-  .delete-btn { padding: 6px 10px; font-size: 14px; }
+  .colab-progbar { width: 60px; }
+  .colab-status { font-size: 10px; padding: 2px 8px; }
+  .delete-btn { padding: 8px 12px; font-size: 16px; min-width: 38px; min-height: 38px; display:flex; align-items:center; justify-content:center; }
   .add-colab-card { padding: 16px; font-size: 13px; }
 
 
-  .filters-grid { grid-template-columns: 1fr; }
-  .filters-actions { width:100%; }
-  .filters-actions .btn { flex:1; }
+  /* FILTROS MOBILE */
+  .filters-card { padding: 12px; }
+  .filters-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .filter-field input,
+  .filter-field select {
+    font-size: 16px; /* evita zoom automático no iOS */
+    padding: 12px 14px;
+    border-radius: 10px;
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888070' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 10px;
+    padding-right: 36px;
+  }
+  .filter-field input {
+    background-image: none;
+    padding-right: 14px;
+  }
+  .filters-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .filters-actions .btn {
+    padding: 12px 20px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
 
   /* TRILHA HEADER */
   .trilha-header { flex-direction: column; gap: 10px; margin-bottom: 16px; }
@@ -326,23 +361,63 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
     color: var(--accent);
   }
 
-  /* MODAL */
-  .overlay { padding: 16px 12px; align-items: flex-end; }
-  .modal { border-radius: 16px 16px 0 0; padding: 24px 18px; max-height: 90vh; overflow-y: auto; }
-  .modal h3 { font-size: 16px; }
-  .form-row input, .form-row select { font-size: 16px; padding: 11px 12px; } /* 16px evita zoom automático no iOS */
-  .modal-actions { flex-direction: column-reverse; }
-  .modal-actions .btn { width: 100%; text-align: center; padding: 12px; font-size: 14px; }
+  /* MODAL — sheet behavior no mobile */
+  .overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .modal {
+    border-radius: 20px 20px 0 0;
+    padding: 24px 16px 32px;
+    max-height: 88vh;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 100% !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Handle bar no topo do modal */
+  .modal::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    margin: 0 auto 20px;
+  }
+  .modal h3 { font-size: 17px; margin-bottom: 4px; }
+  .modal p { font-size: 12px; margin-bottom: 16px; }
+  .form-row input, .form-row select {
+    font-size: 16px; /* evita zoom automático no iOS */
+    padding: 12px;
+  }
+  .modal-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .modal-actions .btn {
+    width: 100%;
+    text-align: center;
+    padding: 14px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
 
-  /* CANVAS ASSINATURA */
+  /* RELATÓRIO PRE — scroll interno */
+  .report-pre {
+    font-size: 11px;
+    padding: 12px;
+    max-height: 45vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
 
-  /* RELATÓRIO */
-  .report-pre { font-size: 11px; padding: 12px; max-height: 300px; }
-
-  /* ESCONDER elementos menos importantes */
-  .nav-tabs .nav-tab:not(.active) { display: none; }
-  .nav-tab.active { display: block; }
-  .nav-tabs .nav-tab:last-child { display: none !important; }
+  /* NAV MOBILE — mostra só o tab ativo, mantém o outro visível */
+  .nav-tabs { gap: 4px; }
+  .nav-tab { font-size: 11px; padding: 5px 12px; }
 }
 
 /* Tablet (601–900px) — ajustes menores */
@@ -499,7 +574,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
           </select>
         </div>
         <div class="filters-actions">
-          <button class="btn btn-ghost" onclick="limparFiltrosPainel()">Limpar</button>
           <button class="btn btn-ghost" onclick="openRelatorioGerencial()">📊 Gerencial</button>
         </div>
       </div>
@@ -620,7 +694,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 
 <!-- MODAL RELATÓRIO GERENCIAL -->
 <div class="overlay" id="modalGerencial">
-  <div class="modal" style="max-width:700px">
+  <div class="modal" style="max-width:760px;width:100%">
     <h3>📊 Relatório Gerencial</h3>
     <p id="gerencialSub">Visão consolidada de todos os colaboradores</p>
     <div class="report-pre" id="gerencialContent"></div>
