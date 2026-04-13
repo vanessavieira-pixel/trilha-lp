@@ -220,45 +220,23 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .wrap { padding: 16px 12px 100px; }
 
   /* PAINEL */
-  .painel-header h2 { font-size: 18px; line-height: 1.25; }
-  .painel-header p { font-size: 12px; }
+  .painel-header h2 { font-size: 18px; }
   .painel-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .stat-card { padding: 12px 14px; }
-  .stat-card .val { font-size: 24px; white-space: nowrap; line-height: 1; }
-
-  /* COLABORADOR CARD */
-  .colab-card { padding: 14px; gap: 10px; }
+  .stat-card .val { font-size: 24px; white-space:nowrap; line-height:1; }
+  .colab-card { padding: 14px 14px; gap: 10px; }
   .colab-avatar { width: 36px; height: 36px; font-size: 16px; }
   .colab-name { font-size: 14px; }
-  .colab-meta { font-size: 11px; line-height: 1.5; overflow-wrap: break-word; }
-  .colab-right { flex-direction: row; align-items: center; gap: 8px; }
-  .colab-pct { font-size: 16px; white-space: nowrap; }
-  .colab-progbar { width: 60px; }
-  .colab-status { font-size: 10px; padding: 2px 7px; white-space: nowrap; }
+  .colab-meta { font-size: 11px; }
+  .colab-pct { font-size: 16px; white-space:nowrap; }
+  .colab-progbar { width: 70px; }
   .delete-btn { padding: 6px 10px; font-size: 14px; }
   .add-colab-card { padding: 16px; font-size: 13px; }
 
-  /* FILTROS — empilha em coluna */
-  .filters-card { padding: 12px; }
-  .filters-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  .filter-field input,
-  .filter-field select {
-    font-size: 16px;
-    padding: 11px 12px;
-    width: 100%;
-  }
-  .filters-actions {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-  }
-  .filters-actions .btn {
-    padding: 10px 20px;
-    font-size: 13px;
-  }
+
+  .filters-grid { grid-template-columns: 1fr; }
+  .filters-actions { width:100%; }
+  .filters-actions .btn { flex:1; }
 
   /* TRILHA HEADER */
   .trilha-header { flex-direction: column; gap: 10px; margin-bottom: 16px; }
@@ -284,19 +262,20 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .tema-row {
     flex-direction: column;
     align-items: flex-start;
-    padding: 14px;
+    padding: 14px 14px;
     gap: 10px;
   }
   .tema-num { min-width: auto; text-align: left; font-size: 10px; }
   .tema-nome { font-size: 14px; line-height: 1.5; }
   .tema-meta { font-size: 11px; margin-top: 3px; }
 
-  /* BOTÕES DE ABSORÇÃO */
+  /* BOTÕES DE ABSORÇÃO — grandes para o dedo */
   .abs-btns {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 6px;
+    align-items:center;
   }
   .abs-btn {
     font-size: 12px;
@@ -306,11 +285,14 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
     justify-content: center;
     min-width: 0;
   }
-  .abs-label { display: none; }
+  .abs-label {
+    display: none;
+  }
   .obs-btn {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    align-items:center;
+    justify-content:center;
+    min-width: 0;
     width: 100%;
     height: 42px;
     padding: 0;
@@ -321,25 +303,43 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
   .block-aplicador { padding: 8px 14px 0; }
   .block-aplicador input { font-size: 15px; padding: 10px 12px; }
 
-  /* MODAL — sheet que sobe da base */
-  .overlay { padding: 0; align-items: flex-end; }
-  .modal {
-    border-radius: 20px 20px 0 0;
-    padding: 20px 16px 32px;
-    max-height: 85vh;
-    overflow-y: auto;
+  /* ASSINATURA */
+  .bloco-signature { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .btn-assinar {
     width: 100%;
-    max-width: 100% !important;
+    text-align: center;
+    padding: 11px;
+    font-size: 13px;
   }
+
+  /* CONCLUIR BLOCO — grande e destacado */
+  .btn-concluir {
+    width: 100%;
+    text-align: center;
+    padding: 13px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 0;
+  }
+  .btn-concluir:not(.signed) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* MODAL */
+  .overlay { padding: 16px 12px; align-items: flex-end; }
+  .modal { border-radius: 16px 16px 0 0; padding: 24px 18px; max-height: 90vh; overflow-y: auto; }
   .modal h3 { font-size: 16px; }
-  .form-row input, .form-row select { font-size: 16px; padding: 11px 12px; }
-  .modal-actions { flex-direction: column-reverse; gap: 8px; }
+  .form-row input, .form-row select { font-size: 16px; padding: 11px 12px; } /* 16px evita zoom automático no iOS */
+  .modal-actions { flex-direction: column-reverse; }
   .modal-actions .btn { width: 100%; text-align: center; padding: 12px; font-size: 14px; }
 
-  /* RELATÓRIO PRÉ */
-  .report-pre { font-size: 11px; padding: 12px; max-height: 40vh; overflow-y: auto; }
+  /* CANVAS ASSINATURA */
 
-  /* NAV TABS */
+  /* RELATÓRIO */
+  .report-pre { font-size: 11px; padding: 12px; max-height: 300px; }
+
+  /* ESCONDER elementos menos importantes */
   .nav-tabs .nav-tab:not(.active) { display: none; }
   .nav-tab.active { display: block; }
   .nav-tabs .nav-tab:last-child { display: none !important; }
@@ -412,14 +412,78 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 .login-btn{width:100%;background:var(--accent);color:#111;font-family:var(--font-h);font-weight:700;font-size:14px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:all .15s}
 .login-btn:hover{background:#f5cc55}
 .login-error{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
+</style>
 
-/* ASSINATURA — oculta na UI (funcionalidade removida) */
-.bloco-signature,
-.sig-overlay,
-.btn-assinar,
-.btn-concluir,
-.sig-label,
-.sig-mini { display: none !important; }
+<style>
+/* CORREÇÕES MOBILE */
+@media(max-width:640px){
+
+  /* FILTROS — empilha em coluna */
+  .filters-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .filter-field input,
+  .filter-field select {
+    font-size: 16px !important;
+    padding: 11px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .filters-actions {
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+  }
+  .filters-actions .btn {
+    padding: 10px 20px !important;
+    font-size: 13px !important;
+    flex: none !important;
+  }
+
+  /* COLAB-META — texto em linha única, sem quebra de letra */
+  .colab-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  .colab-meta {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 11px !important;
+  }
+
+  /* MODAL — sheet que sobe da base */
+  .overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+  .modal {
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    padding: 20px 16px 32px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+  .report-pre {
+    max-height: 40vh !important;
+    overflow-y: auto !important;
+    font-size: 11px !important;
+  }
+  .modal-actions {
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+  }
+  .modal-actions .btn {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -627,7 +691,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(17,18,16,.95);backdrop-filt
 
 <!-- MODAL RELATÓRIO GERENCIAL -->
 <div class="overlay" id="modalGerencial">
-  <div class="modal" style="max-width:760px;width:100%">
+  <div class="modal" style="max-width:700px">
     <h3>📊 Relatório Gerencial</h3>
     <p id="gerencialSub">Visão consolidada de todos os colaboradores</p>
     <div class="report-pre" id="gerencialContent"></div>
@@ -1444,9 +1508,9 @@ function renderTrilha() {
               <span class="bloco-signature-title">✍️ Assinatura do colaborador</span>
               <span class="sig-mini ${sig.assinada?'done':'pending'}">${sigTxt}</span>
             </div>
-            
+            <button class="btn-assinar ${sig.assinada?'signed':''}" onclick="abrirAssinatura(${bi})">${sig.assinada?'✔ Assinado':'Assinatura'}</button>
           </div>
-          
+          <button class="btn-concluir ${isConcluido?'signed':''}" onclick="toggleConcluido(${bi})">${isConcluido?'✔ Bloco concluído':'Concluir bloco'}</button>
         </div>
       </div>
     </div>`;
@@ -1716,7 +1780,79 @@ function printCertificado(){
   <style>${reportBaseCSS()}
     body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f5f3ee;padding:20px}
     @page{margin:10mm;size:A4 landscape}
-  </style></head><body>
+  </style>
+<style>
+/* CORREÇÕES MOBILE */
+@media(max-width:640px){
+
+  /* FILTROS — empilha em coluna */
+  .filters-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .filter-field input,
+  .filter-field select {
+    font-size: 16px !important;
+    padding: 11px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .filters-actions {
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+  }
+  .filters-actions .btn {
+    padding: 10px 20px !important;
+    font-size: 13px !important;
+    flex: none !important;
+  }
+
+  /* COLAB-META — texto em linha única, sem quebra de letra */
+  .colab-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  .colab-meta {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 11px !important;
+  }
+
+  /* MODAL — sheet que sobe da base */
+  .overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+  .modal {
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    padding: 20px 16px 32px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+  .report-pre {
+    max-height: 40vh !important;
+    overflow-y: auto !important;
+    font-size: 11px !important;
+  }
+  .modal-actions {
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+  }
+  .modal-actions .btn {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+  }
+}
+</style>
+</head><body>
   <div class="cert-wrap">
     <div class="cert-inner">
       <img src="${LOGO_URL}" style="height:52px;object-fit:contain;margin-bottom:8px" onerror="this.style.display='none'" />
@@ -2322,7 +2458,79 @@ function printGerencial() {
 
   const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
   <title>Relatório Gerencial — Let's Poke</title>
-  <style>${reportBaseCSS()}</style></head><body>
+  <style>${reportBaseCSS()}</style>
+<style>
+/* CORREÇÕES MOBILE */
+@media(max-width:640px){
+
+  /* FILTROS — empilha em coluna */
+  .filters-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .filter-field input,
+  .filter-field select {
+    font-size: 16px !important;
+    padding: 11px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .filters-actions {
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+  }
+  .filters-actions .btn {
+    padding: 10px 20px !important;
+    font-size: 13px !important;
+    flex: none !important;
+  }
+
+  /* COLAB-META — texto em linha única, sem quebra de letra */
+  .colab-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  .colab-meta {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 11px !important;
+  }
+
+  /* MODAL — sheet que sobe da base */
+  .overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+  .modal {
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    padding: 20px 16px 32px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+  .report-pre {
+    max-height: 40vh !important;
+    overflow-y: auto !important;
+    font-size: 11px !important;
+  }
+  .modal-actions {
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+  }
+  .modal-actions .btn {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+  }
+}
+</style>
+</head><body>
   ${reportHeader('Relatório Gerencial de Implantação', `${state.colabs.length} colaboradores · ${Object.keys(unidades).length} unidade(s)`)}
 
   <div class="rpt-kpi-grid">
@@ -2634,7 +2842,79 @@ function printReport() {
 
   const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
   <title>Relatório — ${escapeHtml(c.nome)}</title>
-  <style>${reportBaseCSS()}</style></head><body>
+  <style>${reportBaseCSS()}</style>
+<style>
+/* CORREÇÕES MOBILE */
+@media(max-width:640px){
+
+  /* FILTROS — empilha em coluna */
+  .filters-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .filter-field input,
+  .filter-field select {
+    font-size: 16px !important;
+    padding: 11px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .filters-actions {
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+  }
+  .filters-actions .btn {
+    padding: 10px 20px !important;
+    font-size: 13px !important;
+    flex: none !important;
+  }
+
+  /* COLAB-META — texto em linha única, sem quebra de letra */
+  .colab-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  .colab-meta {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 11px !important;
+  }
+
+  /* MODAL — sheet que sobe da base */
+  .overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+  .modal {
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    padding: 20px 16px 32px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+  .report-pre {
+    max-height: 40vh !important;
+    overflow-y: auto !important;
+    font-size: 11px !important;
+  }
+  .modal-actions {
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+  }
+  .modal-actions .btn {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+  }
+}
+</style>
+</head><body>
   ${reportHeader('Relatório de Treinamento', `${escapeHtml(c.nome)} · ${escapeHtml(c.unidade)}`)}
 
   <div class="rpt-ficha">
