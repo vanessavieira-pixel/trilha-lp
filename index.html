@@ -1393,20 +1393,56 @@ async function loadFromSheets() {
   }
 }
 
-async function saveColabToSheets(colab) {
+async function saveColabToSheets(colab, tentativa = 1) {
+  const MAX_TENTATIVAS = 4;
   setSyncStatus('loading', '⏳ Salvando…');
   try {
+    // Comprime dados — remove campos desnecessários antes de enviar
+    const payload = JSON.parse(JSON.stringify(colab));
+    // Remove imagens de assinatura do payload principal para reduzir tamanho
+    if (payload.blocos) {
+      payload.blocos = payload.blocos.map(b => {
+        if (!b) return b;
+        const bloco = {...b};
+        // Mantém flag de assinada mas remove a imagem base64 do payload de save
+        if (bloco.assinaturaColaborador?.img) {
+          bloco.assinaturaColaborador = {
+            ...bloco.assinaturaColaborador,
+            img: bloco.assinaturaColaborador.assinada ? '__assinado__' : ''
+          };
+        }
+        return bloco;
+      });
+    }
+
     const res = await fetch(API_URL, {
       method: 'POST',
       redirect: 'follow',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'save', token: API_TOKEN, colab })
+      body: JSON.stringify({ action: 'save', token: API_TOKEN, colab: payload })
     });
     const data = await res.json();
-    if (data.error) throw new Error(data.error);
+    if (data.error) {
+      // Erro de lock — tenta novamente com backoff exponencial
+      if (data.error.includes('bloqueio') || data.error.includes('lock') || data.error.includes('Timeout')) {
+        if (tentativa < MAX_TENTATIVAS) {
+          const espera = tentativa * 2000; // 2s, 4s, 6s
+          setSyncStatus('loading', `⏳ Tentativa ${tentativa + 1}/${MAX_TENTATIVAS}…`);
+          await new Promise(r => setTimeout(r, espera));
+          return saveColabToSheets(colab, tentativa + 1);
+        }
+      }
+      throw new Error(data.error);
+    }
     if (data.id && !colab.id) colab.id = data.id;
     setSyncStatus('ok', '✅ Salvo');
   } catch(e) {
+    if (tentativa < MAX_TENTATIVAS && (e.message.includes('bloqueio') || e.message.includes('Timeout') || e.message.includes('Failed to fetch'))) {
+      const espera = tentativa * 2000;
+      setSyncStatus('loading', `⏳ Tentativa ${tentativa + 1}/${MAX_TENTATIVAS}…`);
+      await new Promise(r => setTimeout(r, espera));
+      return saveColabToSheets(colab, tentativa + 1);
+    }
     setSyncStatus('err', '❌ Erro ao salvar');
     toast('Erro ao salvar: ' + e.message, true);
   }
@@ -1438,16 +1474,39 @@ function syncAssinaturaToColab(c) {
   }
 }
 
+let isSaving = false;
+let pendingSave = false;
+
 function debounceSave() {
   clearTimeout(saveTimeout);
   saveTimeout = setTimeout(async () => {
-    const c = state.colabs[activeColabIdx];
-    if (!c) return;
-    try {
-      syncAssinaturaToColab(c);
-      await saveColabToSheets(c);
-    } catch (e) {}
-  }, 900);
+    if (isSaving) {
+      // Já está salvando — marca como pendente e sai
+      pendingSave = true;
+      return;
+    }
+    await executeSave();
+  }, 2000);
+}
+
+async function executeSave() {
+  const c = state.colabs[activeColabIdx];
+  if (!c) return;
+  isSaving = true;
+  pendingSave = false;
+  try {
+    syncAssinaturaToColab(c);
+    await saveColabToSheets(c);
+  } catch (e) {
+    // erro já tratado dentro de saveColabToSheets
+  } finally {
+    isSaving = false;
+    // Se houve save pendente durante o save atual, executa agora
+    if (pendingSave) {
+      pendingSave = false;
+      await executeSave();
+    }
+  }
 }
 
 
