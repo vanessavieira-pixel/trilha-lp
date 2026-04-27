@@ -3402,12 +3402,29 @@ function fazerLogin() {
     if (acesso.tipo === 'propria') {
       document.documentElement.setAttribute('data-tipo-loja', 'propria');
     }
+    // Mostra botão sair para acesso por unidade (não master)
+    if (acesso.tipo !== 'master') {
+      document.getElementById('btnSair').style.display = 'flex';
+    }
     iniciarApp();
   } else {
     document.getElementById('loginError').textContent = 'Senha incorreta. Tente novamente.';
     document.getElementById('loginInput').value = '';
     document.getElementById('loginInput').focus();
   }
+}
+
+function fazerLogout() {
+  if (!confirm('Deseja sair e trocar de loja?')) return;
+  sessionStorage.removeItem('lp_auth');
+  sessionStorage.removeItem('lp_acesso');
+  ACESSO_ATUAL = { tipo: 'master', loja: null };
+  state.filtroLoja = 'todas';
+  document.documentElement.removeAttribute('data-tipo-loja');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginInput').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('btnSair').style.display = 'none';
 }
 
 function iniciarApp() {
@@ -3420,13 +3437,4 @@ function iniciarApp() {
 verificarLogin();
 </script>
 </body>
-</html>,
-      {n:'FRD2',nome:'Leitura de comanda — itens à parte, pesos e observações',material:'Comanda'},
-      {n:'FRD3',nome:'Porcionamento de itens à parte — padrões de gramatura',material:'Orientação'},
-      {n:'FRD4',nome:'Gestão de prazo de entrega — monitoramento e pausa de praça',material:'Sistema'},
-      {n:'FRD5',nome:'Metodologia OIE — Orientar, Indicar, Encantar',material:'Apresentação'},
-      {n:'FRD6',nome:'Gestão de fila e experiência em horários de pico',material:'Orientação'},
-      {n:'FRD7',nome:'Tratativa de reclamações — presencial, delivery e redes sociais',material:'Orientação'},
-      {n:'FRD8',nome:'Fidelização — Olga, cashback e retorno do cliente',material:'Sistema'},
-      {n:'FRD9',nome:'Indicadores de satisfação — como ler e agir sobre avaliações',material:'Orientação'},
-
+</html>
