@@ -724,6 +724,7 @@ const TRILHAS = {
       {n:'8',nome:'DRU caixa e inventário',material:'Planilha'},
       {n:'9',nome:'Checklist abertura e fechamento (Sults)',material:'Checklist'},
       {n:'10',nome:'Controle de manutenção (visão básica)',material:'Planilha'},
+      {n:'10C',nome:'Fechamento de caixa',material:'Orientação'},
     ]},
     {id:'bATDSIS',fase:1,titulo:'ATENDIMENTO E SISTEMAS DE VENDAS',temas:[
       {n:'54',nome:'Atendimento ao cliente — Metodologia OIE',material:'Apresentação'},
@@ -739,6 +740,8 @@ const TRILHAS = {
       {n:'59',nome:'iFood — Frete, Super Restaurante, gestor',material:'Sistema'},
       {n:'60',nome:'99Food — Cadastro, cardápio, operação e pedidos',material:'Sistema'},
       {n:'60B',nome:'99Food — Avaliações, cancelamentos e suporte',material:'Sistema'},
+      {n:'POS1',nome:'Lançamento no POS',material:'Sistema'},
+      {n:'PST1',nome:'Praça/postos de trabalho salão',material:'Orientação'},
     ]},
     {id:'bEXPCAIXA',fase:1,titulo:'EXPEDIÇÃO CAIXA',temas:[
       {n:'17',nome:'Plano de chão e posto do atendente',material:'Planilha'},
@@ -750,6 +753,7 @@ const TRILHAS = {
       {n:'23',nome:'Controle de temperatura pista (GNs ≤ 2h)',material:'Controle'},
       {n:'24',nome:'Orientações sobre recebimento',material:'Orientação'},
       {n:'25',nome:'Controle temperatura dos equipamentos (2x/dia)',material:'Controle'},
+      {n:'25B',nome:'Controle de PH',material:'Controle'},
       {n:'26',nome:'Coleta de amostras — kani, atum, salmão (18h30)',material:'Orientação'},
       {n:'27',nome:'Higiene pessoal e uniforme',material:'Orientação'},
       {n:'28',nome:'Armazenamento seco + controle de estoque',material:'Orientação'},
@@ -804,6 +808,7 @@ const TRILHAS = {
       {n:'23',nome:'Controle de temperatura pista (GNs ≤ 2h)',material:'Controle'},
       {n:'24',nome:'Orientações sobre recebimento',material:'Orientação'},
       {n:'25',nome:'Controle temperatura dos equipamentos (2x/dia)',material:'Controle'},
+      {n:'25B',nome:'Controle de PH',material:'Controle'},
       {n:'26',nome:'Coleta de amostras — kani, atum, salmão (18h30)',material:'Orientação'},
       {n:'27',nome:'Higiene pessoal e uniforme',material:'Orientação'},
       {n:'28',nome:'Armazenamento seco + controle de estoque',material:'Orientação'},
@@ -821,6 +826,7 @@ const TRILHAS = {
       {n:'8',nome:'Plano de produção',material:'Plano'},
       {n:'9',nome:'Mapa de produção',material:'Mapa'},
       {n:'10',nome:'Montagem da pista e reposições',material:'Pista'},
+      {n:'10B',nome:'Montagem de sides/entradinhas',material:'Pista'},
       {n:'11',nome:'Fechamento de pista',material:'Orientação'},
       {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela'},
       {n:'13A',nome:'Abacate',material:'Produção'},
@@ -958,6 +964,7 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'23',nome:'Controle de temperatura pista (GNs ≤ 2h)',material:'Controle'},
       {n:'24',nome:'Orientações sobre recebimento',material:'Orientação'},
       {n:'25',nome:'Controle temperatura dos equipamentos (2x/dia)',material:'Controle'},
+      {n:'25B',nome:'Controle de PH',material:'Controle'},
       {n:'26',nome:'Coleta de amostras — kani, atum, salmão (18h30)',material:'Orientação'},
       {n:'27',nome:'Higiene pessoal e uniforme',material:'Orientação'},
       {n:'28',nome:'Armazenamento seco + controle de estoque',material:'Orientação'},
@@ -975,6 +982,7 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'8',nome:'Plano de produção',material:'Plano'},
       {n:'9',nome:'Mapa de produção',material:'Mapa'},
       {n:'10',nome:'Montagem da pista e reposições',material:'Pista'},
+      {n:'10B',nome:'Montagem de sides/entradinhas',material:'Pista'},
       {n:'11',nome:'Fechamento de pista',material:'Orientação'},
       {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela'},
       {n:'13A',nome:'Abacate',material:'Produção'},
@@ -1107,6 +1115,7 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'23',nome:'Controle de temperatura pista (GNs ≤ 2h)',material:'Controle'},
       {n:'24',nome:'Orientações sobre recebimento',material:'Orientação'},
       {n:'25',nome:'Controle temperatura dos equipamentos (2x/dia)',material:'Controle'},
+      {n:'25B',nome:'Controle de PH',material:'Controle'},
       {n:'26',nome:'Coleta de amostras — kani, atum, salmão (18h30)',material:'Orientação'},
       {n:'27',nome:'Higiene pessoal e uniforme',material:'Orientação'},
       {n:'28',nome:'Armazenamento seco + controle de estoque',material:'Orientação'},
@@ -1177,12 +1186,14 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'G26',nome:'Gestão de manutenção — preventiva, corretiva e acionamento',material:'Planilha'},
       {n:'G27',nome:'Gestão de crise operacional — equipamento, ausência, incidente',material:'Manual'},
       {n:'G27A',nome:'Organização do salão — disposição de mesas e padrão visual',material:'Orientação'},
+      {n:'G27B',nome:'Fechamento de caixa',material:'Orientação'},
     ]},
     {id:'bCOZG',fase:1,titulo:'COZINHA — Organização e Produção',temas:[
       {n:'7',nome:'Planilha de descartes',material:'Planilha'},
       {n:'8',nome:'Plano de produção',material:'Plano'},
       {n:'9',nome:'Mapa de produção',material:'Mapa'},
       {n:'10',nome:'Montagem da pista e reposições',material:'Pista'},
+      {n:'10B',nome:'Montagem de sides/entradinhas',material:'Pista'},
       {n:'11',nome:'Fechamento de pista',material:'Orientação'},
       {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela'},
       {n:'13A',nome:'Abacate',material:'Produção'},
@@ -1269,6 +1280,7 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
     {id:'bQUAG',fase:1,titulo:'CONTROLE DE QUALIDADE',temas:[
       {n:'G28',nome:'Controle de temperatura da pista — GNs ≤ 2h',material:'Controle'},
       {n:'G29',nome:'Controle de temperatura dos equipamentos (2x/dia)',material:'Controle'},
+      {n:'G29B',nome:'Controle de PH',material:'Controle'},
       {n:'G30',nome:'Coleta de amostras — kani, atum, salmão (18h30)',material:'Orientação'},
       {n:'G31',nome:'Recebimento de mercadoria — peso, qualidade, NF e temperatura',material:'Orientação'},
       {n:'G32',nome:'Armazenamento seco, geladeira e freezer — padrões',material:'Orientação'},
@@ -1287,12 +1299,14 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'G39',nome:'Leitura de comanda — itens à parte, pesos e observações',material:'Comanda'},
       {n:'G40',nome:'Porcionamento de itens à parte — padrões de gramatura',material:'Orientação'},
       {n:'G41',nome:'Gestão de prazo de entrega — monitoramento e pausa de praça',material:'Sistema'},
-      {n:'G41B',nome:'Gestão de investimentos (frete grátis, campanha inteligente, ads...)',material:'Sistema'},
+      {n:'G41B',nome:'Fórum sobre gestão de investimentos (frete grátis, campanha inteligente, ads...)',material:'Sistema'},
     ]},
     {id:'bATDG',fase:1,titulo:'ATENDIMENTO E EXPERIÊNCIA DO CLIENTE',temas:[
       {n:'G42',nome:'Metodologia OIE — Orientar, Indicar, Encantar',material:'Apresentação'},
       {n:'G43',nome:'Gestão de fila e experiência em horários de pico',material:'Orientação'},
       {n:'GX1',nome:'Atendimento loja de destino: lançamento de venda (sistema e POS)',material:'Sistema'},
+      {n:'GPOS1',nome:'Lançamento no POS',material:'Sistema'},
+      {n:'GPST1',nome:'Praça/postos de trabalho salão',material:'Orientação'},
       {n:'GX2',nome:'NPS Falaê',material:'Sistema'},
       {n:'GX3',nome:'Atendimento loja de destino: apresentação de cardápio e praça de trabalho',material:'Orientação'},
       {n:'GX4',nome:'Atendimento loja de destino: logística entrega na mesa',material:'Orientação'},
@@ -1384,12 +1398,14 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'G26',nome:'Gestão de manutenção — preventiva, corretiva e acionamento',material:'Planilha'},
       {n:'G27',nome:'Gestão de crise operacional — equipamento, ausência, incidente',material:'Manual'},
       {n:'G27A',nome:'Organização do salão — disposição de mesas e padrão visual',material:'Orientação'},
+      {n:'G27B',nome:'Fechamento de caixa',material:'Orientação'},
     ]},
     {id:'bCOZG',fase:1,titulo:'COZINHA — Organização e Produção',temas:[
       {n:'7',nome:'Planilha de descartes',material:'Planilha'},
       {n:'8',nome:'Plano de produção',material:'Plano'},
       {n:'9',nome:'Mapa de produção',material:'Mapa'},
       {n:'10',nome:'Montagem da pista e reposições',material:'Pista'},
+      {n:'10B',nome:'Montagem de sides/entradinhas',material:'Pista'},
       {n:'11',nome:'Fechamento de pista',material:'Orientação'},
       {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela'},
       {n:'13A',nome:'Abacate',material:'Produção'},
@@ -1476,6 +1492,7 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
     {id:'bQUAG',fase:1,titulo:'CONTROLE DE QUALIDADE',temas:[
       {n:'G28',nome:'Controle de temperatura da pista — GNs ≤ 2h',material:'Controle'},
       {n:'G29',nome:'Controle de temperatura dos equipamentos (2x/dia)',material:'Controle'},
+      {n:'G29B',nome:'Controle de PH',material:'Controle'},
       {n:'G30',nome:'Coleta de amostras — kani, atum, salmão (18h30)',material:'Orientação'},
       {n:'G31',nome:'Recebimento de mercadoria — peso, qualidade, NF e temperatura',material:'Orientação'},
       {n:'G32',nome:'Armazenamento seco, geladeira e freezer — padrões',material:'Orientação'},
@@ -1494,12 +1511,14 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'G39',nome:'Leitura de comanda — itens à parte, pesos e observações',material:'Comanda'},
       {n:'G40',nome:'Porcionamento de itens à parte — padrões de gramatura',material:'Orientação'},
       {n:'G41',nome:'Gestão de prazo de entrega — monitoramento e pausa de praça',material:'Sistema'},
-      {n:'G41B',nome:'Gestão de investimentos (frete grátis, campanha inteligente, ads...)',material:'Sistema'},
+      {n:'G41B',nome:'Fórum sobre gestão de investimentos (frete grátis, campanha inteligente, ads...)',material:'Sistema'},
     ]},
     {id:'bATDG',fase:1,titulo:'ATENDIMENTO E EXPERIÊNCIA DO CLIENTE',temas:[
       {n:'G42',nome:'Metodologia OIE — Orientar, Indicar, Encantar',material:'Apresentação'},
       {n:'G43',nome:'Gestão de fila e experiência em horários de pico',material:'Orientação'},
       {n:'GX1',nome:'Atendimento loja de destino: lançamento de venda (sistema e POS)',material:'Sistema'},
+      {n:'GPOS1',nome:'Lançamento no POS',material:'Sistema'},
+      {n:'GPST1',nome:'Praça/postos de trabalho salão',material:'Orientação'},
       {n:'GX2',nome:'NPS Falaê',material:'Sistema'},
       {n:'GX3',nome:'Atendimento loja de destino: apresentação de cardápio e praça de trabalho',material:'Orientação'},
       {n:'GX4',nome:'Atendimento loja de destino: logística entrega na mesa',material:'Orientação'},
@@ -1604,6 +1623,7 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'8',nome:'Plano de produção',material:'Plano'},
       {n:'9',nome:'Mapa de produção',material:'Mapa'},
       {n:'10',nome:'Montagem da pista e reposições',material:'Pista'},
+      {n:'10B',nome:'Montagem de sides/entradinhas',material:'Pista'},
       {n:'11',nome:'Fechamento de pista',material:'Orientação'},
       {n:'12',nome:'Mise en place reposições cozinha',material:'Tabela'},
       {n:'13A',nome:'Abacate',material:'Produção'},
@@ -1690,6 +1710,7 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
     {id:'bQUAFR',fase:1,titulo:'CONTROLE DE QUALIDADE',temas:[
       {n:'FR28',nome:'Controle de temperatura da pista — GNs ≤ 2h',material:'Controle'},
       {n:'FR29',nome:'Controle de temperatura dos equipamentos (2x/dia)',material:'Controle'},
+      {n:'FR29B',nome:'Controle de PH',material:'Controle'},
       {n:'FR30',nome:'Coleta de amostras — kani, atum, salmão (18h30)',material:'Orientação'},
       {n:'FR31',nome:'Recebimento de mercadoria — peso, qualidade, NF e temperatura',material:'Orientação'},
       {n:'FR32',nome:'Armazenamento seco, geladeira e freezer — padrões',material:'Orientação'},
@@ -1706,6 +1727,8 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'FA54',nome:'Atendimento ao cliente — Metodologia OIE',material:'Apresentação'},
       {n:'FA55',nome:'Gestão de fila em horários de pico',material:'Orientação'},
       {n:'FAX12',nome:'Atendimento loja de destino: lançamento de venda (sistema e POS)',material:'Sistema'},
+      {n:'FRPOS1',nome:'Lançamento no POS',material:'Sistema'},
+      {n:'FRPST1',nome:'Praça/postos de trabalho salão',material:'Orientação'},
       {n:'FAX13',nome:'NPS Falaê',material:'Sistema'},
       {n:'FAX14',nome:'Atendimento loja de destino: apresentação de cardápio e praça de trabalho',material:'Orientação'},
       {n:'FAX15',nome:'Atendimento loja de destino: logística entrega na mesa (poke, bebidas, entradas, sobremesas, suchá)',material:'Orientação'},
@@ -1714,9 +1737,10 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'FRD2',nome:'Leitura de comanda — itens à parte, pesos e observações',material:'Comanda'},
       {n:'FRD3',nome:'Porcionamento de itens à parte — padrões de gramatura',material:'Orientação'},
       {n:'FRD4',nome:'Gestão de prazo de entrega — monitoramento e pausa de praça',material:'Sistema'},
-      {n:'FRD4B',nome:'Gestão de investimentos (frete grátis, campanha inteligente, ads...)',material:'Sistema'},
+      {n:'FRD4B',nome:'Fórum sobre gestão de investimentos (frete grátis, campanha inteligente, ads...)',material:'Sistema'},
       {n:'FRD7',nome:'Tratativa de reclamações — presencial, delivery e redes sociais',material:'Orientação'},
       {n:'FRD9',nome:'Indicadores de satisfação — como ler e agir sobre avaliações',material:'Orientação'},
+      {n:'FRD10',nome:'Fórum Planejamento de Marketing',material:'Orientação'},
     ]},
     {id:'bEXPCAIXAFR',fase:1,titulo:'EXPEDIÇÃO CAIXA',temas:[
       {n:'FA17',nome:'Plano de chão e posto do atendente',material:'Planilha'},
@@ -1745,6 +1769,7 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'FRX4',nome:'Mise en place — organização e reposição da pista',material:'Orientação'},
       {n:'FR56',nome:'Gestão de manutenção — preventiva, corretiva e acionamento',material:'Planilha'},
       {n:'FR57',nome:'Gestão de crise operacional — equipamento, ausência, incidente',material:'Manual'},
+      {n:'FR57B',nome:'Fechamento de caixa',material:'Orientação'},
     ]},
     {id:'bFINFR',fase:1,titulo:'GESTÃO FINANCEIRA DO NEGÓCIO',temas:[
       {n:'FR58',nome:'DRU caixa — preenchimento, conferência e envio',material:'Planilha'},
@@ -1923,7 +1948,7 @@ async function loadFromSheets() {
     const res = await fetch(API_URL + '?action=getAll', { redirect: 'follow' });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
-    state.colabs = (data.colabs || []).map(c => ({...c, historico: Array.isArray(c.historico) ? c.historico : []}));
+    state.colabs = (data.colabs || []).map(c => reconcileColab({...c, historico: Array.isArray(c.historico) ? c.historico : []}));
     rebuildLojasAtivas();
     setSyncStatus('ok', '✅ Sincronizado');
   } catch(e) {
@@ -2133,12 +2158,22 @@ function ensureBlocoState(c,bi){
   if(!c.blocos[bi].assinaturaColaborador) c.blocos[bi].assinaturaColaborador={assinada:false,nome:'',dataHora:'',img:''};
   if(!c.blocos[bi].assinaturaColaborador || typeof c.blocos[bi].assinaturaColaborador!=='object') c.blocos[bi].assinaturaColaborador={assinada:false,nome:'',dataHora:''};
   if(!Array.isArray(c.blocos[bi].temas)) c.blocos[bi].temas=[];
+  if(!c.blocos[bi].temasByN || typeof c.blocos[bi].temasByN!=='object') c.blocos[bi].temasByN={};
+  if(!c.blocos[bi].id){ const bt=TRILHAS[c.funcao]?.blocos?.[bi]; if(bt) c.blocos[bi].id=bt.id; }
   return c.blocos[bi];
 }
 
 function collectAplicadores(c){
   const set=new Set();
-  (c.blocos||[]).forEach(b=>{ if((b?.aplicadoPor||'').trim()) set.add(b.aplicadoPor.trim()); });
+  (c.blocos||[]).forEach(b=>{
+    const raw=(b?.aplicadoPor||'').trim();
+    if(!raw) return;
+    // Separa por vírgula, "e", travessão e barra; deduplica nomes individuais.
+    raw.split(/[,\/—]|\s+e\s+/i).forEach(nome=>{
+      const n=nome.replace(/\s*[-–].*$/,'').trim();
+      if(n) set.add(n);
+    });
+  });
   return Array.from(set);
 }
 
@@ -2146,7 +2181,17 @@ function isCertificadoElegivel(c){
   const trilha=TRILHAS[c.funcao];
   const formacao=trilha.blocos.filter(b=>b.fase!==2);
   if(!formacao.length) return false;
-  return formacao.every((_,i)=>ensureBlocoState(c,i).concluido);
+  // Libera com itens verdes, amarelos (reforço) ou N/A — sem vermelhos e sem pendentes.
+  // Permite emitir o certificado antes da inauguração, quando itens de detalhe
+  // ficam em reforço para serem aprofundados com a loja já aberta.
+  return trilha.blocos.filter(b=>b.fase!==2).every((bloco,idx)=>{
+    const bi = trilha.blocos.indexOf(bloco);
+    const bState = ensureBlocoState(c, bi);
+    return bloco.temas.every((_,ti)=>{
+      const abs = bState.temas?.[ti]?.abs || '';
+      return abs==='g' || abs==='y' || abs==='na';
+    });
+  });
 }
 
 function ensureHistorico(c){
@@ -2349,8 +2394,8 @@ function renderTrilha() {
   document.getElementById('certBtn').classList.toggle('show', isMaster && isCertificadoElegivel(c));
 
   // Conformidade — só master E quando é franquia
-  document.getElementById('confBlock').style.display = (isMaster && esFranquia) ? '' : 'none';
-  if (isMaster && esFranquia) setTimeout(renderConformidade, 0);
+  document.getElementById('confBlock').style.display = (isMaster && esFranquia && c.funcao !== 'franqueado') ? '' : 'none';
+  if (isMaster && esFranquia && c.funcao !== 'franqueado') setTimeout(renderConformidade, 0);
 
   document.getElementById('blocosContainer').innerHTML = trilha.blocos.map((bloco,bi) => {
     if (!isBlocoVisivel(bloco)) return '';
@@ -2439,6 +2484,7 @@ function setAbs(bi,ti,val) {
   const anterior = b.temas[ti].abs || '';
   b.temas[ti].abs=b.temas[ti].abs===val?'':val;
   const atual = b.temas[ti].abs || '';
+  syncTemaByN(c, bi, ti);
   const temaNome = trilha.blocos[bi].temas[ti].nome;
   if(anterior !== atual){
     const labels={g:'Absorveu bem',y:'Precisa de reforço',r:'Refazer',na:'N/A','':'Avaliação removida'};
@@ -2456,6 +2502,7 @@ function saveObs(bi,ti,val) {
   b.open=true;
   if(!b.temas[ti])b.temas[ti]={abs:'',obs:''};
   b.temas[ti].obs=val;
+  syncTemaByN(c, bi, ti);
   debounceSave(c);
 }
 
@@ -2755,13 +2802,125 @@ function printCertificado(){
 }
 
 function initBlocos(funcao) {
-  return TRILHAS[funcao].blocos.map(() => ({
+  return TRILHAS[funcao].blocos.map(bloco => ({
+    id: bloco.id,
     open:false,
     concluido:false,
     aplicadoPor:'',
     assinaturaColaborador:{assinada:false,nome:'',dataHora:'',img:''},
-    temas:[]
+    temas:[],
+    temasByN:{}
   }));
+}
+
+const LEGACY_STRUCTURE = {"atendimento::bONB":["1","2","4","5","6"],"atendimento::bDEGUSTAT":["ATDEG1","ATDEG2","ATDEG3","ATDEG4","ATDEG5","ATDEG6"],"atendimento::bGESTCAIXA":["7","8","9","10"],"atendimento::bATDSIS":["54","55","X12","X13","X14","X15","X16","56","57","58","59","60","60B"],"atendimento::bEXPCAIXA":["17","18","19","20"],"atendimento::bQUA":["23","24","25","26","27","28","29","30","31","32","32A","32B","32C","32D"],"atendimento::bORGLIMP":["X17","X18","X19","X20","X21","X22"],"atendimento::bAVAL":["AC1","AC2","AC3","AC4","AC5"],"atendimento::bINAUG":["F2","F3","F4","F5"],"lider_cozinha::bONB":["1","2","4","5","6"],"lider_cozinha::bDEGUSTLC":["LCDEG1","LCDEG2","LCDEG3","LCDEG4","LCDEG5","LCDEG6"],"lider_cozinha::bQUA":["23","24","25","26","27","28","29","30","31","32","32A","32B","32C","32D"],"lider_cozinha::bCOZPROD":["7","8","9","10","11","12","13A","13B","13C","13D","13E","13F","14A","14B","14C","17A","17C","17D","17E","15A","15D","16A1","16A2","16A3","16B1","16B2","16B3","16B4","16B5","18A","DAD1","DAD2","18C","18D","18E","18F","19A","19B","19C","19D","19E","19F","X1","X2","X3","X4","X5","20B","20C","20D","OCbCO014","X6","20E","OCbCO011","OCbCO012","OCbCO01","OCbCO02","OCbCO08","OCbCO010","21A","21B","21C","21D","21E","22A","X7","22B","22D","22E","X8","22F","Y3","Y4","Y5","Y6","Y7","13G","23A","23E","SEL3","NXA3","NXA4","NXA5","NXA6","NXA7","NXA8"],"lider_cozinha::bEXPCOZ":["C1","C1A","C1B","C1C","C2","C3","C3A"],"lider_cozinha::bGESTCOZ":["C4","C5","C6","C7","X10","X11","C8","C9","C10"],"lider_cozinha::bAVAL":["AC1","AC2","AC3","AC4","AC5"],"lider_cozinha::bINAUG":["F2","F3","F4","F5"],"aux_cozinha::bONBAX":["1","2","4","5","6"],"aux_cozinha::bDEGUSTAX":["AXDEG1","AXDEG2","AXDEG3","AXDEG4","AXDEG5","AXDEG6"],"aux_cozinha::bQUAAX":["23","24","25","26","27","28","29","30","31","32","32A","32B","32C","32D"],"aux_cozinha::bCOZPRODAX":["7","8","9","10","11","12","13A","13B","13C","13D","13E","13F","14A","14B","14C","17A","17C","17D","17E","15A","15D","16A1","16A2","16A3","16B1","16B2","16B3","16B4","16B5","18A","DAD1","DAD2","18C","18D","18E","18F","19A","19B","19C","19D","19E","19F","X1","X2","X3","X4","X5","20B","20C","20D","OCbCO014","X6","20E","OCbCO011","OCbCO012","OCbCO01","OCbCO02","OCbCO08","OCbCO010","21A","21B","21C","21D","21E","22A","X7","22B","22D","22E","X8","22F","Y3","Y4","Y5","Y6","Y7","13G","23A","23E","SEL3","NXA3","NXA4","NXA5","NXA6","NXA7","NXA8"],"aux_cozinha::bEXPCOZAX":["C1","C1A","C1B","C1C","C2","C3","C3A"],"aux_cozinha::bAVALAX":["AC1","AC2","AC3","AC4","AC5"],"aux_cozinha::bINAUGAX":["F2","F3","F4","F5"],"asg::bONB":["1","2","4","5","6"],"asg::bASGSERV":["A6","A7","A8","A9","A10","A11","A12","A13","A14","A15","A16"],"asg::bQUA":["23","24","25","26","27","28","29","30","31","32","32A","32B","32C","32D"],"asg::bASGPOSTO":["A17","A18"],"asg::bAVAL":["AC1","AC2","AC3","AC4","AC5"],"asg::bINAUG":["F2","F3","F4","F5"],"subgerente::bONBG":["G1","G2","G3","G4","G5","G6","G7","G8"],"subgerente::bDEGUSTSG":["SGDEG1","SGDEG2","SGDEG3","SGDEG4","SGDEG5","SGDEG6"],"subgerente::bGESTG":["G9","G10","G11","G12","G13","G14","G15"],"subgerente::bOPERG":["G18","G19","G20","G21","G22","G23","G24","G25","G26","G27","G27A"],"subgerente::bCOZG":["7","8","9","10","11","12","13A","13B","13C","13D","13E","13F","14A","14B","14C","17A","17C","17D","17E","15A","15D","16A1","16A2","16A3","16B1","16B2","16B3","16B4","16B5","18A","DAD1","DAD2","18C","18D","18E","18F","19A","19B","19C","19D","19E","19F","X1","X2","X3","X4","X5","20B","20C","20D","OCbCO014","X6","20E","OCbCO011","OCbCO012","OCbCO01","OCbCO02","OCbCO08","OCbCO010","21A","21B","21C","21D","21E","22A","X7","22B","22D","22E","X8","22F","Y3","Y4","Y5","Y6","Y7","13G","23A","23E","SEL3","NXA3","NXA4","NXA5","NXA6","NXA7","NXA8"],"subgerente::bQUAG":["G28","G29","G30","G31","G32","G33","G34","G34A","G34B","G34C","G34D","G35","G36"],"subgerente::bEXPG":["G37","G38","G39","G40","G41","G41B"],"subgerente::bATDG":["G42","G43","GX1","GX2","GX3","GX4","GX5","G44","G46"],"subgerente::bSISG":["G47","G48","G49","G50","G51","G51A","G51B","G51C","G52","G53","SG1","SG2","SG3","SG4"],"subgerente::bASGSERV_SG":["SA6","SA7","SA8","SA9","SA10","SA11","SA12","SA13","SA14","SA15","SA16"],"subgerente::bAVAL_SG":["SAC1","SAC2","SAC3","SAC4","SAC5"],"subgerente::bINAUGSG":["SGF1","SGF2","SGF3","SGF4","SGF5"],"gerente::bONBG":["G1","G2","G3","G4","G5","G6","G7","G8"],"gerente::bDEGUSTGR":["GRDEG1","GRDEG2","GRDEG3","GRDEG4","GRDEG5","GRDEG6"],"gerente::bGESTG":["G9","G10","G11","G12","G13","G14","G15"],"gerente::bOPERG":["G18","G19","G20","G21","G22","G23","G24","G25","G26","G27","G27A"],"gerente::bCOZG":["7","8","9","10","11","12","13A","13B","13C","13D","13E","13F","14A","14B","14C","17A","17C","17D","17E","15A","15D","16A1","16A2","16A3","16B1","16B2","16B3","16B4","16B5","18A","DAD1","DAD2","18C","18D","18E","18F","19A","19B","19C","19D","19E","19F","X1","X2","X3","X4","X5","20B","20C","20D","OCbCO014","X6","20E","OCbCO011","OCbCO012","OCbCO01","OCbCO02","OCbCO08","OCbCO010","21A","21B","21C","21D","21E","22A","X7","22B","22D","22E","X8","22F","Y3","Y4","Y5","Y6","Y7","13G","23A","23E","SEL3","NXA3","NXA4","NXA5","NXA6","NXA7","NXA8"],"gerente::bQUAG":["G28","G29","G30","G31","G32","G33","G34","G34A","G34B","G34C","G34D","G35","G36"],"gerente::bEXPG":["G37","G38","G39","G40","G41","G41B"],"gerente::bATDG":["G42","G43","GX1","GX2","GX3","GX4","GX5","G44","G46"],"gerente::bSISG":["G47","G48","G49","G50","G51","G51A","G51B","G51C","G52","G53"],"gerente::bFING":["G54","G55","G56","G57","G58","G59","G60","G61","G62"],"gerente::bINDG":["G63","G65","G66","G67","G66B","G67B"],"gerente::bASGSERVG":["GA6","GA7","GA8","GA9","GA10","GA11","GA12","GA13","GA14","GA15","GA16"],"gerente::bAVAL_GR":["GAC1","GAC2","GAC3","GAC4","GAC5","GAC6"],"gerente::bINAUGG":["GF1","GF2","GF3","GF4","GF5"],"franqueado::bONBFR":["FR1","FR2","FR3","FR4","FR5","FR6","FR6B","FR6C","FR6D","FR6E","FR6F","FR6G","FR6H"],"franqueado::bDEGUSTFR":["FRDEG1","FRDEG2","FRDEG3","FRDEG4","FRDEG5","FRDEG6"],"franqueado::bCULFR":["FR7","FR8","FR9","FR10","FR11","FR12"],"franqueado::bCOZPRODFR":["7","8","9","10","11","12","13A","13B","13C","13D","13E","13F","14A","14B","14C","17A","17C","17D","17E","15A","15D","16A1","16A2","16A3","16B1","16B2","16B3","16B4","16B5","18A","DAD1","DAD2","18C","18D","18E","18F","19A","19B","19C","19D","19E","19F","X1","X2","X3","X4","X5","20B","20C","20D","OCbCO014","X6","20E","OCbCO011","OCbCO012","OCbCO01","OCbCO02","OCbCO08","OCbCO010","21A","21B","21C","21D","21E","22A","X7","22B","22D","22E","X8","22F","Y3","Y4","Y5","Y6","Y7","13G","23A","23E","SEL3","NXA3","NXA4","NXA5","NXA6","NXA7","NXA8"],"franqueado::bQUAFR":["FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR34A","FR34B","FR34C","FR34D","FR35","FR36"],"franqueado::bATDFR":["FA54","FA55","FAX12","FAX13","FAX14","FAX15","FAX16","FRD1","FRD2","FRD3","FRD4","FRD4B","FRD7","FRD9"],"franqueado::bEXPCAIXAFR":["FA17","FA18","FA19","FA20"],"franqueado::bSISFR":["FR45","FR46","FR47","FR48","FR49","FR50","FR51"],"franqueado::bOPERFR":["FR52","FR53","FR54","FR55","FSG4","FRX1","FRX2","FRX3","FRX4","FR56","FR57"],"franqueado::bFINFR":["FR58","FR59","FR61","FR61B","FR62","FR63","FR64","FR66","FR66B"],"franqueado::bPESFR":["FR71","FR71B","FR72","FR73","FR74","FR75","FR75B","FR76","FR76B","FR77","FR79","FR80"],"franqueado::bASGSERVFR":["FRA6","FRA7","FRA8","FRA9","FRA10","FRA11","FRA12","FRA13","FRA14","FRA15","FRA16"],"franqueado::bINDFR":["FRI1","FRI3","FRI4","FRI5"],"franqueado::bVALFR":["FRF1","FRF2","FRF3","FRF4","FRF4B","FRF5","FRF6"]};
+
+// ══════════════════════════════════════════════
+// RECONCILIAÇÃO DE STATUS POR IDENTIFICADOR
+// ------------------------------------------------
+// O status de cada tema é ancorado no seu `n` (não na posição) e o bloco no
+// seu `id`. Assim, inserir, reordenar ou mover temas entre blocos NUNCA mais
+// apaga o progresso já registrado.
+//
+// Dados salvos ANTES desta mudança são posicionais (array `temas[]`, sem
+// `temasByN`). Para decodificá-los sem deslocamento, usamos LEGACY_STRUCTURE:
+// um retrato congelado da estrutura que estava no ar (bloco.id → ordem de n).
+// A decodificação legada roda UMA vez por colaborador; a partir daí `temasByN`
+// passa a ser a fonte de verdade e a trilha pode mudar livremente.
+// ══════════════════════════════════════════════
+function reconcileColab(c){
+  if(!c || !c.funcao) return c;
+  const trilha = TRILHAS[c.funcao];
+  if(!trilha) return c;
+  const oldBlocos = Array.isArray(c.blocos) ? c.blocos : [];
+  const legacyFn = (typeof LEGACY_STRUCTURE!=='undefined') ? LEGACY_STRUCTURE : {};
+
+  // 1) Índice de status salvo, chaveado por (bloco.id → n → {abs,obs}).
+  const savedByBlockId = {};
+  const metaByBlockId = {};
+  oldBlocos.forEach((ob, bi) => {
+    if(!ob) return;
+    const blocoTrilha = trilha.blocos[bi];
+    // id do bloco salvo: prioriza ob.id; senão casa por posição na trilha atual.
+    const bid = ob.id || (blocoTrilha ? blocoTrilha.id : ('__pos'+bi));
+    const store = savedByBlockId[bid] || (savedByBlockId[bid] = {});
+
+    // (a) Formato novo — temasByN é autoritativo e já chaveado por n.
+    const temTemasByN = ob.temasByN && typeof ob.temasByN==='object' && Object.keys(ob.temasByN).length>0;
+    if(temTemasByN){
+      Object.keys(ob.temasByN).forEach(n=>{
+        const t = ob.temasByN[n]||{};
+        if(t.abs || t.obs) store[n] = { abs:t.abs||'', obs:t.obs||'' };
+      });
+    }
+
+    // (b) Formato antigo — array posicional decodificado pelo RETRATO LEGADO.
+    //     Só entra se o bloco NÃO tinha temasByN (dado genuinamente legado).
+    if(!temTemasByN && Array.isArray(ob.temas)){
+      const legacyNs = legacyFn[c.funcao+'::'+bid];
+      ob.temas.forEach((t, ti)=>{
+        if(!t || !(t.abs||t.obs)) return;
+        // Ordem de decodificação: retrato legado > (fallback) trilha atual.
+        let n = legacyNs ? legacyNs[ti] : (blocoTrilha ? blocoTrilha.temas[ti]?.n : undefined);
+        if(!n) return;                      // sem correspondência — ignora com segurança
+        if(store[n]) return;                // não sobrescreve o que já veio de temasByN
+        store[n] = { abs:t.abs||'', obs:t.obs||'' };
+      });
+    }
+
+    // Metadados do bloco (assinatura, aplicador, concluído, aberto) — primeiro vence.
+    if(!metaByBlockId[bid]){
+      metaByBlockId[bid] = {
+        open: !!ob.open,
+        concluido: !!ob.concluido,
+        aplicadoPor: typeof ob.aplicadoPor==='string' ? ob.aplicadoPor : '',
+        assinaturaColaborador: (ob.assinaturaColaborador && typeof ob.assinaturaColaborador==='object')
+          ? ob.assinaturaColaborador
+          : {assinada:false,nome:'',dataHora:'',img:''}
+      };
+    }
+  });
+
+  // 2) Reconstrói os blocos na ordem/estrutura ATUAL da trilha.
+  c.blocos = trilha.blocos.map(bloco => {
+    const meta = metaByBlockId[bloco.id] || {};
+    const status = savedByBlockId[bloco.id] || {};
+    const temasByN = {};
+    const temas = bloco.temas.map(tema => {
+      const s = status[tema.n];
+      const cell = { abs: s?.abs||'', obs: s?.obs||'' };
+      if(cell.abs || cell.obs) temasByN[tema.n] = { abs:cell.abs, obs:cell.obs };
+      return cell;                          // array posicional alinhado à ordem ATUAL
+    });
+    return {
+      id: bloco.id,
+      open: meta.open||false,
+      concluido: meta.concluido||false,
+      aplicadoPor: meta.aplicadoPor||'',
+      assinaturaColaborador: meta.assinaturaColaborador||{assinada:false,nome:'',dataHora:'',img:''},
+      temas,
+      temasByN
+    };
+  });
+  return c;
+}
+
+// Mantém temasByN em sincronia sempre que um status posicional muda.
+function syncTemaByN(c, bi, ti){
+  const trilha = TRILHAS[c.funcao];
+  const bloco = trilha?.blocos?.[bi];
+  const b = c.blocos?.[bi];
+  if(!bloco || !b) return;
+  const temaDef = bloco.temas[ti];
+  if(!temaDef) return;
+  if(!b.temasByN || typeof b.temasByN!=='object') b.temasByN={};
+  const cell = b.temas?.[ti] || {abs:'',obs:''};
+  if(cell.abs || cell.obs){
+    b.temasByN[temaDef.n] = { abs:cell.abs||'', obs:cell.obs||'' };
+  } else {
+    delete b.temasByN[temaDef.n];
+  }
+  if(!b.id) b.id = bloco.id;
 }
 
 function normalizaLoja(v){
@@ -2960,8 +3119,8 @@ ${'─'.repeat(45)}
 ${'='.repeat(50)}
 `;
 
-  // ── CONFORMIDADE OPERACIONAL (só para franquias) ─────────
-  if (esFrqRpt) {
+  // ── CONFORMIDADE OPERACIONAL (só para franquias, exceto função franqueado) ─────────
+  if (esFrqRpt && c.funcao !== 'franqueado') {
     const conf = ensureConformidade(c);
     const confLabels = {g:'🟢 Conforme', y:'🟡 Requer reforço pelo franqueado', r:'🔴 Não conforme — ação necessária', '':'⬜ Não avaliado'};
     r+=`\n⚖️ CONFORMIDADE OPERACIONAL — RELATÓRIO AO FRANQUEADO\n`;
@@ -3739,7 +3898,7 @@ function printReport() {
     ${blocosHTML}
   </div>
 
-  ${esFrqPrint ? `<div class="rpt-section">
+  ${(esFrqPrint && c.funcao !== 'franqueado') ? `<div class="rpt-section">
     <div class="rpt-section-title">⚖️ Conformidade Operacional — Relatório ao Franqueado</div>
     <div class="rpt-bloco">
       <div class="rpt-bloco-header">
