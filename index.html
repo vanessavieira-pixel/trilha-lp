@@ -1165,6 +1165,11 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'SGDEG5',nome:'Uso de pegadores',material:'Orientação'},
       {n:'SGDEG6',nome:'Controle de produção — pista quente (evite desperdícios)',material:'Orientação'},
     ]},
+    {id:'bADMISSAO_SG',fase:1,titulo:'PROCESSOS ADMISSIONAIS',temas:[
+      {n:'SADM1',nome:'Exame admissional realizado?',material:'Confirmação'},
+      {n:'SADM2',nome:'Assinatura do contrato / documentação admissional concluída?',material:'Confirmação'},
+      {n:'SADM3',nome:'Já está registrando o ponto?',material:'Confirmação'},
+    ]},
     {id:'bGESTG',fase:1,titulo:'GESTÃO DE PESSOAS',temas:[
       {n:'G9',nome:'Perfil e função de cada cargo da loja',material:'Manual'},
       {n:'G10',nome:'Processo de integração de novos colaboradores',material:'Checklist'},
@@ -1173,6 +1178,9 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'G13',nome:'Gestão de ponto — registro, banco de horas e irregularidades',material:'Sistema'},
       {n:'G14',nome:'Gestão de freelas — contratação, controle e pagamento',material:'Planilha'},
       {n:'G15',nome:'Feedback estruturado — como dar retorno de performance',material:'Orientação'},
+      {n:'SG16',nome:'Regras de aplicação de advertências e suspensões',material:'Orientação'},
+      {n:'SG17',nome:'Panorama geral das regras trabalhistas',material:'Orientação'},
+      {n:'SG18',nome:'Padrão de uniforme',material:'Orientação'},
     ]},
     {id:'bOPERG',fase:1,titulo:'OPERAÇÃO — ABERTURA, ROTINA E FECHAMENTO',temas:[
       {n:'G18',nome:'Checklist de abertura da loja (Sults)',material:'Checklist'},
@@ -1377,6 +1385,11 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'GRDEG5',nome:'Uso de pegadores',material:'Orientação'},
       {n:'GRDEG6',nome:'Controle de produção — pista quente (evite desperdícios)',material:'Orientação'},
     ]},
+    {id:'bADMISSAO_GR',fase:1,titulo:'PROCESSOS ADMISSIONAIS',temas:[
+      {n:'GADM1',nome:'Exame admissional realizado?',material:'Confirmação'},
+      {n:'GADM2',nome:'Assinatura do contrato / documentação admissional concluída?',material:'Confirmação'},
+      {n:'GADM3',nome:'Já está registrando o ponto?',material:'Confirmação'},
+    ]},
     {id:'bGESTG',fase:1,titulo:'GESTÃO DE PESSOAS',temas:[
       {n:'G9',nome:'Perfil e função de cada cargo da loja',material:'Manual'},
       {n:'G10',nome:'Processo de integração de novos colaboradores',material:'Checklist'},
@@ -1385,6 +1398,9 @@ aux_cozinha:{label:'🍳 Auxiliar de Cozinha',diasUteis:15,blocos:[
       {n:'G13',nome:'Gestão de ponto — registro, banco de horas e irregularidades',material:'Sistema'},
       {n:'G14',nome:'Gestão de freelas — contratação, controle e pagamento',material:'Planilha'},
       {n:'G15',nome:'Feedback estruturado — como dar retorno de performance',material:'Orientação'},
+      {n:'GG16',nome:'Regras de aplicação de advertências e suspensões',material:'Orientação'},
+      {n:'GG17',nome:'Panorama geral das regras trabalhistas',material:'Orientação'},
+      {n:'GG18',nome:'Padrão de uniforme',material:'Orientação'},
     ]},
     {id:'bOPERG',fase:1,titulo:'OPERAÇÃO — ABERTURA, ROTINA E FECHAMENTO',temas:[
       {n:'G18',nome:'Checklist de abertura da loja (Sults)',material:'Checklist'},
@@ -3588,14 +3604,95 @@ function openHistory(){
   const trilha=TRILHAS[c.funcao];
   document.getElementById('historySub').textContent = `${c.nome} · ${trilha.label} · ${c.unidade}`;
   const hist = ensureHistorico(c);
-  document.getElementById('historyContent').innerHTML = hist.length ? hist.map(item => `
+  const isMaster = ACESSO_ATUAL.tipo === 'master';
+
+  let html = '';
+
+  // ── AUDITORIA (só master): agrupa o histórico por sessão de trabalho e
+  //    sinaliza preenchimento em lote (muitos status em poucos minutos),
+  //    para garantir que o aplicador bata a trilha ao fim do dia com o colaborador. ──
+  if(isMaster){
+    html += renderAuditoriaMaster(hist);
+  }
+
+  // ── Lista cronológica completa ──
+  html += hist.length ? hist.map(item => `
     <div class="history-item">
       <strong>${escapeHtml(item.acao)}</strong>
       <span>${formatDateShort(item.dataHora)} ${item.dataHora?.includes('T') ? new Date(item.dataHora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : ''}</span>
       <div>${escapeHtml(item.detalhe || '—')}</div>
     </div>
   `).join('') : `<div class="history-empty">Nenhuma movimentação registrada ainda.</div>`;
+
+  document.getElementById('historyContent').innerHTML = html;
   openModal('modalHistory');
+}
+
+// Análise de auditoria para a visão master.
+// Agrupa ações em "sessões" (intervalo < 30 min entre ações consecutivas) e
+// destaca sessões com muitas mudanças de status em janela curta — sinal de
+// preenchimento em lote em vez do acompanhamento diário com o colaborador.
+function renderAuditoriaMaster(hist){
+  if(!hist || !hist.length) return '';
+  // Considera apenas ações com data/hora ISO e ordena do mais antigo ao mais novo.
+  const eventos = hist
+    .filter(h=>h.dataHora && h.dataHora.includes('T'))
+    .map(h=>({...h, t:new Date(h.dataHora).getTime()}))
+    .sort((a,b)=>a.t-b.t);
+  if(!eventos.length) return '';
+
+  const GAP = 30*60*1000;            // 30 min separam sessões
+  const sessoes = [];
+  let atual = null;
+  eventos.forEach(ev=>{
+    if(!atual || (ev.t - atual.fim) > GAP){
+      atual = { inicio:ev.t, fim:ev.t, itens:[ev] };
+      sessoes.push(atual);
+    } else {
+      atual.fim = ev.t; atual.itens.push(ev);
+    }
+  });
+
+  const ehStatus = a => /status da produção|conformidade atualizada/i.test(a.acao||'');
+  const fmtData = t => new Date(t).toLocaleDateString('pt-BR');
+  const fmtHora = t => new Date(t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+  const linhas = sessoes.slice().reverse().map(s=>{
+    const nStatus = s.itens.filter(ehStatus).length;
+    const durMin = Math.max(1, Math.round((s.fim - s.inicio)/60000));
+    const ritmo = nStatus / durMin;   // status por minuto
+    // Sinaliza: 8+ status em lote com ritmo alto (> ~1,5 por min) ou duração < 3 min
+    const emLote = nStatus >= 8 && (ritmo > 1.5 || durMin < 3);
+    const cor = emLote ? '#C0392B' : 'var(--muted)';
+    const selo = emLote
+      ? `<span style="background:#FDECEA;color:#C0392B;font-size:10px;font-weight:700;padding:2px 6px;border-radius:6px;margin-left:6px">⚠ possível preenchimento em lote</span>`
+      : '';
+    return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--border)">
+      <div style="font-size:12px;color:var(--text)">
+        <strong>${fmtData(s.inicio)}</strong> · ${fmtHora(s.inicio)}–${fmtHora(s.fim)} ${selo}
+        <div style="font-size:11px;color:var(--muted)">${s.itens.length} ações · ${nStatus} mudanças de status · ${durMin} min</div>
+      </div>
+      <div style="font-size:18px;color:${cor}">${emLote?'●':'○'}</div>
+    </div>`;
+  }).join('');
+
+  const totalLote = sessoes.filter(s=>{
+    const nStatus=s.itens.filter(ehStatus).length;
+    const durMin=Math.max(1,Math.round((s.fim-s.inicio)/60000));
+    return nStatus>=8 && (nStatus/durMin>1.5 || durMin<3);
+  }).length;
+
+  const resumoCor = totalLote>0 ? '#C0392B' : '#1E8449';
+  const resumoTxt = totalLote>0
+    ? `${totalLote} sessão(ões) com sinal de preenchimento em lote — vale conferir se a trilha foi batida com o colaborador.`
+    : `Nenhum padrão de preenchimento em lote detectado. Ritmo consistente com acompanhamento diário.`;
+
+  return `<div style="border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;background:var(--bg)">
+    <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px">🔍 Auditoria de preenchimento (visão master)</div>
+    <div style="font-size:11px;color:${resumoCor};margin-bottom:10px">${resumoTxt}</div>
+    ${linhas}
+    <div style="font-size:10px;color:var(--muted);margin-top:8px">Sessão = ações num intervalo contínuo (&lt; 30 min entre elas). O alerta é indicativo, não conclusivo.</div>
+  </div>`;
 }
 
 function copyReport(){navigator.clipboard.writeText(document.getElementById('reportContent').textContent);toast('📄 Copiado!');}
